@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 import re
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
 
 # Token types
@@ -128,13 +128,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     """
-    Hash password using bcrypt.
-    
-    Args:
-        password: Plain text password
-        
-    Returns:
-        Hashed password
+    Hash password using pbkdf2_sha256.
     """
     return pwd_context.hash(password)
 

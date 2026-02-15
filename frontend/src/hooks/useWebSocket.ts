@@ -42,6 +42,20 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shouldReconnectRef = useRef(true);
 
+  // Keep refs for callbacks to avoid reconnecting when they change
+  const onMessageRef = useRef(onMessage);
+  const onActivityRef = useRef(onActivity);
+  const onConnectRef = useRef(onConnect);
+  const onDisconnectRef = useRef(onDisconnect);
+
+  // Update refs when props change
+  useEffect(() => {
+    onMessageRef.current = onMessage;
+    onActivityRef.current = onActivity;
+    onConnectRef.current = onConnect;
+    onDisconnectRef.current = onDisconnect;
+  }, [onMessage, onActivity, onConnect, onDisconnect]);
+
   const connect = useCallback(() => {
     try {
       // Get auth token
@@ -52,22 +66,25 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       }
 
       // Create WebSocket connection
-      const ws = new WebSocket(`${WS_URL}/ws?token=${token}`);
+      // VITE_WS_URL already includes /ws, so we don't need to append it again
+      // ensuring we don't end up with /ws/ws
+      const wsUrl = WS_URL.endsWith('/ws') ? WS_URL : `${WS_URL}/ws`;
+      const ws = new WebSocket(`${wsUrl}?token=${token}`);
 
       ws.onopen = () => {
         console.log('WebSocket connected');
         setIsConnected(true);
-        onConnect?.();
+        onConnectRef.current?.();
       };
 
       ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
           setLastMessage(message);
-          onMessage?.(message);
+          onMessageRef.current?.(message);
 
           // Handle activity messages
-          if (message.type === 'activity' && onActivity) {
+          if (message.type === 'activity' && onActivityRef.current) {
             const activity: Activity = {
               id: Date.now().toString(),
               type: message.data.activityType || 'success',
@@ -76,7 +93,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
               time: formatTimeAgo(new Date(message.timestamp)),
               timestamp: new Date(message.timestamp).getTime(),
             };
-            onActivity(activity);
+            onActivityRef.current(activity);
           }
         } catch (error) {
           console.error('Failed to parse WebSocket message:', error);
@@ -87,10 +104,17 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         console.error('WebSocket error:', error);
       };
 
-      ws.onclose = () => {
-        console.log('WebSocket disconnected');
+      ws.onclose = (event: CloseEvent) => {
+        console.log('WebSocket disconnected', event.code, event.reason);
         setIsConnected(false);
-        onDisconnect?.();
+        onDisconnectRef.current?.();
+
+        // Stop reconnecting if policy violation (auth failed)
+        if (event.code === 1008) {
+          console.error("WebSocket auth failed (Policy Violation). Stopping reconnect.");
+          shouldReconnectRef.current = false;
+          return;
+        }
 
         // Auto-reconnect
         if (autoReconnect && shouldReconnectRef.current) {
@@ -105,7 +129,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     } catch (error) {
       console.error('Failed to create WebSocket connection:', error);
     }
-  }, [onMessage, onActivity, onConnect, onDisconnect, autoReconnect, reconnectInterval]);
+  }, [autoReconnect, reconnectInterval]);
 
   const disconnect = useCallback(() => {
     shouldReconnectRef.current = false;

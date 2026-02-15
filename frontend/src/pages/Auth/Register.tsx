@@ -73,6 +73,7 @@ export function Register() {
               placeholder="Full Name"
               className="pl-10"
               autoFocus
+              autoComplete="name"
               {...register('fullName')}
               error={errors.fullName?.message}
               success={!errors.fullName && dirtyFields.fullName}
@@ -85,6 +86,7 @@ export function Register() {
               type="email"
               placeholder="name@company.com"
               className="pl-10"
+              autoComplete="email"
               {...register('email')}
               error={errors.email?.message}
               success={!errors.email && dirtyFields.email}
@@ -98,6 +100,7 @@ export function Register() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="pl-10 pr-10"
+                autoComplete="new-password"
                 {...register('password')}
                 error={errors.password?.message}
                 success={!errors.password && dirtyFields.password}
@@ -125,6 +128,7 @@ export function Register() {
               type={showPassword ? "text" : "password"}
               placeholder="Confirm Password"
               className="pl-10"
+              autoComplete="new-password"
               {...register('confirmPassword')}
               error={errors.confirmPassword?.message}
               success={!errors.confirmPassword && dirtyFields.confirmPassword}

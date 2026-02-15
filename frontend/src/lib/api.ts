@@ -110,14 +110,50 @@ export function getErrorMessage(error: unknown): string {
       if (typeof data.detail === 'string') {
         return data.detail;
       }
+
+      // Handle array of errors (e.g. FastAPI validation errors)
+      if (Array.isArray(data.detail)) {
+        return data.detail
+          .map((d: any) => {
+            if (typeof d === 'string') return d;
+            const message = d.msg || d.message || d.error || JSON.stringify(d);
+
+            // Handle custom 'field' property from backend (e.g. "body.username")
+            if (d.field && typeof d.field === 'string') {
+              const parts = d.field.split('.');
+              const field = parts[parts.length - 1];
+              if (field && field !== 'body') {
+                const fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+                return `${fieldName}: ${message}`;
+              }
+            }
+
+            // Append field name if available from standard 'loc'
+            if (d.loc && Array.isArray(d.loc) && d.loc.length > 0) {
+              const field = d.loc[d.loc.length - 1];
+              if (typeof field === 'string') {
+                // Skip 'body' if it's the only location, but keep it if it's part of a path like ['body', 'username']
+                if (field === 'body' && d.loc.length === 1) return message;
+
+                const fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+                return `${fieldName}: ${message}`;
+              }
+            }
+            return message;
+          })
+          .join(', ');
+      }
+
+      // Handle object errors
       if (typeof data.detail === 'object' && data.detail !== null) {
-        // Handle new structure { detail: { message, details } }
-        if (data.detail.message && typeof data.detail.message === 'string') {
-          return data.detail.message;
-        }
-        // Handle validation errors or arrays
-        if (Array.isArray(data.detail)) {
-          return data.detail.map((d: any) => d.msg || d).join(', ');
+        if (data.detail.message) return data.detail.message;
+        if (data.detail.msg) return data.detail.msg;
+        if (data.detail.error) return data.detail.error;
+        // Fallback for unknown object structure
+        try {
+          return JSON.stringify(data.detail);
+        } catch (e) {
+          return "Unknown error details";
         }
       }
     }

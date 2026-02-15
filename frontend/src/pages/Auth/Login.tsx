@@ -47,7 +47,8 @@ export function Login() {
       setLoading(true);
 
       // OAuth2 requires form data with 'username' field (not 'email')
-      const formData = new FormData();
+      // OAuth2 requires form data with 'username' field (not 'email')
+      const formData = new URLSearchParams();
       formData.append('username', data.email);
       formData.append('password', data.password);
 
@@ -79,10 +80,12 @@ export function Login() {
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
             <Input
+              id="email"
               type="email"
               placeholder="name@company.com"
               className="pl-10"
               autoFocus
+              autoComplete="username"
               {...register('email')}
               error={errors.email?.message}
             />
@@ -90,9 +93,11 @@ export function Login() {
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
             <Input
+              id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               className="pl-10 pr-10"
+              autoComplete="current-password"
               {...register('password')}
               error={errors.password?.message}
             />

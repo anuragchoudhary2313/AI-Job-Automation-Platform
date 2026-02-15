@@ -23,12 +23,14 @@ const notifyListeners = (toast: Toast) => {
   toastListeners.forEach(l => l(toast));
 };
 
+const generateId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+
 export const toast = {
-  success: (msg: string) => notifyListeners({ id: Date.now().toString(), message: msg, type: 'success' }),
-  error: (msg: string) => notifyListeners({ id: Date.now().toString(), message: msg, type: 'error' }),
-  warning: (msg: string) => notifyListeners({ id: Date.now().toString(), message: msg, type: 'warning' }),
-  info: (msg: string) => notifyListeners({ id: Date.now().toString(), message: msg, type: 'info' }),
-  message: (msg: string) => notifyListeners({ id: Date.now().toString(), message: msg, type: 'info' }),
+  success: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'success' }),
+  error: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'error' }),
+  warning: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'warning' }),
+  info: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'info' }),
+  message: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'info' }),
   dismiss: () => { }, // No-op for now
   loading: () => { },
   promise: () => { },

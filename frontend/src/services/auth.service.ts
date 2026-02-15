@@ -16,10 +16,12 @@ export interface LoginResponse {
 }
 
 export const authService = {
-  async login(formData: FormData): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginResponse>('/auth/login', formData, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+  async login(formData: FormData | URLSearchParams): Promise<LoginResponse> {
+    const config = formData instanceof URLSearchParams
+      ? { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+      : {};
+
+    const response = await apiClient.post<LoginResponse>('/auth/login', formData, config);
     return response.data;
   },
 

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { useToast } from '../ui/Toast';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 export interface Notification {
   id: string;
@@ -65,55 +66,30 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }
   }, [toast, playSound]);
 
-  // Real WebSocket connection
-  useEffect(() => {
-    const wsUrl = typeof window !== 'undefined' ? (process.env.VITE_WS_URL || `ws://${window.location.host}/ws/notifications`) : 'ws://localhost/ws/notifications';
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: ReturnType<typeof setTimeout>;
+  // Use shared WebSocket hook
+  useWebSocket({
+    onMessage: (message) => {
+      // Handle generic notification messages
+      if (message.type === 'notification' || !message.type) {
+        const data = message.data || message; // Handle wrapped or direct data
 
-    const connect = () => {
-      try {
-        ws = new WebSocket(wsUrl);
+        // Ignore empty messages
+        if (!data.title && !data.message) return;
 
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            addNotification({
-              title: data.title || 'Notification',
-              message: data.message || '',
-              type: data.type || 'info'
-            });
-          } catch (e) {
-            console.error("Failed to parse WS message", e);
-          }
-        };
-
-        ws.onclose = () => {
-          console.log("WS connection closed");
-          if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
-            reconnectTimeout = setTimeout(connect, 5000);
-          }
-        };
-
-        ws.onerror = (err) => {
-          console.error("WS error", err);
-          ws?.close();
-        };
-      } catch (e) {
-        console.error("WS connection error", e);
+        addNotification({
+          title: data.title || 'Notification',
+          message: data.message || '',
+          type: data.type || 'info'
+        });
       }
-    };
-
-    connect();
-
-    return () => {
-      if (ws) {
-        ws.onclose = null; // Prevent reconnect on unmount
-        ws.close();
-      }
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-    };
-  }, [addNotification]);
+    },
+    onConnect: () => {
+      console.log("NotificationContext: WS Connected");
+    },
+    onDisconnect: () => {
+      console.log("NotificationContext: WS Disconnected");
+    }
+  });
 
   const markAsRead = (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
