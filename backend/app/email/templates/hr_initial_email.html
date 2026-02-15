@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: #777;
+      margin-top: 20px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <p>Dear Hiring Manager at <strong>{{ company_name }}</strong>,</p>
+
+    <p>I hope this email finds you well.</p>
+
+    <p>I am writing to express my strong interest in the <strong>{{ job_role }}</strong> position.
+      With my background in software development and my passion for building scalable solutions,
+      I am confident in my ability to contribute effectively to your team.</p>
+
+    <p>Attached is my resume for your review. My key skills include:</p>
+    <p><strong>{{ skills }}</strong></p>
+
+    <p>You can also view my portfolio and other projects here: <a href="{{ portfolio_link }}">{{ portfolio_link }}</a>
+    </p>
+
+    <p>Thank you for your time and consideration. I look forward to the possibility of discussing how I can contribute
+      to {{ company_name }}.</p>
+
+    <p>Best regards,</p>
+    <p><strong>{{ candidate_name }}</strong></p>
+
+    <div class="footer">
+      <p>Sent via AI Job Automation Bot</p>
+    </div>
+  </div>
+</body>
+
+</html>

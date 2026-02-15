@@ -1,0 +1,49 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.env.*
+!.env.example
+!.env.production.template
+.venv
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
+dist/
+build/
+coverage/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# Project specific
+backend/venv/
+backend/.env
+frontend/.env
+frontend/dist/
+frontend/node_modules/

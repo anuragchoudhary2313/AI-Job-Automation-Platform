@@ -1,0 +1,2102 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-7.4.4, pluggy-1.6.0 -- C:\Users\anura\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\anura\ai-job-automation-saas\backend
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.2.0, asyncio-0.23.4, cov-4.1.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 68 items / 1 skipped
+
+tests/test_auth.py::TestUserRegistration::test_register_new_user FAILED  [  1%]
+tests/test_auth.py::TestUserRegistration::test_register_duplicate_email FAILED [  2%]
+tests/test_auth.py::TestUserRegistration::test_register_invalid_email PASSED [  4%]
+tests/test_auth.py::TestUserRegistration::test_register_weak_password PASSED [  5%]
+tests/test_auth.py::TestUserLogin::test_login_success FAILED             [  7%]
+tests/test_auth.py::TestUserLogin::test_login_wrong_password FAILED      [  8%]
+tests/test_auth.py::TestUserLogin::test_login_nonexistent_user FAILED    [ 10%]
+tests/test_auth.py::TestUserLogin::test_login_missing_credentials FAILED [ 11%]
+tests/test_auth.py::TestJWTTokens::test_token_contains_user_info PASSED  [ 13%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token FAILED [ 14%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_without_token FAILED [ 16%]
+tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token FAILED [ 17%]
+tests/test_auth.py::TestJWTTokens::test_token_expiration FAILED          [ 19%]
+tests/test_auth.py::TestRoleBasedAccess::test_admin_can_access_admin_endpoint PASSED [ 20%]
+tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint FAILED [ 22%]
+tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access FAILED [ 23%]
+tests/test_auth.py::TestPasswordSecurity::test_password_is_hashed PASSED [ 25%]
+tests/test_auth.py::TestPasswordSecurity::test_password_verification PASSED [ 26%]
+tests/test_auth.py::TestPasswordSecurity::test_same_password_different_hashes PASSED [ 27%]
+tests/test_jobs.py::TestJobCreation::test_create_job_authenticated FAILED [ 29%]
+tests/test_jobs.py::TestJobCreation::test_create_job_unauthenticated FAILED [ 30%]
+tests/test_jobs.py::TestJobCreation::test_create_job_missing_required_fields FAILED [ 32%]
+tests/test_jobs.py::TestJobCreation::test_create_job_with_invalid_status FAILED [ 33%]
+tests/test_jobs.py::TestJobRetrieval::test_get_all_jobs FAILED           [ 35%]
+tests/test_jobs.py::TestJobRetrieval::test_get_job_by_id FAILED          [ 36%]
+tests/test_jobs.py::TestJobRetrieval::test_get_nonexistent_job PASSED    [ 38%]
+tests/test_jobs.py::TestJobRetrieval::test_filter_jobs_by_status PASSED  [ 39%]
+tests/test_jobs.py::TestJobRetrieval::test_search_jobs_by_company PASSED [ 41%]
+tests/test_jobs.py::TestJobUpdate::test_update_job FAILED                [ 42%]
+tests/test_jobs.py::TestJobUpdate::test_update_job_status_only FAILED    [ 44%]
+tests/test_jobs.py::TestJobUpdate::test_update_nonexistent_job PASSED    [ 45%]
+tests/test_jobs.py::TestJobDeletion::test_delete_job FAILED              [ 47%]
+tests/test_jobs.py::TestJobDeletion::test_delete_nonexistent_job PASSED  [ 48%]
+tests/test_jobs.py::TestJobDeletion::test_admin_can_delete_any_job FAILED [ 50%]
+tests/test_jobs.py::TestJobPagination::test_paginate_jobs FAILED         [ 51%]
+tests/test_jobs.py::TestJobPagination::test_pagination_with_filters FAILED [ 52%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs PASSED [ 54%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id PASSED [ 55%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job PASSED [ 57%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job PASSED [ 58%]
+tests/test_teams.py::TestTeamManagement::test_create_team_on_registration FAILED [ 60%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members FAILED [ 61%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_invite_team_members FAILED [ 63%]
+tests/test_teams.py::TestTeamManagement::test_get_team_members FAILED    [ 64%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member FAILED [ 66%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member FAILED [ 67%]
+tests/test_teams.py::TestTeamSettings::test_team_has_isolated_settings SKIPPED [ 69%]
+tests/test_teams.py::TestTeamSettings::test_update_team_settings SKIPPED [ 70%]
+tests/test_teams.py::TestTeamSettings::test_member_cannot_update_team_settings SKIPPED [ 72%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data PASSED [ 73%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_statistics_are_team_isolated PASSED [ 75%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_01_health_check FAILED [ 76%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_02_user_registration FAILED [ 77%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_03_user_login FAILED [ 79%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_04_get_current_user FAILED [ 80%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_05_invalid_login FAILED [ 82%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_01_list_resumes_empty FAILED [ 83%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_02_upload_resume FAILED  [ 85%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_03_list_resumes_with_data FAILED [ 86%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_04_download_resume FAILED [ 88%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_05_delete_resume FAILED  [ 89%]
+tests/smoke/test_smoke.py::TestJobScrapingFlow::test_01_scrape_jobs FAILED [ 91%]
+tests/smoke/test_smoke.py::TestJobScrapingFlow::test_02_list_scraped_jobs FAILED [ 92%]
+tests/smoke/test_smoke.py::TestSchedulerFlow::test_01_scheduler_status FAILED [ 94%]
+tests/smoke/test_smoke.py::TestSchedulerFlow::test_02_list_jobs FAILED   [ 95%]
+tests/smoke/test_smoke.py::TestStatsFlow::test_01_dashboard_stats FAILED [ 97%]
+tests/smoke/test_smoke.py::TestWebSocketFlow::test_01_websocket_endpoint_exists FAILED [ 98%]
+tests/smoke/test_smoke.py::test_summary PASSED                           [100%]
+
+================================== FAILURES ===================================
+_________________ TestUserRegistration.test_register_new_user _________________
+tests\test_auth.py:23: in test_register_new_user
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:04,609 - app.main - INFO - Starting application...
+2026-02-12 00:31:04,644 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:04,646 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:04,647 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:04,649 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:04,663 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:04,663 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:04,666 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:04,667 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:04,668 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:04,669 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:04,670 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:04,683 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/register from unknown
+2026-02-12 00:31:04,711 - app.api.endpoints.auth - ERROR - Registration error: 'UserCreate' object has no attribute 'full_name'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 111, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 92, in register_user
+    full_name=user_data.full_name,
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'UserCreate' object has no attribute 'full_name'
+2026-02-12 00:31:04,722 - app.core.error_handlers - ERROR - HTTP 500: An error occurred during registration
+2026-02-12 00:31:04,729 - app.core.middleware - INFO - Completed: 500 in 45.76ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/register from unknown
+ERROR    app.api.endpoints.auth:auth.py:120 Registration error: 'UserCreate' object has no attribute 'full_name'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 111, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 92, in register_user
+    full_name=user_data.full_name,
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'UserCreate' object has no attribute 'full_name'
+ERROR    app.core.error_handlers:error_handlers.py:114 HTTP 500: An error occurred during registration
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 45.76ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:05,914 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:05,916 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:05,917 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:05,918 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________ TestUserRegistration.test_register_duplicate_email ______________
+tests\test_auth.py:40: in test_register_duplicate_email
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 500 == 400
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:05,963 - app.main - INFO - Starting application...
+2026-02-12 00:31:05,963 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:05,965 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:05,966 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:05,967 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:05,968 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:05,969 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:05,970 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:05,971 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:05,971 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:05,972 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:05,973 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:06,049 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/register from unknown
+2026-02-12 00:31:06,059 - app.api.endpoints.auth - ERROR - Registration error: 'UserCreate' object has no attribute 'full_name'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 111, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 92, in register_user
+    full_name=user_data.full_name,
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'UserCreate' object has no attribute 'full_name'
+2026-02-12 00:31:06,063 - app.core.error_handlers - ERROR - HTTP 500: An error occurred during registration
+2026-02-12 00:31:06,067 - app.core.middleware - INFO - Completed: 500 in 17.90ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/register from unknown
+ERROR    app.api.endpoints.auth:auth.py:120 Registration error: 'UserCreate' object has no attribute 'full_name'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 111, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 92, in register_user
+    full_name=user_data.full_name,
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'UserCreate' object has no attribute 'full_name'
+ERROR    app.core.error_handlers:error_handlers.py:114 HTTP 500: An error occurred during registration
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 17.90ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,087 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,087 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,088 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,088 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+______________________ TestUserLogin.test_login_success _______________________
+tests\test_auth.py:82: in test_login_success
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,293 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,296 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,297 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,298 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,299 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,300 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,300 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,301 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,302 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,303 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,304 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,304 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:06,320 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/login from unknown
+2026-02-12 00:31:06,348 - app.repositories.user - ERROR - Error getting user by email testuser: object ChunkedIteratorResult can't be used in 'await' expression
+2026-02-12 00:31:06,349 - app.api.endpoints.auth - ERROR - Login error: Failed to get user by email
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 45, in get_by_email
+    result = await self.db.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: object ChunkedIteratorResult can't be used in 'await' expression
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 63, in login
+    user, tokens = await auth_service.login(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 170, in login
+    user = await self.authenticate_user(email, password)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 50, in authenticate_user
+    user = await self.user_repo.get_by_email(email)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 51, in get_by_email
+    raise DatabaseError("Failed to get user by email") from e
+app.core.exceptions.DatabaseError: Failed to get user by email
+2026-02-12 00:31:06,353 - app.core.error_handlers - ERROR - HTTP 500: An error occurred during login
+2026-02-12 00:31:06,357 - app.core.middleware - INFO - Completed: 500 in 37.03ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/login from unknown
+ERROR    app.repositories.user:user.py:50 Error getting user by email testuser: object ChunkedIteratorResult can't be used in 'await' expression
+ERROR    app.api.endpoints.auth:auth.py:85 Login error: Failed to get user by email
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 45, in get_by_email
+    result = await self.db.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: object ChunkedIteratorResult can't be used in 'await' expression
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 63, in login
+    user, tokens = await auth_service.login(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 170, in login
+    user = await self.authenticate_user(email, password)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 50, in authenticate_user
+    user = await self.user_repo.get_by_email(email)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 51, in get_by_email
+    raise DatabaseError("Failed to get user by email") from e
+app.core.exceptions.DatabaseError: Failed to get user by email
+ERROR    app.core.error_handlers:error_handlers.py:114 HTTP 500: An error occurred during login
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 37.03ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,390 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,392 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,392 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,393 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________________ TestUserLogin.test_login_wrong_password ___________________
+tests\test_auth.py:96: in test_login_wrong_password
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 429 == 400
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,429 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,430 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,432 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,433 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,434 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,434 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,434 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,436 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,437 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,438 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,439 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,439 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,499 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,501 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,501 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,502 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________________ TestUserLogin.test_login_nonexistent_user __________________
+tests\test_auth.py:107: in test_login_nonexistent_user
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 429 == 400
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,543 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,546 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,548 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,549 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,550 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,551 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,552 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,554 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,556 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,557 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,559 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,560 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,599 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,601 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,602 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,603 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestUserLogin.test_login_missing_credentials _________________
+tests\test_auth.py:112: in test_login_missing_credentials
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+E   assert 429 == 422
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   422 = status.HTTP_422_UNPROCESSABLE_ENTITY
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,646 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,648 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,649 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,651 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,652 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,653 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,654 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,656 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,659 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,660 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,661 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,663 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,702 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,704 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,705 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,707 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________ TestJWTTokens.test_access_protected_endpoint_with_token ___________
+tests\test_auth.py:130: in test_access_protected_endpoint_with_token
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,851 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,852 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,855 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,857 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,859 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,860 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,861 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,862 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,864 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,865 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,866 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,867 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:06,888 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:31:06,891 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:06,897 - app.core.middleware - INFO - Completed: 404 in 9.79ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 9.79ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:06,932 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:06,934 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:06,935 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:06,936 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_________ TestJWTTokens.test_access_protected_endpoint_without_token __________
+tests\test_auth.py:135: in test_access_protected_endpoint_without_token
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 404 == 401
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:06,977 - app.main - INFO - Starting application...
+2026-02-12 00:31:06,979 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,980 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,981 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,983 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:06,984 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:06,984 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:06,987 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:06,988 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:06,989 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:06,989 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:06,991 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:06,997 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:31:07,001 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:07,007 - app.core.middleware - INFO - Completed: 404 in 10.21ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 10.21ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,046 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,047 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,047 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,049 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestJWTTokens.test_access_with_invalid_token _________________
+tests\test_auth.py:143: in test_access_with_invalid_token
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 404 == 401
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,087 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,089 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,089 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,091 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,092 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,093 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,093 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,095 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,095 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,096 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,096 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,097 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:07,209 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:31:07,212 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:07,218 - app.core.middleware - INFO - Completed: 404 in 8.77ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 8.77ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,256 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,258 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,259 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,259 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________________ TestJWTTokens.test_token_expiration _____________________
+tests\test_auth.py:160: in test_token_expiration
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 404 == 401
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,295 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,296 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,297 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,300 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,301 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,302 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,303 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,305 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,307 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,308 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,309 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,310 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:07,318 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:31:07,321 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:07,325 - app.core.middleware - INFO - Completed: 404 in 7.23ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 7.23ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,356 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,357 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,359 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,360 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________ TestRoleBasedAccess.test_member_cannot_access_admin_endpoint _________
+tests\test_auth.py:174: in test_member_cannot_access_admin_endpoint
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+E   assert 404 == 403
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   403 = status.HTTP_403_FORBIDDEN
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,490 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,492 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,493 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,494 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,496 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,497 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,497 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,498 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,499 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,499 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,499 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,501 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:07,519 - app.core.middleware - INFO - Wait Request: GET /api/v1/admin/users from unknown
+2026-02-12 00:31:07,522 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:07,526 - app.core.middleware - INFO - Completed: 404 in 6.91ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/admin/users from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 6.91ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,557 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,559 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,560 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,561 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestRoleBasedAccess.test_viewer_has_read_only_access _____________
+tests\test_auth.py:186: in test_viewer_has_read_only_access
+    role=UserRole.VIEWER,
+..\..\AppData\Local\Programs\Python\Python311\Lib\enum.py:786: in __getattr__
+    raise AttributeError(name) from None
+E   AttributeError: VIEWER
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,598 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,599 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,601 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,602 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,603 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,605 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,606 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,607 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,609 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,610 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,611 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,612 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,712 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,713 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,715 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,716 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestJobCreation.test_create_job_authenticated ________________
+tests\test_jobs.py:27: in test_create_job_authenticated
+    assert response.status_code == status.HTTP_200_OK
+E   assert 405 == 200
+E    +  where 405 = <Response [405 Method Not Allowed]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,760 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,761 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,761 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,762 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,762 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,763 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,763 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,763 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,763 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,765 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,765 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,766 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:07,774 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs from unknown
+2026-02-12 00:31:07,778 - app.core.middleware - INFO - Completed: 307 in 3.51ms
+2026-02-12 00:31:07,782 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs/ from unknown
+2026-02-12 00:31:07,783 - app.core.error_handlers - WARNING - HTTP 405: Method Not Allowed
+2026-02-12 00:31:07,785 - app.core.middleware - INFO - Completed: 405 in 3.01ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 3.51ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs/ from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 405: Method Not Allowed
+INFO     app.core.middleware:middleware.py:32 Completed: 405 in 3.01ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,805 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,806 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,806 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,807 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_______________ TestJobCreation.test_create_job_unauthenticated _______________
+tests\test_jobs.py:40: in test_create_job_unauthenticated
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 405 == 401
+E    +  where 405 = <Response [405 Method Not Allowed]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,850 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,855 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,858 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,860 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,863 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,866 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,868 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,871 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,873 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,875 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:07,877 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:07,879 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:07,888 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs from unknown
+2026-02-12 00:31:07,892 - app.core.middleware - INFO - Completed: 307 in 5.52ms
+2026-02-12 00:31:07,900 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs/ from unknown
+2026-02-12 00:31:07,904 - app.core.error_handlers - WARNING - HTTP 405: Method Not Allowed
+2026-02-12 00:31:07,910 - app.core.middleware - INFO - Completed: 405 in 10.03ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 5.52ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs/ from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 405: Method Not Allowed
+INFO     app.core.middleware:middleware.py:32 Completed: 405 in 10.03ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:07,955 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:07,955 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:07,956 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:07,956 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________ TestJobCreation.test_create_job_missing_required_fields ___________
+tests\test_jobs.py:49: in test_create_job_missing_required_fields
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+E   assert 405 == 422
+E    +  where 405 = <Response [405 Method Not Allowed]>.status_code
+E    +  and   422 = status.HTTP_422_UNPROCESSABLE_ENTITY
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:07,990 - app.main - INFO - Starting application...
+2026-02-12 00:31:07,992 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,993 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,994 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,995 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:07,996 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:07,996 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:07,997 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:07,997 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:07,999 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:08,000 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:08,001 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:08,019 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs from unknown
+2026-02-12 00:31:08,026 - app.core.middleware - INFO - Completed: 307 in 6.76ms
+2026-02-12 00:31:08,035 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs/ from unknown
+2026-02-12 00:31:08,038 - app.core.error_handlers - WARNING - HTTP 405: Method Not Allowed
+2026-02-12 00:31:08,042 - app.core.middleware - INFO - Completed: 405 in 6.91ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 6.76ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs/ from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 405: Method Not Allowed
+INFO     app.core.middleware:middleware.py:32 Completed: 405 in 6.91ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:08,104 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:08,106 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:08,107 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:08,109 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________ TestJobCreation.test_create_job_with_invalid_status _____________
+tests\test_jobs.py:68: in test_create_job_with_invalid_status
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+E   assert 405 == 422
+E    +  where 405 = <Response [405 Method Not Allowed]>.status_code
+E    +  and   422 = status.HTTP_422_UNPROCESSABLE_ENTITY
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:08,164 - app.main - INFO - Starting application...
+2026-02-12 00:31:08,166 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,166 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,167 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,169 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,170 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:08,170 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:08,171 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:08,171 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:08,172 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:08,172 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:08,173 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:08,187 - app.core.middleware - INFO - Wait Request: POST /api/v1/jobs/ from unknown
+2026-02-12 00:31:08,189 - app.core.error_handlers - WARNING - HTTP 405: Method Not Allowed
+2026-02-12 00:31:08,192 - app.core.middleware - INFO - Completed: 405 in 5.41ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/jobs/ from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 405: Method Not Allowed
+INFO     app.core.middleware:middleware.py:32 Completed: 405 in 5.41ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:08,219 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:08,221 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:08,221 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:08,222 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________________ TestJobRetrieval.test_get_all_jobs ______________________
+tests\test_jobs.py:87: in test_get_all_jobs
+    assert len(data) >= 3
+E   assert 0 >= 3
+E    +  where 0 = len([])
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:08,246 - app.main - INFO - Starting application...
+2026-02-12 00:31:08,248 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,249 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,249 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,249 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,250 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:08,251 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:08,251 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:08,252 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:08,253 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:08,254 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:08,254 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:08,275 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:31:08,280 - app.core.middleware - INFO - Completed: 307 in 5.59ms
+2026-02-12 00:31:08,291 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:31:08,310 - app.core.middleware - INFO - Completed: 200 in 17.92ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 5.59ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 200 in 17.92ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:08,349 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:08,350 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:08,351 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:08,352 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________________ TestJobRetrieval.test_get_job_by_id _____________________
+tests\test_jobs.py:102: in test_get_job_by_id
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:08,391 - app.main - INFO - Starting application...
+2026-02-12 00:31:08,393 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,395 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,397 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,399 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,400 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:08,401 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:08,403 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:08,404 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:08,405 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:08,406 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:08,407 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:08,440 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/1 from unknown
+2026-02-12 00:31:08,443 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:08,448 - app.core.middleware - INFO - Completed: 404 in 7.97ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/1 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 7.97ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:08,479 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:08,479 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:08,480 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:08,480 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________________ TestJobUpdate.test_update_job ________________________
+tests\test_jobs.py:170: in test_update_job
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:08,881 - app.main - INFO - Starting application...
+2026-02-12 00:31:08,882 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,883 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,884 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,885 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:08,886 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:08,886 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:08,887 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:08,887 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:08,887 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:08,889 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:08,889 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:08,909 - app.core.middleware - INFO - Wait Request: PUT /api/v1/jobs/1 from unknown
+2026-02-12 00:31:08,914 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:08,919 - app.core.middleware - INFO - Completed: 404 in 9.74ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: PUT /api/v1/jobs/1 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 9.74ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:08,960 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:08,963 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:08,963 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:08,964 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________________ TestJobUpdate.test_update_job_status_only __________________
+tests\test_jobs.py:185: in test_update_job_status_only
+    json={"status": JobStatus.INTERVIEW}
+..\..\AppData\Local\Programs\Python\Python311\Lib\enum.py:786: in __getattr__
+    raise AttributeError(name) from None
+E   AttributeError: INTERVIEW
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:09,001 - app.main - INFO - Starting application...
+2026-02-12 00:31:09,002 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,004 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,005 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,006 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,007 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:09,007 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:09,009 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:09,010 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:09,010 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:09,011 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:09,012 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:09,156 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:09,157 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:09,158 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:09,159 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_______________________ TestJobDeletion.test_delete_job _______________________
+tests\test_jobs.py:213: in test_delete_job
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:09,271 - app.main - INFO - Starting application...
+2026-02-12 00:31:09,272 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,273 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,274 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,274 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,275 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:09,275 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:09,276 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:09,277 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:09,277 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:09,277 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:09,279 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:09,300 - app.core.middleware - INFO - Wait Request: DELETE /api/v1/jobs/1 from unknown
+2026-02-12 00:31:09,302 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:09,306 - app.core.middleware - INFO - Completed: 404 in 6.84ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: DELETE /api/v1/jobs/1 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 6.84ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:09,339 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:09,340 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:09,340 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:09,341 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestJobDeletion.test_admin_can_delete_any_job ________________
+tests\test_jobs.py:232: in test_admin_can_delete_any_job
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:09,451 - app.main - INFO - Starting application...
+2026-02-12 00:31:09,452 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,454 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,454 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,456 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,457 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:09,458 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:09,459 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:09,461 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:09,463 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:09,464 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:09,465 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:09,483 - app.core.middleware - INFO - Wait Request: DELETE /api/v1/jobs/1 from unknown
+2026-02-12 00:31:09,485 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:09,488 - app.core.middleware - INFO - Completed: 404 in 4.71ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: DELETE /api/v1/jobs/1 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 4.71ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:09,507 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:09,509 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:09,510 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:09,510 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________________ TestJobPagination.test_paginate_jobs _____________________
+tests\test_jobs.py:256: in test_paginate_jobs
+    assert len(data) == 10
+E   assert 0 == 10
+E    +  where 0 = len([])
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:09,543 - app.main - INFO - Starting application...
+2026-02-12 00:31:09,543 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,544 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,545 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,545 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,546 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:09,547 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:09,547 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:09,549 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:09,550 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:09,550 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:09,551 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:09,577 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:31:09,583 - app.core.middleware - INFO - Completed: 307 in 5.85ms
+2026-02-12 00:31:09,593 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:31:09,607 - app.core.middleware - INFO - Completed: 200 in 14.02ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 5.85ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 200 in 14.02ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:09,648 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:09,649 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:09,649 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:09,650 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_______________ TestJobPagination.test_pagination_with_filters ________________
+tests\test_jobs.py:284: in test_pagination_with_filters
+    assert len(data) == 10
+E   assert 0 == 10
+E    +  where 0 = len([])
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:09,690 - app.main - INFO - Starting application...
+2026-02-12 00:31:09,693 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,694 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,696 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,697 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:09,698 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:09,699 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:09,701 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:09,702 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:09,703 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:09,704 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:09,705 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:09,737 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:31:09,747 - app.core.middleware - INFO - Completed: 307 in 9.69ms
+2026-02-12 00:31:09,760 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:31:09,777 - app.core.middleware - INFO - Completed: 200 in 16.63ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 9.69ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 200 in 16.63ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:09,823 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:09,823 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:09,824 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:09,831 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________ TestTeamManagement.test_create_team_on_registration _____________
+tests\test_teams.py:158: in test_create_team_on_registration
+    assert response.status_code == status.HTTP_200_OK
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:10,325 - app.main - INFO - Starting application...
+2026-02-12 00:31:10,328 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,329 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,331 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,332 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,333 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:10,334 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:10,336 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:10,337 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:10,338 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:10,339 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:10,339 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:10,416 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:10,418 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:10,419 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:10,419 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestTeamManagement.test_admin_can_invite_team_members ____________
+tests\test_teams.py:173: in test_admin_can_invite_team_members
+    assert response.status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]
+E   assert 404 in [200, 201]
+E    +  where 404 = <Response [404 Not Found]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:10,477 - app.main - INFO - Starting application...
+2026-02-12 00:31:10,481 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,481 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,484 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,485 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,486 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:10,487 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:10,489 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:10,491 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:10,491 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:10,492 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:10,493 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:10,512 - app.core.middleware - INFO - Wait Request: POST /api/v1/teams/invite from unknown
+2026-02-12 00:31:10,515 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:10,521 - app.core.middleware - INFO - Completed: 404 in 8.97ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/teams/invite from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 8.97ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:10,566 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:10,567 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:10,568 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:10,569 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________ TestTeamManagement.test_member_cannot_invite_team_members __________
+tests\test_teams.py:185: in test_member_cannot_invite_team_members
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+E   assert 404 == 403
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   403 = status.HTTP_403_FORBIDDEN
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:10,613 - app.main - INFO - Starting application...
+2026-02-12 00:31:10,616 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,617 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,619 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,620 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,621 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:10,623 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:10,624 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:10,625 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:10,627 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:10,628 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:10,629 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:10,650 - app.core.middleware - INFO - Wait Request: POST /api/v1/teams/invite from unknown
+2026-02-12 00:31:10,653 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:10,659 - app.core.middleware - INFO - Completed: 404 in 9.00ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/teams/invite from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 9.00ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:10,707 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:10,710 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:10,710 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:10,711 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________________ TestTeamManagement.test_get_team_members ___________________
+tests\test_teams.py:203: in test_get_team_members
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:10,756 - app.main - INFO - Starting application...
+2026-02-12 00:31:10,757 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,760 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,761 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,763 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,763 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:10,765 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:10,766 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:10,767 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:10,768 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:10,770 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:10,770 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:10,797 - app.core.middleware - INFO - Wait Request: GET /api/v1/teams/members from unknown
+2026-02-12 00:31:10,801 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:10,806 - app.core.middleware - INFO - Completed: 404 in 9.28ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/teams/members from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 9.28ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:10,852 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:10,855 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:10,856 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:10,857 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestTeamManagement.test_admin_can_remove_team_member _____________
+tests\test_teams.py:224: in test_admin_can_remove_team_member
+    assert response.status_code == status.HTTP_200_OK
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:10,900 - app.main - INFO - Starting application...
+2026-02-12 00:31:10,901 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,902 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,904 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,905 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:10,906 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:10,907 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:10,907 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:10,910 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:10,911 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:10,912 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:10,913 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:10,937 - app.core.middleware - INFO - Wait Request: DELETE /api/v1/teams/members/2 from unknown
+2026-02-12 00:31:10,942 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:10,947 - app.core.middleware - INFO - Completed: 404 in 8.06ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: DELETE /api/v1/teams/members/2 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 8.06ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:10,984 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:10,986 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:10,987 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:10,989 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________ TestTeamManagement.test_member_cannot_remove_team_member ___________
+tests\test_teams.py:242: in test_member_cannot_remove_team_member
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+E   assert 404 == 403
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   403 = status.HTTP_403_FORBIDDEN
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:31:11,027 - app.main - INFO - Starting application...
+2026-02-12 00:31:11,028 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:11,029 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:11,031 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:11,032 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:31:11,032 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:31:11,033 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:31:11,035 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:31:11,036 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:31:11,036 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:31:11,037 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:31:11,038 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:31:11,063 - app.core.middleware - INFO - Wait Request: DELETE /api/v1/teams/members/2 from unknown
+2026-02-12 00:31:11,066 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:31:11,069 - app.core.middleware - INFO - Completed: 404 in 6.30ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: DELETE /api/v1/teams/members/2 from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 6.30ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:31:11,110 - app.main - INFO - Shutting down application...
+2026-02-12 00:31:11,112 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:31:11,113 - app.main - INFO - Application shut down successfully
+2026-02-12 00:31:11,115 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_________________ TestAuthenticationFlow.test_01_health_check _________________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:204: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:787: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:493: in _make_request
+    conn.request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:500: in request
+    self.endheaders()
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:331: in connect
+    self.sock = self._new_conn()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:219: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:841: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+
+During handling of the above exception, another exception occurred:
+tests\smoke\test_smoke.py:39: in test_01_health_check
+    response = requests.get(f"{BASE_URL}/health")
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:73: in get
+    return request("get", url, params=params, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+______________ TestAuthenticationFlow.test_02_user_registration _______________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:204: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:787: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:493: in _make_request
+    conn.request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:500: in request
+    self.endheaders()
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:331: in connect
+    self.sock = self._new_conn()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:219: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:841: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/register (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+
+During handling of the above exception, another exception occurred:
+tests\smoke\test_smoke.py:47: in test_02_user_registration
+    response = requests.post(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:115: in post
+    return request("post", url, data=data, json=json, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/register (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+__________________ TestAuthenticationFlow.test_03_user_login __________________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:204: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:787: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:493: in _make_request
+    conn.request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:500: in request
+    self.endheaders()
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:331: in connect
+    self.sock = self._new_conn()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:219: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:841: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/login (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+
+During handling of the above exception, another exception occurred:
+tests\smoke\test_smoke.py:61: in test_03_user_login
+    response = requests.post(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:115: in post
+    return request("post", url, data=data, json=json, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/login (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+_______________ TestAuthenticationFlow.test_04_get_current_user _______________
+tests\smoke\test_smoke.py:77: in test_04_get_current_user
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+________________ TestAuthenticationFlow.test_05_invalid_login _________________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:204: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:787: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:493: in _make_request
+    conn.request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:500: in request
+    self.endheaders()
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:331: in connect
+    self.sock = self._new_conn()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:219: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:841: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/login (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+
+During handling of the above exception, another exception occurred:
+tests\smoke\test_smoke.py:91: in test_05_invalid_login
+    response = requests.post(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:115: in post
+    return request("post", url, data=data, json=json, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/auth/login (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+__________________ TestResumeFlow.test_01_list_resumes_empty __________________
+tests\smoke\test_smoke.py:107: in test_01_list_resumes_empty
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+____________________ TestResumeFlow.test_02_upload_resume _____________________
+tests\smoke\test_smoke.py:121: in test_02_upload_resume
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+________________ TestResumeFlow.test_03_list_resumes_with_data ________________
+tests\smoke\test_smoke.py:145: in test_03_list_resumes_with_data
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+___________________ TestResumeFlow.test_04_download_resume ____________________
+tests\smoke\test_smoke.py:159: in test_04_download_resume
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+____________________ TestResumeFlow.test_05_delete_resume _____________________
+tests\smoke\test_smoke.py:173: in test_05_delete_resume
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+___________________ TestJobScrapingFlow.test_01_scrape_jobs ___________________
+tests\smoke\test_smoke.py:189: in test_01_scrape_jobs
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+________________ TestJobScrapingFlow.test_02_list_scraped_jobs ________________
+tests\smoke\test_smoke.py:213: in test_02_list_scraped_jobs
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+_________________ TestSchedulerFlow.test_01_scheduler_status __________________
+tests\smoke\test_smoke.py:230: in test_01_scheduler_status
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+_____________________ TestSchedulerFlow.test_02_list_jobs _____________________
+tests\smoke\test_smoke.py:244: in test_02_list_jobs
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+____________________ TestStatsFlow.test_01_dashboard_stats ____________________
+tests\smoke\test_smoke.py:261: in test_01_dashboard_stats
+    assert auth_token is not None, "Must login first"
+E   AssertionError: Must login first
+E   assert None is not None
+_____________ TestWebSocketFlow.test_01_websocket_endpoint_exists _____________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:204: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:787: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:493: in _make_request
+    conn.request(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:500: in request
+    self.endheaders()
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+..\..\AppData\Local\Programs\Python\Python311\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:331: in connect
+    self.sock = self._new_conn()
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connection.py:219: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:841: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\util\retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /docs (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+
+During handling of the above exception, another exception occurred:
+tests\smoke\test_smoke.py:281: in test_01_websocket_endpoint_exists
+    response = requests.get(f"{BASE_URL}/docs")
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:73: in get
+    return request("get", url, params=params, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /docs (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+============================== warnings summary ===============================
+app\db\base.py:4
+  C:\Users\anura\ai-job-automation-saas\backend\app\db\base.py:4: MovedIn20Warning: The ``as_declarative()`` function is now available as sqlalchemy.orm.as_declarative() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    @as_declarative()
+
+app\schemas\user.py:18
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\user.py:18: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class UserInDBBase(UserBase):
+
+app\schemas\log.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\log.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Log(LogBase):
+
+app\schemas\job.py:29
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\job.py:29: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Job(JobBase):
+
+app\schemas\resume.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\resume.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Resume(ResumeBase):
+
+app\api\endpoints\jobs.py:12
+  C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py:12: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobSchema(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                                  Stmts   Miss   Cover   Missing
+--------------------------------------------------------------------
+app\__init__.py                           0      0 100.00%
+app\api\__init__.py                       0      0 100.00%
+app\api\api.py                           15      0 100.00%
+app\api\deps.py                          57     23  59.65%   33-41, 71-76, 91, 108-112, 129-133, 157, 169, 181
+app\api\endpoints\__init__.py             0      0 100.00%
+app\api\endpoints\ai.py                  64     32  50.00%   32-36, 43-48, 57-66, 73-77, 84-92, 99-107
+app\api\endpoints\auth.py                73     34  53.42%   69-80, 83, 113-115, 145-178, 197, 222-237
+app\api\endpoints\email.py               74     43  41.89%   46-95, 105-124, 131-142
+app\api\endpoints\features.py            15      1  93.33%   22
+app\api\endpoints\jobs.py                27      3  88.89%   36-52
+app\api\endpoints\logs.py                38     18  52.63%   36-51, 66-82, 90-95
+app\api\endpoints\resumes.py             72     45  37.50%   39, 62-70, 95-106, 132-138, 164-185, 208-213, 239-252
+app\api\endpoints\scheduler.py           46     21  54.35%   18-37, 50-55, 75-79, 89-93, 102
+app\api\endpoints\stats.py               36     23  36.11%   34, 59-113
+app\api\endpoints\telegram.py            10      5  50.00%   11-16
+app\api\endpoints\websockets.py          14      8  42.86%   9-18
+app\automation\browser.py                29     17  41.38%   18-57, 63-68
+app\automation\scrapers\base.py          13      4  69.23%   11-12, 33-34
+app\automation\scrapers\linkedin.py      42     34  19.05%   12-21, 24-63
+app\automation\session.py                26     17  34.62%   10, 16-21, 27-37
+app\core\__init__.py                      0      0 100.00%
+app\core\ai.py                           23      4  82.61%   31-34, 40
+app\core\cache.py                        84     57  32.14%   23-30, 37-39, 50-52, 64-75, 94-102, 114-121, 133-144, 162-170, 190-205
+app\core\csrf.py                         32     21  34.38%   18-21, 35-69, 73, 86
+app\core\error_handlers.py               53     13  75.47%   39-65, 123, 140-148
+app\core\exceptions.py                   39      9  76.92%   39, 46, 53-54, 68, 82-83, 90, 97
+app\core\features.py                     14      6  57.14%   17-23, 31-32
+app\core\logger.py                       30     30   0.00%   1-62
+app\core\logging.py                      82     33  59.76%   18-45, 62, 67, 76, 119-131, 181-187, 199-206, 219-226
+app\core\middleware.py                   23      4  82.61%   46-54
+app\core\pagination.py                   34     11  67.65%   20, 25, 58-60, 92-101
+app\core\rate_limit.py                   68     16  76.47%   53, 119-123, 164-177
+app\core\retry.py                        96     96   0.00%   4-223
+app\core\security.py                     92     62  32.61%   64-78, 94-98, 112, 126, 139, 159-182, 196-221, 234-235, 248-267, 306-326
+app\db\__init__.py                        0      0 100.00%
+app\db\base.py                            9      1  88.89%   12
+app\db\models.py                         79      0 100.00%
+app\db\session.py                         5      0 100.00%
+app\email\__init__.py                     0      0 100.00%
+app\email\sender.py                      63     39  38.10%   41-99, 105-110
+app\main.py                              70     13  81.43%   44-46, 56-57, 86, 131, 150, 163, 171-185
+app\models\job.py                        20      0 100.00%
+app\notifications\__init__.py             0      0 100.00%
+app\notifications\telegram.py            30     18  40.00%   19-45
+app\repositories\__init__.py              2      0 100.00%
+app\repositories\base.py                103     83  19.42%   54-61, 77-80, 102-118, 133-146, 161-171, 188-206, 222-238, 253-266
+app\repositories\job.py                  55     39  29.09%   30, 54-66, 88-96, 111-133, 157-170, 186
+app\repositories\resume.py               36     23  36.11%   29, 51-59, 81-89, 104-111
+app\repositories\team.py                 35     22  37.14%   29, 44-51, 66-77, 92-103
+app\repositories\user.py                 55     32  41.82%   48, 66-73, 85-86, 98-99, 127-135, 156-163, 175-185
+app\scheduler\__init__.py                 1      0 100.00%
+app\scheduler\job_wrapper.py             44     27  38.64%   38-88, 96, 101
+app\scheduler\jobs.py                    77     63  18.18%   15-43, 50-102, 107-125, 131-146
+app\scheduler\scheduler.py               45      6  86.67%   25-26, 29-30, 82, 94
+app\schemas\__init__.py                   0      0 100.00%
+app\schemas\ai.py                        25      0 100.00%
+app\schemas\job.py                       32      0 100.00%
+app\schemas\log.py                       15      0 100.00%
+app\schemas\resume.py                    17      0 100.00%
+app\schemas\team.py                      13     13   0.00%   1-17
+app\schemas\token.py                     12      0 100.00%
+app\schemas\user.py                      23      0 100.00%
+app\services\__init__.py                  0      0 100.00%
+app\services\ai_service.py               49     28  42.86%   25-27, 33-53, 56-80, 83-90, 93-104, 107-124, 127-138, 141-150, 154-155
+app\services\auth_service.py             60     32  46.67%   52-64, 96-97, 109-116, 128-135, 147-150, 171-173, 193-207
+app\services\bot.py                      83     83   0.00%   4-220
+app\services\email.py                    55     55   0.00%   4-152
+app\services\job_scraper.py              41     25  39.02%   17-60
+app\services\job_service.py              49     31  36.73%   30, 47-53, 74-82, 95-110, 134-143, 161-167, 188-196, 208-211, 235-241
+app\services\resume.py                   41     41   0.00%   4-192
+app\services\resume_service.py           59     38  35.59%   36, 53-87, 104-110, 129-136, 155-162, 179-189, 207-213, 230-236
+app\services\socket_manager.py           18      9  50.00%   10-11, 14-15, 18-23
+app\services\team_service.py             38     38   0.00%   8-150
+--------------------------------------------------------------------
+TOTAL                                  2680   1449  45.93%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::TestUserRegistration::test_register_new_user - ass...
+FAILED tests/test_auth.py::TestUserRegistration::test_register_duplicate_email
+FAILED tests/test_auth.py::TestUserLogin::test_login_success - assert 500 == 200
+FAILED tests/test_auth.py::TestUserLogin::test_login_wrong_password - assert ...
+FAILED tests/test_auth.py::TestUserLogin::test_login_nonexistent_user - asser...
+FAILED tests/test_auth.py::TestUserLogin::test_login_missing_credentials - as...
+FAILED tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token
+FAILED tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_without_token
+FAILED tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token - as...
+FAILED tests/test_auth.py::TestJWTTokens::test_token_expiration - assert 404 ...
+FAILED tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint
+FAILED tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access
+FAILED tests/test_jobs.py::TestJobCreation::test_create_job_authenticated - a...
+FAILED tests/test_jobs.py::TestJobCreation::test_create_job_unauthenticated
+FAILED tests/test_jobs.py::TestJobCreation::test_create_job_missing_required_fields
+FAILED tests/test_jobs.py::TestJobCreation::test_create_job_with_invalid_status
+FAILED tests/test_jobs.py::TestJobRetrieval::test_get_all_jobs - assert 0 >= 3
+FAILED tests/test_jobs.py::TestJobRetrieval::test_get_job_by_id - assert 404 ...
+FAILED tests/test_jobs.py::TestJobUpdate::test_update_job - assert 404 == 200
+FAILED tests/test_jobs.py::TestJobUpdate::test_update_job_status_only - Attri...
+FAILED tests/test_jobs.py::TestJobDeletion::test_delete_job - assert 404 == 200
+FAILED tests/test_jobs.py::TestJobDeletion::test_admin_can_delete_any_job - a...
+FAILED tests/test_jobs.py::TestJobPagination::test_paginate_jobs - assert 0 =...
+FAILED tests/test_jobs.py::TestJobPagination::test_pagination_with_filters - ...
+FAILED tests/test_teams.py::TestTeamManagement::test_create_team_on_registration
+FAILED tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members
+FAILED tests/test_teams.py::TestTeamManagement::test_member_cannot_invite_team_members
+FAILED tests/test_teams.py::TestTeamManagement::test_get_team_members - asser...
+FAILED tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member
+FAILED tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_01_health_check
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_02_user_registration
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_03_user_login
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_04_get_current_user
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_05_invalid_login
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_01_list_resumes_empty
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_02_upload_resume - Ass...
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_03_list_resumes_with_data
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_04_download_resume - A...
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_05_delete_resume - Ass...
+FAILED tests/smoke/test_smoke.py::TestJobScrapingFlow::test_01_scrape_jobs - ...
+FAILED tests/smoke/test_smoke.py::TestJobScrapingFlow::test_02_list_scraped_jobs
+FAILED tests/smoke/test_smoke.py::TestSchedulerFlow::test_01_scheduler_status
+FAILED tests/smoke/test_smoke.py::TestSchedulerFlow::test_02_list_jobs - Asse...
+FAILED tests/smoke/test_smoke.py::TestStatsFlow::test_01_dashboard_stats - As...
+FAILED tests/smoke/test_smoke.py::TestWebSocketFlow::test_01_websocket_endpoint_exists
+============ 46 failed, 19 passed, 4 skipped, 6 warnings in 32.90s ============

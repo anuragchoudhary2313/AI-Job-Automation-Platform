@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: #777;
+      margin-top: 20px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <p>Dear Hiring Manager,</p>
+
+    <p>I hope you are having a great week.</p>
+
+    <p>I recently applied for the <strong>{{ job_role }}</strong> position at <strong>{{ company_name }}</strong> and
+      wanted to briefly follow up on my application.</p>
+
+    <p>I remain very interested in this opportunity and would love to discuss how my skills in {{ skills }} can benefit
+      your team.</p>
+
+    <p>Please let me know if you need any additional information from my side.</p>
+
+    <p>Thank you once again for your time.</p>
+
+    <p>Best regards,</p>
+    <p><strong>{{ candidate_name }}</strong></p>
+
+    <div class="footer">
+      <p>Sent via AI Job Automation Bot</p>
+    </div>
+  </div>
+</body>
+
+</html>

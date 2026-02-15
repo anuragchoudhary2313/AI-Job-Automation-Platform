@@ -1,0 +1,558 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\anura\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\anura\ai-job-automation-saas\backend
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.2.0, asyncio-0.23.4, cov-4.1.0
+asyncio: mode=Mode.AUTO
+collecting ... collected 68 items / 1 skipped
+
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_01_health_check PASSED [  1%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_02_user_registration FAILED [  2%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_03_user_login PASSED [  4%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_04_get_current_user FAILED [  5%]
+tests/smoke/test_smoke.py::TestAuthenticationFlow::test_05_invalid_login PASSED [  7%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_01_list_resumes_empty FAILED [  8%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_02_upload_resume FAILED  [ 10%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_03_list_resumes_with_data FAILED [ 11%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_04_download_resume FAILED [ 13%]
+tests/smoke/test_smoke.py::TestResumeFlow::test_05_delete_resume FAILED  [ 14%]
+tests/smoke/test_smoke.py::TestJobScrapingFlow::test_01_scrape_jobs FAILED [ 16%]
+tests/smoke/test_smoke.py::TestJobScrapingFlow::test_02_list_scraped_jobs FAILED [ 17%]
+tests/smoke/test_smoke.py::TestSchedulerFlow::test_01_scheduler_status FAILED [ 19%]
+tests/smoke/test_smoke.py::TestSchedulerFlow::test_02_list_jobs FAILED   [ 20%]
+tests/smoke/test_smoke.py::TestStatsFlow::test_01_dashboard_stats FAILED [ 22%]
+tests/smoke/test_smoke.py::TestWebSocketFlow::test_01_websocket_endpoint_exists PASSED [ 23%]
+tests/smoke/test_smoke.py::test_summary PASSED                           [ 25%]
+tests/test_auth.py::TestUserRegistration::test_register_new_user ERROR   [ 26%]
+tests/test_auth.py::TestUserRegistration::test_register_duplicate_email ERROR [ 27%]
+tests/test_auth.py::TestUserRegistration::test_register_invalid_email ERROR [ 29%]
+tests/test_auth.py::TestUserRegistration::test_register_weak_password ERROR [ 30%]
+tests/test_auth.py::TestUserLogin::test_login_success ERROR              [ 32%]
+tests/test_auth.py::TestUserLogin::test_login_wrong_password ERROR       [ 33%]
+tests/test_auth.py::TestUserLogin::test_login_nonexistent_user ERROR     [ 35%]
+tests/test_auth.py::TestUserLogin::test_login_missing_credentials ERROR  [ 36%]
+tests/test_auth.py::TestJWTTokens::test_token_contains_user_info ERROR   [ 38%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token ERROR [ 39%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_without_token ERROR [ 41%]
+tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token ERROR  [ 42%]
+tests/test_auth.py::TestJWTTokens::test_token_expiration ERROR           [ 44%]
+tests/test_auth.py::TestRoleBasedAccess::test_admin_can_access_admin_endpoint ERROR [ 45%]
+tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint ERROR [ 47%]
+tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access ERROR [ 48%]
+tests/test_auth.py::TestPasswordSecurity::test_password_is_hashed ERROR  [ 50%]
+tests/test_auth.py::TestPasswordSecurity::test_password_verification PASSED [ 51%]
+tests/test_auth.py::TestPasswordSecurity::test_same_password_different_hashes PASSED [ 52%]
+tests/test_jobs.py::TestJobCreation::test_create_job_authenticated ERROR [ 54%]
+tests/test_jobs.py::TestJobCreation::test_create_job_unauthenticated ERROR [ 55%]
+tests/test_jobs.py::TestJobCreation::test_create_job_missing_required_fields ERROR [ 57%]
+tests/test_jobs.py::TestJobCreation::test_create_job_with_invalid_status ERROR [ 58%]
+tests/test_jobs.py::TestJobRetrieval::test_get_all_jobs ERROR            [ 60%]
+tests/test_jobs.py::TestJobRetrieval::test_get_job_by_id ERROR           [ 61%]
+tests/test_jobs.py::TestJobRetrieval::test_get_nonexistent_job ERROR     [ 63%]
+tests/test_jobs.py::TestJobRetrieval::test_filter_jobs_by_status ERROR   [ 64%]
+tests/test_jobs.py::TestJobRetrieval::test_search_jobs_by_company ERROR  [ 66%]
+tests/test_jobs.py::TestJobUpdate::test_update_job ERROR                 [ 67%]
+tests/test_jobs.py::TestJobUpdate::test_update_job_status_only ERROR     [ 69%]
+tests/test_jobs.py::TestJobUpdate::test_update_nonexistent_job ERROR     [ 70%]
+tests/test_jobs.py::TestJobDeletion::test_delete_job ERROR               [ 72%]
+tests/test_jobs.py::TestJobDeletion::test_delete_nonexistent_job ERROR   [ 73%]
+tests/test_jobs.py::TestJobDeletion::test_admin_can_delete_any_job ERROR [ 75%]
+tests/test_jobs.py::TestJobPagination::test_paginate_jobs ERROR          [ 76%]
+tests/test_jobs.py::TestJobPagination::test_pagination_with_filters ERROR [ 77%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs ERROR [ 79%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id ERROR [ 80%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job ERROR [ 82%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job ERROR [ 83%]
+tests/test_teams.py::TestTeamManagement::test_create_team_on_registration ERROR [ 85%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members ERROR [ 86%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_invite_team_members ERROR [ 88%]
+tests/test_teams.py::TestTeamManagement::test_get_team_members ERROR     [ 89%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member ERROR [ 91%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member ERROR [ 92%]
+tests/test_teams.py::TestTeamSettings::test_team_has_isolated_settings SKIPPED [ 94%]
+tests/test_teams.py::TestTeamSettings::test_update_team_settings SKIPPED [ 95%]
+tests/test_teams.py::TestTeamSettings::test_member_cannot_update_team_settings SKIPPED [ 97%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data ERROR [ 98%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_statistics_are_team_isolated ERROR [100%]
+
+=================================== ERRORS ====================================
+________ ERROR at setup of TestUserRegistration.test_register_new_user ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____ ERROR at setup of TestUserRegistration.test_register_duplicate_email _____
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_____ ERROR at setup of TestUserRegistration.test_register_invalid_email ______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_____ ERROR at setup of TestUserRegistration.test_register_weak_password ______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_____________ ERROR at setup of TestUserLogin.test_login_success ______________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+__________ ERROR at setup of TestUserLogin.test_login_wrong_password __________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_________ ERROR at setup of TestUserLogin.test_login_nonexistent_user _________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestUserLogin.test_login_missing_credentials ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+________ ERROR at setup of TestJWTTokens.test_token_contains_user_info ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+__ ERROR at setup of TestJWTTokens.test_access_protected_endpoint_with_token __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestJWTTokens.test_access_protected_endpoint_without_token _
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestJWTTokens.test_access_with_invalid_token ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____________ ERROR at setup of TestJWTTokens.test_token_expiration ____________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestRoleBasedAccess.test_admin_can_access_admin_endpoint __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestRoleBasedAccess.test_member_cannot_access_admin_endpoint _
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+___ ERROR at setup of TestRoleBasedAccess.test_viewer_has_read_only_access ____
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestPasswordSecurity.test_password_is_hashed ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestJobCreation.test_create_job_authenticated _______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+______ ERROR at setup of TestJobCreation.test_create_job_unauthenticated ______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+__ ERROR at setup of TestJobCreation.test_create_job_missing_required_fields __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____ ERROR at setup of TestJobCreation.test_create_job_with_invalid_status ____
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____________ ERROR at setup of TestJobRetrieval.test_get_all_jobs _____________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____________ ERROR at setup of TestJobRetrieval.test_get_job_by_id ____________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_________ ERROR at setup of TestJobRetrieval.test_get_nonexistent_job _________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+________ ERROR at setup of TestJobRetrieval.test_filter_jobs_by_status ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestJobRetrieval.test_search_jobs_by_company ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______________ ERROR at setup of TestJobUpdate.test_update_job _______________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_________ ERROR at setup of TestJobUpdate.test_update_job_status_only _________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_________ ERROR at setup of TestJobUpdate.test_update_nonexistent_job _________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+______________ ERROR at setup of TestJobDeletion.test_delete_job ______________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+________ ERROR at setup of TestJobDeletion.test_delete_nonexistent_job ________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_______ ERROR at setup of TestJobDeletion.test_admin_can_delete_any_job _______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+___________ ERROR at setup of TestJobPagination.test_paginate_jobs ____________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+______ ERROR at setup of TestJobPagination.test_pagination_with_filters _______
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+__ ERROR at setup of TestTeamIsolation.test_user_cannot_see_other_team_jobs ___
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestTeamIsolation.test_user_cannot_access_other_team_job_by_id _
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestTeamIsolation.test_user_cannot_update_other_team_job __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestTeamIsolation.test_user_cannot_delete_other_team_job __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+____ ERROR at setup of TestTeamManagement.test_create_team_on_registration ____
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+___ ERROR at setup of TestTeamManagement.test_admin_can_invite_team_members ___
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestTeamManagement.test_member_cannot_invite_team_members _
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_________ ERROR at setup of TestTeamManagement.test_get_team_members __________
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+___ ERROR at setup of TestTeamManagement.test_admin_can_remove_team_member ____
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestTeamManagement.test_member_cannot_remove_team_member __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestCrossTeamDataLeaks.test_search_does_not_leak_other_team_data _
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+_ ERROR at setup of TestCrossTeamDataLeaks.test_statistics_are_team_isolated __
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:310: in _asyncgen_fixture_wrapper
+    fixture, request.instance, fixturedef.unittest
+                               ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'FixtureDef' object has no attribute 'unittest'
+================================== FAILURES ===================================
+______________ TestAuthenticationFlow.test_02_user_registration _______________
+tests\smoke\test_smoke.py:51: in test_02_user_registration
+    assert response.status_code == 200
+E   assert 201 == 200
+E    +  where 201 = <Response [201]>.status_code
+_______________ TestAuthenticationFlow.test_04_get_current_user _______________
+tests\smoke\test_smoke.py:86: in test_04_get_current_user
+    assert data["full_name"] == TEST_USER["full_name"]
+           ^^^^^^^^^^^^^^^^^
+E   KeyError: 'full_name'
+__________________ TestResumeFlow.test_01_list_resumes_empty __________________
+tests\smoke\test_smoke.py:113: in test_01_list_resumes_empty
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+____________________ TestResumeFlow.test_02_upload_resume _____________________
+tests\smoke\test_smoke.py:135: in test_02_upload_resume
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+________________ TestResumeFlow.test_03_list_resumes_with_data ________________
+tests\smoke\test_smoke.py:151: in test_03_list_resumes_with_data
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+___________________ TestResumeFlow.test_04_download_resume ____________________
+tests\smoke\test_smoke.py:160: in test_04_download_resume
+    assert resume_id is not None, "Must upload resume first"
+E   AssertionError: Must upload resume first
+E   assert None is not None
+____________________ TestResumeFlow.test_05_delete_resume _____________________
+tests\smoke\test_smoke.py:174: in test_05_delete_resume
+    assert resume_id is not None, "Must upload resume first"
+E   AssertionError: Must upload resume first
+E   assert None is not None
+___________________ TestJobScrapingFlow.test_01_scrape_jobs ___________________
+tests\smoke\test_smoke.py:203: in test_01_scrape_jobs
+    assert response.status_code in [200, 503]
+E   assert 403 in [200, 503]
+E    +  where 403 = <Response [403]>.status_code
+________________ TestJobScrapingFlow.test_02_list_scraped_jobs ________________
+tests\smoke\test_smoke.py:219: in test_02_list_scraped_jobs
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+_________________ TestSchedulerFlow.test_01_scheduler_status __________________
+tests\smoke\test_smoke.py:236: in test_01_scheduler_status
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404]>.status_code
+_____________________ TestSchedulerFlow.test_02_list_jobs _____________________
+tests\smoke\test_smoke.py:250: in test_02_list_jobs
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404]>.status_code
+____________________ TestStatsFlow.test_01_dashboard_stats ____________________
+tests\smoke\test_smoke.py:267: in test_01_dashboard_stats
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404]>.status_code
+============================== warnings summary ===============================
+app\db\base.py:4
+  C:\Users\anura\ai-job-automation-saas\backend\app\db\base.py:4: MovedIn20Warning: The ``as_declarative()`` function is now available as sqlalchemy.orm.as_declarative() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    @as_declarative()
+
+app\schemas\user.py:20
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\user.py:20: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class UserInDBBase(UserBase):
+
+app\schemas\log.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\log.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Log(LogBase):
+
+app\schemas\job.py:29
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\job.py:29: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Job(JobBase):
+
+app\schemas\resume.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\resume.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Resume(ResumeBase):
+
+app\api\endpoints\jobs.py:14
+  C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py:14: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobSchema(BaseModel):
+
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\config\__init__.py:1428
+  C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\config\__init__.py:1428: PytestConfigWarning: Unknown config option: env
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+tests/test_auth.py::TestUserRegistration::test_register_new_user
+  C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:751: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
+  C:\Users\anura\ai-job-automation-saas\backend\tests\conftest.py:46
+  Replacing the event_loop fixture with a custom implementation is deprecated
+  and will lead to errors in the future.
+  If you want to request an asyncio event loop with a scope other than function
+  scope, use the "scope" argument to the asyncio mark when marking the tests.
+  If you want to return different types of event loops, use the event_loop_policy
+  fixture.
+  
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                                  Stmts   Miss   Cover   Missing
+--------------------------------------------------------------------
+app\__init__.py                           0      0 100.00%
+app\api\__init__.py                       0      0 100.00%
+app\api\api.py                           17      0 100.00%
+app\api\deps.py                          57     29  49.12%   33-41, 60-76, 91, 108-112, 129-133, 145, 157, 169, 181
+app\api\endpoints\__init__.py             0      0 100.00%
+app\api\endpoints\ai.py                  64     32  50.00%   32-36, 43-48, 57-66, 73-77, 84-92, 99-107
+app\api\endpoints\auth.py                74     48  35.14%   41, 64-89, 113-124, 148-181, 200, 225-240
+app\api\endpoints\email.py               74     43  41.89%   46-95, 105-124, 131-142
+app\api\endpoints\features.py            15      1  93.33%   22
+app\api\endpoints\jobs.py                49     20  59.18%   38-42, 54-58, 79-86, 97-107
+app\api\endpoints\logs.py                38     18  52.63%   36-51, 66-82, 90-95
+app\api\endpoints\resumes.py             72     45  37.50%   39, 62-70, 95-106, 132-138, 164-185, 208-213, 239-252
+app\api\endpoints\scheduler.py           46     21  54.35%   18-37, 50-55, 75-79, 89-93, 102
+app\api\endpoints\stats.py               36     23  36.11%   34, 59-113
+app\api\endpoints\teams.py               37     11  70.27%   39, 49-50, 62-79, 94
+app\api\endpoints\telegram.py            10      5  50.00%   11-16
+app\api\endpoints\users.py               39     15  61.54%   27, 39, 59-68, 80-81, 92-96
+app\api\endpoints\websockets.py          14      8  42.86%   9-18
+app\automation\browser.py                29     17  41.38%   18-57, 63-68
+app\automation\scrapers\base.py          13      4  69.23%   11-12, 33-34
+app\automation\scrapers\linkedin.py      42     34  19.05%   12-21, 24-63
+app\automation\session.py                26     17  34.62%   10, 16-21, 27-37
+app\core\__init__.py                      0      0 100.00%
+app\core\ai.py                           23      4  82.61%   31-34, 40
+app\core\cache.py                        84     57  32.14%   23-30, 37-39, 50-52, 64-75, 94-102, 114-121, 133-144, 162-170, 190-205
+app\core\csrf.py                         32     21  34.38%   18-21, 35-69, 73, 86
+app\core\error_handlers.py               53     31  41.51%   32-65, 81-94, 109-125, 140-148
+app\core\exceptions.py                   39     16  58.97%   29-32, 39, 46, 53-54, 61, 68, 75, 82-83, 90, 97, 110
+app\core\features.py                     14      6  57.14%   17-23, 31-32
+app\core\logger.py                       30     30   0.00%   1-62
+app\core\logging.py                      82     33  59.76%   18-45, 62, 67, 76, 119-131, 181-187, 199-206, 219-226
+app\core\middleware.py                   23     15  34.78%   14-54
+app\core\pagination.py                   34     11  67.65%   20, 25, 58-60, 92-101
+app\core\rate_limit.py                   68     52  23.53%   27-35, 49-76, 88-110, 116-123, 138, 144-149, 164-177
+app\core\retry.py                        96     96   0.00%   4-223
+app\core\security.py                     92     68  26.09%   33-47, 64-78, 94-98, 112, 126, 139, 159-182, 196-221, 234-235, 248-267, 306-326
+app\db\__init__.py                        0      0 100.00%
+app\db\base.py                            9      1  88.89%   12
+app\db\models.py                         81      0 100.00%
+app\db\session.py                         5      0 100.00%
+app\email\__init__.py                     0      0 100.00%
+app\email\sender.py                      63     39  38.10%   41-99, 105-110
+app\main.py                              70     31  55.71%   33-57, 73-108, 131, 150, 163, 171-185
+app\models\job.py                        20      0 100.00%
+app\notifications\__init__.py             0      0 100.00%
+app\notifications\telegram.py            30     18  40.00%   19-45
+app\repositories\__init__.py              2      0 100.00%
+app\repositories\base.py                103     85  17.48%   38-39, 54-61, 77-80, 102-118, 133-146, 161-171, 188-206, 222-238, 253-266
+app\repositories\job.py                  55     39  29.09%   30, 54-66, 88-96, 111-133, 157-170, 186
+app\repositories\resume.py               36     23  36.11%   29, 51-59, 81-89, 104-111
+app\repositories\team.py                 35     22  37.14%   29, 44-51, 66-77, 92-103
+app\repositories\user.py                 44     28  36.36%   29, 44-51, 66-73, 85-86, 98-99, 127-135, 156-163
+app\scheduler\__init__.py                 1      0 100.00%
+app\scheduler\job_wrapper.py             44     27  38.64%   38-88, 96, 101
+app\scheduler\jobs.py                    77     63  18.18%   15-43, 50-102, 107-125, 131-146
+app\scheduler\scheduler.py               45     21  53.33%   24-73, 76-79, 82, 88, 91, 94
+app\schemas\__init__.py                   0      0 100.00%
+app\schemas\ai.py                        25      0 100.00%
+app\schemas\job.py                       32      0 100.00%
+app\schemas\log.py                       15      0 100.00%
+app\schemas\resume.py                    17      0 100.00%
+app\schemas\team.py                      13     13   0.00%   1-17
+app\schemas\token.py                     12      0 100.00%
+app\schemas\user.py                      25      0 100.00%
+app\services\__init__.py                  0      0 100.00%
+app\services\ai_service.py               49     28  42.86%   25-27, 33-53, 56-80, 83-90, 93-104, 107-124, 127-138, 141-150, 154-155
+app\services\auth_service.py             74     52  29.73%   36-37, 54-69, 86-119, 131-138, 150-157, 169-172, 192-195, 215-229
+app\services\bot.py                      83     83   0.00%   4-220
+app\services\email.py                    55     55   0.00%   4-152
+app\services\job_scraper.py              44     28  36.36%   19-66, 72-75
+app\services\job_service.py              49     31  36.73%   30, 47-53, 74-82, 95-110, 134-143, 161-167, 188-196, 208-211, 235-241
+app\services\resume.py                   41     41   0.00%   4-192
+app\services\resume_service.py           59     38  35.59%   36, 53-87, 104-110, 129-136, 155-162, 179-189, 207-213, 230-236
+app\services\socket_manager.py           18      9  50.00%   10-11, 14-15, 18-23
+app\services\team_service.py             38     38   0.00%   8-150
+--------------------------------------------------------------------
+TOTAL                                  2791   1644  41.10%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+=========================== short test summary info ===========================
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_02_user_registration
+FAILED tests/smoke/test_smoke.py::TestAuthenticationFlow::test_04_get_current_user
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_01_list_resumes_empty
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_02_upload_resume - ass...
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_03_list_resumes_with_data
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_04_download_resume - A...
+FAILED tests/smoke/test_smoke.py::TestResumeFlow::test_05_delete_resume - Ass...
+FAILED tests/smoke/test_smoke.py::TestJobScrapingFlow::test_01_scrape_jobs - ...
+FAILED tests/smoke/test_smoke.py::TestJobScrapingFlow::test_02_list_scraped_jobs
+FAILED tests/smoke/test_smoke.py::TestSchedulerFlow::test_01_scheduler_status
+FAILED tests/smoke/test_smoke.py::TestSchedulerFlow::test_02_list_jobs - asse...
+FAILED tests/smoke/test_smoke.py::TestStatsFlow::test_01_dashboard_stats - as...
+ERROR tests/test_auth.py::TestUserRegistration::test_register_new_user - Attr...
+ERROR tests/test_auth.py::TestUserRegistration::test_register_duplicate_email
+ERROR tests/test_auth.py::TestUserRegistration::test_register_invalid_email
+ERROR tests/test_auth.py::TestUserRegistration::test_register_weak_password
+ERROR tests/test_auth.py::TestUserLogin::test_login_success - AttributeError:...
+ERROR tests/test_auth.py::TestUserLogin::test_login_wrong_password - Attribut...
+ERROR tests/test_auth.py::TestUserLogin::test_login_nonexistent_user - Attrib...
+ERROR tests/test_auth.py::TestUserLogin::test_login_missing_credentials - Att...
+ERROR tests/test_auth.py::TestJWTTokens::test_token_contains_user_info - Attr...
+ERROR tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token
+ERROR tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_without_token
+ERROR tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token - Att...
+ERROR tests/test_auth.py::TestJWTTokens::test_token_expiration - AttributeErr...
+ERROR tests/test_auth.py::TestRoleBasedAccess::test_admin_can_access_admin_endpoint
+ERROR tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint
+ERROR tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access
+ERROR tests/test_auth.py::TestPasswordSecurity::test_password_is_hashed - Att...
+ERROR tests/test_jobs.py::TestJobCreation::test_create_job_authenticated - At...
+ERROR tests/test_jobs.py::TestJobCreation::test_create_job_unauthenticated - ...
+ERROR tests/test_jobs.py::TestJobCreation::test_create_job_missing_required_fields
+ERROR tests/test_jobs.py::TestJobCreation::test_create_job_with_invalid_status
+ERROR tests/test_jobs.py::TestJobRetrieval::test_get_all_jobs - AttributeErro...
+ERROR tests/test_jobs.py::TestJobRetrieval::test_get_job_by_id - AttributeErr...
+ERROR tests/test_jobs.py::TestJobRetrieval::test_get_nonexistent_job - Attrib...
+ERROR tests/test_jobs.py::TestJobRetrieval::test_filter_jobs_by_status - Attr...
+ERROR tests/test_jobs.py::TestJobRetrieval::test_search_jobs_by_company - Att...
+ERROR tests/test_jobs.py::TestJobUpdate::test_update_job - AttributeError: 'F...
+ERROR tests/test_jobs.py::TestJobUpdate::test_update_job_status_only - Attrib...
+ERROR tests/test_jobs.py::TestJobUpdate::test_update_nonexistent_job - Attrib...
+ERROR tests/test_jobs.py::TestJobDeletion::test_delete_job - AttributeError: ...
+ERROR tests/test_jobs.py::TestJobDeletion::test_delete_nonexistent_job - Attr...
+ERROR tests/test_jobs.py::TestJobDeletion::test_admin_can_delete_any_job - At...
+ERROR tests/test_jobs.py::TestJobPagination::test_paginate_jobs - AttributeEr...
+ERROR tests/test_jobs.py::TestJobPagination::test_pagination_with_filters - A...
+ERROR tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs
+ERROR tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id
+ERROR tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job
+ERROR tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job
+ERROR tests/test_teams.py::TestTeamManagement::test_create_team_on_registration
+ERROR tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members
+ERROR tests/test_teams.py::TestTeamManagement::test_member_cannot_invite_team_members
+ERROR tests/test_teams.py::TestTeamManagement::test_get_team_members - Attrib...
+ERROR tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member
+ERROR tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member
+ERROR tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data
+ERROR tests/test_teams.py::TestCrossTeamDataLeaks::test_statistics_are_team_isolated
+======= 12 failed, 7 passed, 4 skipped, 8 warnings, 46 errors in 50.14s =======

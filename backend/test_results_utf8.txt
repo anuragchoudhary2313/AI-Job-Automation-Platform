@@ -1,0 +1,2015 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-7.4.4, pluggy-1.6.0 -- C:\Users\anura\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\anura\ai-job-automation-saas\backend
+configfile: pytest.ini
+plugins: anyio-4.2.0, asyncio-0.23.4, cov-4.1.0
+asyncio: mode=Mode.AUTO
+collecting ... collected 34 items
+
+tests/test_auth.py::TestUserRegistration::test_register_new_user FAILED  [  2%]
+tests/test_auth.py::TestUserRegistration::test_register_duplicate_email FAILED [  5%]
+tests/test_auth.py::TestUserRegistration::test_register_invalid_email PASSED [  8%]
+tests/test_auth.py::TestUserRegistration::test_register_weak_password PASSED [ 11%]
+tests/test_auth.py::TestUserLogin::test_login_success FAILED             [ 14%]
+tests/test_auth.py::TestUserLogin::test_login_wrong_password FAILED      [ 17%]
+tests/test_auth.py::TestUserLogin::test_login_nonexistent_user FAILED    [ 20%]
+tests/test_auth.py::TestUserLogin::test_login_missing_credentials FAILED [ 23%]
+tests/test_auth.py::TestJWTTokens::test_token_contains_user_info PASSED  [ 26%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token FAILED [ 29%]
+tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_without_token PASSED [ 32%]
+tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token FAILED [ 35%]
+tests/test_auth.py::TestJWTTokens::test_token_expiration FAILED          [ 38%]
+tests/test_auth.py::TestRoleBasedAccess::test_admin_can_access_admin_endpoint PASSED [ 41%]
+tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint FAILED [ 44%]
+tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access FAILED [ 47%]
+tests/test_auth.py::TestPasswordSecurity::test_password_is_hashed PASSED [ 50%]
+tests/test_auth.py::TestPasswordSecurity::test_password_verification PASSED [ 52%]
+tests/test_auth.py::TestPasswordSecurity::test_same_password_different_hashes PASSED [ 55%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs FAILED [ 58%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id PASSED [ 61%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job PASSED [ 64%]
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job PASSED [ 67%]
+tests/test_teams.py::TestTeamManagement::test_create_team_on_registration FAILED [ 70%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members FAILED [ 73%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_invite_team_members PASSED [ 76%]
+tests/test_teams.py::TestTeamManagement::test_get_team_members FAILED    [ 79%]
+tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member FAILED [ 82%]
+tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member FAILED [ 85%]
+tests/test_teams.py::TestTeamSettings::test_team_has_isolated_settings SKIPPED [ 88%]
+tests/test_teams.py::TestTeamSettings::test_update_team_settings SKIPPED [ 91%]
+tests/test_teams.py::TestTeamSettings::test_member_cannot_update_team_settings SKIPPED [ 94%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data FAILED [ 97%]
+tests/test_teams.py::TestCrossTeamDataLeaks::test_statistics_are_team_isolated FAILED [100%]
+
+================================== FAILURES ===================================
+_________________ TestUserRegistration.test_register_new_user _________________
+tests\test_auth.py:24: in test_register_new_user
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:16,698 - app.main - INFO - Starting application...
+2026-02-12 00:49:16,732 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:16,733 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:16,736 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:16,739 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:16,756 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:16,757 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:16,760 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:16,762 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:16,763 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:16,766 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:16,768 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:16,792 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/register from unknown
+2026-02-12 00:49:16,964 - app.repositories.base - INFO - Created Team with ID 1
+2026-02-12 00:49:16,965 - app.services.auth_service - INFO - Created new team 'New Team' for user registration
+2026-02-12 00:49:16,984 - app.repositories.base - ERROR - Error creating User: 'hashed_password' is an invalid keyword argument for User
+2026-02-12 00:49:16,987 - app.api.endpoints.auth - ERROR - Registration error: Failed to create User
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\base.py", line 162, in create
+    instance = self.model(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 4, in __init__
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py", line 566, in _initialize_instance
+    with util.safe_reraise():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py", line 564, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\decl_base.py", line 2142, in _declarative_constructor
+    raise TypeError(
+TypeError: 'hashed_password' is an invalid keyword argument for User
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 114, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 105, in register_user
+    user = await self.user_repo.create_user(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 135, in create_user
+    return await self.create(
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\base.py", line 171, in create
+    raise DatabaseError(f"Failed to create {self.model.__name__}") from e
+app.core.exceptions.DatabaseError: Failed to create User
+2026-02-12 00:49:17,018 - app.core.error_handlers - ERROR - HTTP 500: An error occurred during registration
+2026-02-12 00:49:17,025 - app.core.middleware - INFO - Completed: 500 in 232.37ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/register from unknown
+INFO     app.repositories.base:base.py:166 Created Team with ID 1
+INFO     app.services.auth_service:auth_service.py:101 Created new team 'New Team' for user registration
+ERROR    app.repositories.base:base.py:170 Error creating User: 'hashed_password' is an invalid keyword argument for User
+ERROR    app.api.endpoints.auth:auth.py:123 Registration error: Failed to create User
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\base.py", line 162, in create
+    instance = self.model(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 4, in __init__
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py", line 566, in _initialize_instance
+    with util.safe_reraise():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py", line 564, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\decl_base.py", line 2142, in _declarative_constructor
+    raise TypeError(
+TypeError: 'hashed_password' is an invalid keyword argument for User
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 114, in register
+    user = await auth_service.register_user(user_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 105, in register_user
+    user = await self.user_repo.create_user(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\user.py", line 135, in create_user
+    return await self.create(
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\repositories\base.py", line 171, in create
+    raise DatabaseError(f"Failed to create {self.model.__name__}") from e
+app.core.exceptions.DatabaseError: Failed to create User
+ERROR    app.core.error_handlers:error_handlers.py:114 HTTP 500: An error occurred during registration
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 232.37ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:18,665 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:18,667 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:18,668 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:18,669 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________ TestUserRegistration.test_register_duplicate_email ______________
+tests\test_auth.py:41: in test_register_duplicate_email
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 422 == 400
+E    +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:18,859 - app.main - INFO - Starting application...
+2026-02-12 00:49:18,861 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:18,862 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:18,863 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:18,865 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:18,867 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:18,868 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:18,869 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:18,871 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:18,872 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:18,874 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:18,875 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:18,916 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/register from unknown
+2026-02-12 00:49:18,980 - app.core.error_handlers - WARNING - Validation error: [{'field': 'body.full_name', 'message': 'Field required', 'type': 'missing'}]
+2026-02-12 00:49:18,983 - app.core.middleware - INFO - Completed: 422 in 66.33ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/register from unknown
+WARNING  app.core.error_handlers:error_handlers.py:92 Validation error: [{'field': 'body.full_name', 'message': 'Field required', 'type': 'missing'}]
+INFO     app.core.middleware:middleware.py:32 Completed: 422 in 66.33ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:19,019 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:19,020 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:19,022 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:19,023 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+______________________ TestUserLogin.test_login_success _______________________
+tests\test_auth.py:83: in test_login_success
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:19,724 - app.main - INFO - Starting application...
+2026-02-12 00:49:19,726 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:19,728 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:19,731 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:19,732 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:19,733 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:19,734 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:19,738 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:19,741 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:19,742 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:19,743 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:19,746 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:19,789 - app.core.middleware - INFO - Wait Request: POST /api/v1/auth/login from unknown
+2026-02-12 00:49:19,852 - app.api.endpoints.auth - ERROR - Login error: 'User' object has no attribute 'hashed_password'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 66, in login
+    user, tokens = await auth_service.login(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 187, in login
+    user = await self.authenticate_user(email, password)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 64, in authenticate_user
+    if not security.verify_password(password, user.hashed_password):
+                                              ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'hashed_password'
+2026-02-12 00:49:19,857 - app.core.error_handlers - ERROR - HTTP 500: An error occurred during login
+2026-02-12 00:49:19,866 - app.core.middleware - INFO - Completed: 500 in 76.91ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/auth/login from unknown
+ERROR    app.api.endpoints.auth:auth.py:88 Login error: 'User' object has no attribute 'hashed_password'
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\auth.py", line 66, in login
+    user, tokens = await auth_service.login(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 187, in login
+    user = await self.authenticate_user(email, password)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\auth_service.py", line 64, in authenticate_user
+    if not security.verify_password(password, user.hashed_password):
+                                              ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'hashed_password'
+ERROR    app.core.error_handlers:error_handlers.py:114 HTTP 500: An error occurred during login
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 76.91ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:19,919 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:19,921 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:19,922 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:19,925 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________________ TestUserLogin.test_login_wrong_password ___________________
+tests\test_auth.py:97: in test_login_wrong_password
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 429 == 400
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:20,089 - app.main - INFO - Starting application...
+2026-02-12 00:49:20,092 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,093 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,096 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,098 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,099 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:20,100 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:20,103 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:20,104 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:20,106 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:20,107 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:20,108 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:20,170 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:20,174 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:20,176 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:20,177 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________________ TestUserLogin.test_login_nonexistent_user __________________
+tests\test_auth.py:108: in test_login_nonexistent_user
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+E   assert 429 == 400
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   400 = status.HTTP_400_BAD_REQUEST
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:20,353 - app.main - INFO - Starting application...
+2026-02-12 00:49:20,356 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,358 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,359 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,361 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,362 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:20,363 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:20,365 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:20,366 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:20,367 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:20,369 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:20,370 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:20,410 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:20,413 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:20,414 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:20,416 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestUserLogin.test_login_missing_credentials _________________
+tests\test_auth.py:113: in test_login_missing_credentials
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+E   assert 429 == 422
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   422 = status.HTTP_422_UNPROCESSABLE_ENTITY
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:20,605 - app.main - INFO - Starting application...
+2026-02-12 00:49:20,609 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,610 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,613 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,616 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:20,619 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:20,621 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:20,623 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:20,625 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:20,626 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:20,628 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:20,630 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:20,677 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:20,679 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:20,682 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:20,684 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________ TestJWTTokens.test_access_protected_endpoint_with_token ___________
+tests\test_auth.py:131: in test_access_protected_endpoint_with_token
+    assert response.status_code == status.HTTP_200_OK
+E   assert 403 == 200
+E    +  where 403 = <Response [403 Forbidden]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:21,151 - app.main - INFO - Starting application...
+2026-02-12 00:49:21,153 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,155 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,157 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,159 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,160 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:21,162 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:21,164 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:21,166 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:21,167 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:21,168 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:21,169 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:21,205 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:49:21,213 - app.core.error_handlers - WARNING - HTTP 403: Could not validate credentials
+2026-02-12 00:49:21,219 - app.core.middleware - INFO - Completed: 403 in 14.19ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 403: Could not validate credentials
+INFO     app.core.middleware:middleware.py:32 Completed: 403 in 14.19ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:21,262 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:21,265 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:21,266 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:21,268 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________________ TestJWTTokens.test_access_with_invalid_token _________________
+tests\test_auth.py:144: in test_access_with_invalid_token
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 403 == 401
+E    +  where 403 = <Response [403 Forbidden]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:21,693 - app.main - INFO - Starting application...
+2026-02-12 00:49:21,696 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,699 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,700 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,702 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,703 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:21,704 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:21,707 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:21,708 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:21,709 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:21,710 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:21,711 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:21,721 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:49:21,728 - app.core.error_handlers - WARNING - HTTP 403: Could not validate credentials
+2026-02-12 00:49:21,734 - app.core.middleware - INFO - Completed: 403 in 11.14ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 403: Could not validate credentials
+INFO     app.core.middleware:middleware.py:32 Completed: 403 in 11.14ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:21,779 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:21,781 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:21,782 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:21,783 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________________ TestJWTTokens.test_token_expiration _____________________
+tests\test_auth.py:161: in test_token_expiration
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+E   assert 403 == 401
+E    +  where 403 = <Response [403 Forbidden]>.status_code
+E    +  and   401 = status.HTTP_401_UNAUTHORIZED
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:21,968 - app.main - INFO - Starting application...
+2026-02-12 00:49:21,970 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,972 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,974 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,975 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:21,977 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:21,978 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:21,979 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:21,980 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:21,982 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:21,983 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:21,984 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:21,992 - app.core.middleware - INFO - Wait Request: GET /api/v1/users/me from unknown
+2026-02-12 00:49:21,998 - app.core.error_handlers - WARNING - HTTP 403: Could not validate credentials
+2026-02-12 00:49:22,004 - app.core.middleware - INFO - Completed: 403 in 11.60ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/users/me from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 403: Could not validate credentials
+INFO     app.core.middleware:middleware.py:32 Completed: 403 in 11.60ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:22,044 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:22,380 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:22,382 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:22,385 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+________ TestRoleBasedAccess.test_member_cannot_access_admin_endpoint _________
+tests\test_auth.py:175: in test_member_cannot_access_admin_endpoint
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+E   assert 404 == 403
+E    +  where 404 = <Response [404 Not Found]>.status_code
+E    +  and   403 = status.HTTP_403_FORBIDDEN
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:23,059 - app.main - INFO - Starting application...
+2026-02-12 00:49:23,063 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,065 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,068 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,071 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,072 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:23,075 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:23,076 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:23,079 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:23,082 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:23,083 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:23,085 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:23,125 - app.core.middleware - INFO - Wait Request: GET /api/v1/admin/users from unknown
+2026-02-12 00:49:23,129 - app.core.error_handlers - WARNING - HTTP 404: Not Found
+2026-02-12 00:49:23,136 - app.core.middleware - INFO - Completed: 404 in 10.88ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/admin/users from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 404: Not Found
+INFO     app.core.middleware:middleware.py:32 Completed: 404 in 10.88ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:23,178 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:23,179 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:23,179 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:23,182 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestRoleBasedAccess.test_viewer_has_read_only_access _____________
+tests\test_auth.py:198: in test_viewer_has_read_only_access
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:23,372 - app.main - INFO - Starting application...
+2026-02-12 00:49:23,374 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,377 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,380 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,382 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:23,384 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:23,385 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:23,388 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:23,389 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:23,391 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:23,394 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:23,397 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:23,429 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:49:23,438 - app.core.middleware - INFO - Completed: 307 in 8.26ms
+2026-02-12 00:49:23,451 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:49:23,461 - app.errors - ERROR - Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+2026-02-12 00:49:23,527 - app.core.middleware - INFO - Completed: 500 in 76.43ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 8.26ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+ERROR    app.errors:logging.py:206 Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 76.43ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:23,575 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:23,577 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:23,578 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:23,579 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+___________ TestTeamIsolation.test_user_cannot_see_other_team_jobs ____________
+tests\test_teams.py:52: in test_user_cannot_see_other_team_jobs
+    assert response.status_code == status.HTTP_200_OK
+E   assert 500 == 200
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:24,007 - app.main - INFO - Starting application...
+2026-02-12 00:49:24,008 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:24,011 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:24,013 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:24,016 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:24,018 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:24,019 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:24,021 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:24,023 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:24,025 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:24,026 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:24,027 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:24,040 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:49:24,051 - app.core.middleware - INFO - Completed: 307 in 10.62ms
+2026-02-12 00:49:24,066 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:49:24,076 - app.errors - ERROR - Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+2026-02-12 00:49:24,100 - app.core.middleware - INFO - Completed: 500 in 34.83ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 10.62ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+ERROR    app.errors:logging.py:206 Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 34.83ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:24,154 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:24,156 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:24,157 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:24,159 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+_____________ TestTeamManagement.test_create_team_on_registration _____________
+tests\test_teams.py:158: in test_create_team_on_registration
+    assert response.status_code == status.HTTP_200_OK
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +  and   200 = status.HTTP_200_OK
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:25,000 - app.main - INFO - Starting application...
+2026-02-12 00:49:25,003 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,005 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,006 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,008 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,010 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:25,012 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:25,014 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:25,015 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:25,017 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:25,017 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:25,019 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:25,076 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:25,077 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:25,079 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:25,080 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestTeamManagement.test_admin_can_invite_team_members ____________
+tests\test_teams.py:173: in test_admin_can_invite_team_members
+    assert response.status_code in [status.HTTP_200_OK, status.HTTP_201_CREATED]
+E   assert 403 in [200, 201]
+E    +  where 403 = <Response [403 Forbidden]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:25,259 - app.main - INFO - Starting application...
+2026-02-12 00:49:25,280 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,280 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,284 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,286 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,287 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:25,289 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:25,290 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:25,290 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:25,292 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:25,293 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:25,295 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:25,330 - app.core.middleware - INFO - Wait Request: POST /api/v1/teams/invite from unknown
+2026-02-12 00:49:25,342 - app.core.error_handlers - WARNING - HTTP 403: Could not validate credentials
+2026-02-12 00:49:25,346 - app.core.middleware - INFO - Completed: 403 in 17.21ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: POST /api/v1/teams/invite from unknown
+WARNING  app.core.error_handlers:error_handlers.py:114 HTTP 403: Could not validate credentials
+INFO     app.core.middleware:middleware.py:32 Completed: 403 in 17.21ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:25,395 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:25,396 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:25,396 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:25,398 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________________ TestTeamManagement.test_get_team_members ___________________
+tests\test_teams.py:190: in test_get_team_members
+    users = [
+tests\test_teams.py:195: in <listcomp>
+    team_id=test_team.id
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:566: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1086: in get
+    value = self._fire_loader_callables(state, key, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1116: in _fire_loader_callables
+    return state._load_expired(state, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py:798: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:1651: in load_scalar_attributes
+    result = load_on_ident(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:507: in load_on_ident
+    return load_on_pk_identity(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:692: in load_on_pk_identity
+    session.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2308: in execute
+    return self._execute_internal(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2190: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1416: in execute
+    return meth(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\elements.py:517: in _execute_on_connection
+    return connection._execute_clauseelement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1639: in _execute_clauseelement
+    ret = self._execute_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:2347: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py:922: in do_execute
+    cursor.execute(statement, parameters)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:123: in execute
+    _cursor = self.await_(self._connection.cursor())
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:121: in await_only
+    raise exc.MissingGreenlet(
+E   sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:25,844 - app.main - INFO - Starting application...
+2026-02-12 00:49:25,846 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,847 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,848 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,850 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:25,851 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:25,854 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:25,855 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:25,856 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:25,858 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:25,858 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:25,860 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:28,425 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:28,426 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:28,429 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:28,431 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+____________ TestTeamManagement.test_admin_can_remove_team_member _____________
+tests\test_teams.py:214: in test_admin_can_remove_team_member
+    team_id=test_team.id
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:566: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1086: in get
+    value = self._fire_loader_callables(state, key, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1116: in _fire_loader_callables
+    return state._load_expired(state, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py:798: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:1651: in load_scalar_attributes
+    result = load_on_ident(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:507: in load_on_ident
+    return load_on_pk_identity(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:692: in load_on_pk_identity
+    session.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2308: in execute
+    return self._execute_internal(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2190: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1416: in execute
+    return meth(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\elements.py:517: in _execute_on_connection
+    return connection._execute_clauseelement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1639: in _execute_clauseelement
+    ret = self._execute_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:2347: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py:922: in do_execute
+    cursor.execute(statement, parameters)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:123: in execute
+    _cursor = self.await_(self._connection.cursor())
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:121: in await_only
+    raise exc.MissingGreenlet(
+E   sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:28,630 - app.main - INFO - Starting application...
+2026-02-12 00:49:28,635 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:28,637 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:28,639 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:28,641 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:28,643 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:28,645 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:28,647 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:28,649 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:28,651 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:28,652 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:28,653 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:31,168 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:31,170 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:31,171 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:31,172 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________ TestTeamManagement.test_member_cannot_remove_team_member ___________
+tests\test_teams.py:232: in test_member_cannot_remove_team_member
+    team_id=test_team.id
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:566: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1086: in get
+    value = self._fire_loader_callables(state, key, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1116: in _fire_loader_callables
+    return state._load_expired(state, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py:798: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:1651: in load_scalar_attributes
+    result = load_on_ident(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:507: in load_on_ident
+    return load_on_pk_identity(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:692: in load_on_pk_identity
+    session.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2308: in execute
+    return self._execute_internal(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2190: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1416: in execute
+    return meth(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\elements.py:517: in _execute_on_connection
+    return connection._execute_clauseelement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1639: in _execute_clauseelement
+    ret = self._execute_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:2347: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py:922: in do_execute
+    cursor.execute(statement, parameters)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:123: in execute
+    _cursor = self.await_(self._connection.cursor())
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:121: in await_only
+    raise exc.MissingGreenlet(
+E   sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:31,353 - app.main - INFO - Starting application...
+2026-02-12 00:49:31,355 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:31,357 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:31,359 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:31,361 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:31,362 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:31,363 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:31,365 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:31,366 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:31,368 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:31,370 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:31,370 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:33,540 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:33,542 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:33,543 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:33,545 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+______ TestCrossTeamDataLeaks.test_search_does_not_leak_other_team_data _______
+tests\test_teams.py:323: in test_search_does_not_leak_other_team_data
+    assert all(job["team_id"] == team1.id for job in jobs)
+tests\test_teams.py:323: in <genexpr>
+    assert all(job["team_id"] == team1.id for job in jobs)
+E   TypeError: string indices must be integers, not 'str'
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:33,754 - app.main - INFO - Starting application...
+2026-02-12 00:49:33,757 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:33,758 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:33,759 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:33,760 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:33,763 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:33,763 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:33,766 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:33,767 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:33,768 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:33,769 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:33,771 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+---------------------------- Captured stdout call -----------------------------
+2026-02-12 00:49:33,782 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs from unknown
+2026-02-12 00:49:33,791 - app.core.middleware - INFO - Completed: 307 in 8.69ms
+2026-02-12 00:49:33,804 - app.core.middleware - INFO - Wait Request: GET /api/v1/jobs/ from unknown
+2026-02-12 00:49:33,812 - app.errors - ERROR - Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+2026-02-12 00:49:33,833 - app.core.middleware - INFO - Completed: 500 in 28.73ms
+------------------------------ Captured log call ------------------------------
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs from unknown
+INFO     app.core.middleware:middleware.py:32 Completed: 307 in 8.69ms
+INFO     app.core.middleware:middleware.py:21 Wait Request: GET /api/v1/jobs/ from unknown
+ERROR    app.errors:logging.py:206 Error: 'AsyncSession' object has no attribute 'query'
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\streams\memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\core\error_handlers.py", line 36, in error_handling_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_utils.py", line 91, in collapse_excgroups
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\main.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 165, in call_next
+    raise app_exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 762, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 782, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\routing.py", line 72, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 299, in app
+    raise e
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\concurrency.py", line 40, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 2134, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\anyio\_backends\_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py", line 63, in list_jobs
+    return job_scraper_service.get_jobs(db, skip, limit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\anura\ai-job-automation-saas\backend\app\services\job_scraper.py", line 66, in get_jobs
+    return db.query(ScrapedJob).order_by(ScrapedJob.created_at.desc()).offset(skip).limit(limit).all()
+           ^^^^^^^^
+AttributeError: 'AsyncSession' object has no attribute 'query'
+INFO     app.core.middleware:middleware.py:32 Completed: 500 in 28.73ms
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:33,905 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:33,907 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:33,908 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:33,910 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+__________ TestCrossTeamDataLeaks.test_statistics_are_team_isolated ___________
+tests\test_teams.py:328: in test_statistics_are_team_isolated
+    jobs = [
+tests\test_teams.py:329: in <listcomp>
+    Job(title=f"Job {i}", company="Company", description="Test Description", team_id=test_team.id)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:566: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1086: in get
+    value = self._fire_loader_callables(state, key, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\attributes.py:1116: in _fire_loader_callables
+    return state._load_expired(state, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\state.py:798: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:1651: in load_scalar_attributes
+    result = load_on_ident(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:507: in load_on_ident
+    return load_on_pk_identity(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\loading.py:692: in load_on_pk_identity
+    session.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2308: in execute
+    return self._execute_internal(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\session.py:2190: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1416: in execute
+    return meth(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\elements.py:517: in _execute_on_connection
+    return connection._execute_clauseelement(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1639: in _execute_clauseelement
+    ret = self._execute_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:2347: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py:922: in do_execute
+    cursor.execute(statement, parameters)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:123: in execute
+    _cursor = self.await_(self._connection.cursor())
+..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:121: in await_only
+    raise exc.MissingGreenlet(
+E   sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+---------------------------- Captured stdout setup ----------------------------
+2026-02-12 00:49:34,088 - app.main - INFO - Starting application...
+2026-02-12 00:49:34,089 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:34,090 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:34,093 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:34,095 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-12 00:49:34,096 - apscheduler.scheduler - INFO - Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+2026-02-12 00:49:34,097 - apscheduler.scheduler - INFO - Added job "Job Automation (Every 1 hour)" to job store "default"
+2026-02-12 00:49:34,099 - apscheduler.scheduler - INFO - Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+2026-02-12 00:49:34,100 - apscheduler.scheduler - INFO - Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+2026-02-12 00:49:34,101 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-12 00:49:34,103 - app.scheduler.scheduler - INFO - Scheduler started with timezone Asia/Kolkata
+2026-02-12 00:49:34,104 - app.main - INFO - Application started successfully
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:33 Starting application...
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:454 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO     apscheduler.scheduler:base.py:895 Added job "Scrape Jobs (Every 6 hours)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Job Automation (Every 1 hour)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Check Follow-up Emails (Daily 10 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:895 Added job "Cleanup Logs (Daily 2 AM)" to job store "default"
+INFO     apscheduler.scheduler:base.py:181 Scheduler started
+INFO     app.scheduler.scheduler:scheduler.py:73 Scheduler started with timezone Asia/Kolkata
+INFO     app.main:main.py:42 Application started successfully
+-------------------------- Captured stdout teardown ---------------------------
+2026-02-12 00:49:36,390 - app.main - INFO - Shutting down application...
+2026-02-12 00:49:36,392 - app.scheduler.scheduler - INFO - Scheduler shut down.
+2026-02-12 00:49:36,393 - app.main - INFO - Application shut down successfully
+2026-02-12 00:49:36,395 - apscheduler.scheduler - INFO - Scheduler has been shut down
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:51 Shutting down application...
+INFO     app.scheduler.scheduler:scheduler.py:79 Scheduler shut down.
+INFO     app.main:main.py:55 Application shut down successfully
+INFO     apscheduler.scheduler:base.py:212 Scheduler has been shut down
+============================== warnings summary ===============================
+app\db\base.py:4
+  C:\Users\anura\ai-job-automation-saas\backend\app\db\base.py:4: MovedIn20Warning: The ``as_declarative()`` function is now available as sqlalchemy.orm.as_declarative() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    @as_declarative()
+
+app\schemas\user.py:19
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\user.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class UserInDBBase(UserBase):
+
+app\schemas\log.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\log.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Log(LogBase):
+
+app\schemas\job.py:29
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\job.py:29: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Job(JobBase):
+
+app\schemas\resume.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\resume.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Resume(ResumeBase):
+
+app\api\endpoints\jobs.py:12
+  C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py:12: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobSchema(BaseModel):
+
+tests/test_auth.py::TestUserRegistration::test_register_new_user
+  C:\Users\anura\AppData\Local\Programs\Python\Python311\Lib\site-packages\pytest_asyncio\plugin.py:751: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
+  C:\Users\anura\ai-job-automation-saas\backend\tests\conftest.py:46
+  Replacing the event_loop fixture with a custom implementation is deprecated
+  and will lead to errors in the future.
+  If you want to request an asyncio event loop with a scope other than function
+  scope, use the "scope" argument to the asyncio mark when marking the tests.
+  If you want to return different types of event loops, use the event_loop_policy
+  fixture.
+  
+    warnings.warn(
+
+tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_auth.py:191: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:20: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:38: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:44: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:63: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:72: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:76: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_access_other_team_job_by_id
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:77: RuntimeWarning: coroutine 'AsyncSession.refresh' was never awaited
+    db_session.refresh(other_team_job)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:91: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:100: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:104: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_update_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:105: RuntimeWarning: coroutine 'AsyncSession.refresh' was never awaited
+    db_session.refresh(other_job)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:120: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:129: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:133: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestTeamIsolation::test_user_cannot_delete_other_team_job
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:134: RuntimeWarning: coroutine 'AsyncSession.refresh' was never awaited
+    db_session.refresh(other_job)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:298: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:307: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data
+  C:\Users\anura\ai-job-automation-saas\backend\tests\test_teams.py:313: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    db_session.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                                  Stmts   Miss   Cover   Missing
+--------------------------------------------------------------------
+app\__init__.py                           0      0 100.00%
+app\api\__init__.py                       0      0 100.00%
+app\api\api.py                           17      0 100.00%
+app\api\deps.py                          57     22  61.40%   33-41, 71-76, 91, 108-112, 129-133, 157, 169
+app\api\endpoints\__init__.py             0      0 100.00%
+app\api\endpoints\ai.py                  64     32  50.00%   32-36, 43-48, 57-66, 73-77, 84-92, 99-107
+app\api\endpoints\auth.py                74     43  41.89%   72-89, 116-124, 148-181, 200, 225-240
+app\api\endpoints\email.py               74     43  41.89%   46-95, 105-124, 131-142
+app\api\endpoints\features.py            15      1  93.33%   22
+app\api\endpoints\jobs.py                27      3  88.89%   36-52
+app\api\endpoints\logs.py                38     18  52.63%   36-51, 66-82, 90-95
+app\api\endpoints\resumes.py             72     45  37.50%   39, 62-70, 95-106, 132-138, 164-185, 208-213, 239-252
+app\api\endpoints\scheduler.py           46     21  54.35%   18-37, 50-55, 75-79, 89-93, 102
+app\api\endpoints\stats.py               36     23  36.11%   34, 59-113
+app\api\endpoints\teams.py               37     11  70.27%   39, 49-50, 62-79, 94
+app\api\endpoints\telegram.py            10      5  50.00%   11-16
+app\api\endpoints\users.py               40     16  60.00%   27, 39-45, 65-74, 86-87, 98-102
+app\api\endpoints\websockets.py          14      8  42.86%   9-18
+app\automation\browser.py                29     17  41.38%   18-57, 63-68
+app\automation\scrapers\base.py          13      4  69.23%   11-12, 33-34
+app\automation\scrapers\linkedin.py      42     34  19.05%   12-21, 24-63
+app\automation\session.py                26     17  34.62%   10, 16-21, 27-37
+app\core\__init__.py                      0      0 100.00%
+app\core\ai.py                           23      4  82.61%   31-34, 40
+app\core\cache.py                        84     57  32.14%   23-30, 37-39, 50-52, 64-75, 94-102, 114-121, 133-144, 162-170, 190-205
+app\core\csrf.py                         32     21  34.38%   18-21, 35-69, 73, 86
+app\core\error_handlers.py               53      8  84.91%   45, 55, 123, 140-148
+app\core\exceptions.py                   39     11  71.79%   39, 46, 53-54, 61, 68, 82-83, 90, 97, 110
+app\core\features.py                     14      6  57.14%   17-23, 31-32
+app\core\logger.py                       30     30   0.00%   1-62
+app\core\logging.py                      82     27  67.07%   18-45, 62, 67, 76, 119-131, 181-187, 204, 219-226
+app\core\middleware.py                   23      4  82.61%   46-54
+app\core\pagination.py                   34     11  67.65%   20, 25, 58-60, 92-101
+app\core\rate_limit.py                   68     16  76.47%   53, 119-123, 164-177
+app\core\retry.py                        96     96   0.00%   4-223
+app\core\security.py                     92     62  32.61%   64-78, 94-98, 112, 126, 139, 159-182, 196-221, 234-235, 248-267, 306-326
+app\db\__init__.py                        0      0 100.00%
+app\db\base.py                            9      1  88.89%   12
+app\db\models.py                         81      0 100.00%
+app\db\session.py                         5      0 100.00%
+app\email\__init__.py                     0      0 100.00%
+app\email\sender.py                      63     39  38.10%   41-99, 105-110
+app\main.py                              70     13  81.43%   44-46, 56-57, 86, 131, 150, 163, 171-185
+app\models\job.py                        20      0 100.00%
+app\notifications\__init__.py             0      0 100.00%
+app\notifications\telegram.py            30     18  40.00%   19-45
+app\repositories\__init__.py              2      0 100.00%
+app\repositories\base.py                103     77  25.24%   54-61, 77-80, 102-118, 133-146, 165-167, 170-171, 188-206, 222-238, 253-266
+app\repositories\job.py                  55     39  29.09%   30, 54-66, 88-96, 111-133, 157-170, 186
+app\repositories\resume.py               36     23  36.11%   29, 51-59, 81-89, 104-111
+app\repositories\team.py                 35     19  45.71%   48-51, 66-77, 92-103
+app\repositories\user.py                 55     30  45.45%   48-51, 70-73, 86, 99, 128-135, 156-163, 175-185
+app\scheduler\__init__.py                 1      0 100.00%
+app\scheduler\job_wrapper.py             44     27  38.64%   38-88, 96, 101
+app\scheduler\jobs.py                    77     63  18.18%   15-43, 50-102, 107-125, 131-146
+app\scheduler\scheduler.py               45      6  86.67%   25-26, 29-30, 82, 94
+app\schemas\__init__.py                   0      0 100.00%
+app\schemas\ai.py                        25      0 100.00%
+app\schemas\job.py                       32      0 100.00%
+app\schemas\log.py                       15      0 100.00%
+app\schemas\resume.py                    17      0 100.00%
+app\schemas\team.py                      13     13   0.00%   1-17
+app\schemas\token.py                     12      0 100.00%
+app\schemas\user.py                      24      0 100.00%
+app\services\__init__.py                  0      0 100.00%
+app\services\ai_service.py               49     28  42.86%   25-27, 33-53, 56-80, 83-90, 93-104, 107-124, 127-138, 141-150, 154-155
+app\services\auth_service.py             71     40  43.66%   57-72, 90, 99-114, 126-133, 145-152, 164-167, 188-190, 210-224
+app\services\bot.py                      83     83   0.00%   4-220
+app\services\email.py                    55     55   0.00%   4-152
+app\services\job_scraper.py              41     25  39.02%   17-60
+app\services\job_service.py              49     31  36.73%   30, 47-53, 74-82, 95-110, 134-143, 161-167, 188-196, 208-211, 235-241
+app\services\resume.py                   41     41   0.00%   4-192
+app\services\resume_service.py           59     38  35.59%   36, 53-87, 104-110, 129-136, 155-162, 179-189, 207-213, 230-236
+app\services\socket_manager.py           18      9  50.00%   10-11, 14-15, 18-23
+app\services\team_service.py             38     38   0.00%   8-150
+--------------------------------------------------------------------
+TOTAL                                  2774   1472  46.94%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::TestUserRegistration::test_register_new_user - ass...
+FAILED tests/test_auth.py::TestUserRegistration::test_register_duplicate_email
+FAILED tests/test_auth.py::TestUserLogin::test_login_success - assert 500 == 200
+FAILED tests/test_auth.py::TestUserLogin::test_login_wrong_password - assert ...
+FAILED tests/test_auth.py::TestUserLogin::test_login_nonexistent_user - asser...
+FAILED tests/test_auth.py::TestUserLogin::test_login_missing_credentials - as...
+FAILED tests/test_auth.py::TestJWTTokens::test_access_protected_endpoint_with_token
+FAILED tests/test_auth.py::TestJWTTokens::test_access_with_invalid_token - as...
+FAILED tests/test_auth.py::TestJWTTokens::test_token_expiration - assert 403 ...
+FAILED tests/test_auth.py::TestRoleBasedAccess::test_member_cannot_access_admin_endpoint
+FAILED tests/test_auth.py::TestRoleBasedAccess::test_viewer_has_read_only_access
+FAILED tests/test_teams.py::TestTeamIsolation::test_user_cannot_see_other_team_jobs
+FAILED tests/test_teams.py::TestTeamManagement::test_create_team_on_registration
+FAILED tests/test_teams.py::TestTeamManagement::test_admin_can_invite_team_members
+FAILED tests/test_teams.py::TestTeamManagement::test_get_team_members - sqlal...
+FAILED tests/test_teams.py::TestTeamManagement::test_admin_can_remove_team_member
+FAILED tests/test_teams.py::TestTeamManagement::test_member_cannot_remove_team_member
+FAILED tests/test_teams.py::TestCrossTeamDataLeaks::test_search_does_not_leak_other_team_data
+FAILED tests/test_teams.py::TestCrossTeamDataLeaks::test_statistics_are_team_isolated
+=========== 19 failed, 12 passed, 3 skipped, 26 warnings in 25.85s ============

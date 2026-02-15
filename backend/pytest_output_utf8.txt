@@ -1,0 +1,132 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-7.4.4, pluggy-1.6.0 -- C:\Users\anura\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\anura\ai-job-automation-saas\backend
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.2.0, asyncio-0.23.4, cov-4.1.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 68 items / 1 error / 1 skipped
+
+=================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_local_ai.py ___________________
+ImportError while importing test module 'C:\Users\anura\ai-job-automation-saas\backend\tests\test_local_ai.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python311\Lib\importlib\__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\test_local_ai.py:3: in <module>
+    from app.services.ai.local_llm import LocalLLMService, ModelType
+E   ModuleNotFoundError: No module named 'app.services.ai.local_llm'
+============================== warnings summary ===============================
+app\db\base.py:4
+  C:\Users\anura\ai-job-automation-saas\backend\app\db\base.py:4: MovedIn20Warning: The ``as_declarative()`` function is now available as sqlalchemy.orm.as_declarative() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    @as_declarative()
+
+app\schemas\user.py:18
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\user.py:18: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class UserInDBBase(UserBase):
+
+app\schemas\log.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\log.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Log(LogBase):
+
+app\schemas\job.py:29
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\job.py:29: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Job(JobBase):
+
+app\schemas\resume.py:13
+  C:\Users\anura\ai-job-automation-saas\backend\app\schemas\resume.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Resume(ResumeBase):
+
+app\api\endpoints\jobs.py:12
+  C:\Users\anura\ai-job-automation-saas\backend\app\api\endpoints\jobs.py:12: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobSchema(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                                  Stmts   Miss   Cover   Missing
+--------------------------------------------------------------------
+app\__init__.py                           0      0 100.00%
+app\api\__init__.py                       0      0 100.00%
+app\api\api.py                           15      0 100.00%
+app\api\deps.py                          57     29  49.12%   33-41, 60-76, 91, 108-112, 129-133, 145, 157, 169, 181
+app\api\endpoints\__init__.py             0      0 100.00%
+app\api\endpoints\ai.py                  64     32  50.00%   32-36, 43-48, 57-66, 73-77, 84-92, 99-107
+app\api\endpoints\auth.py                73     48  34.25%   38, 61-86, 110-121, 145-178, 197, 222-237
+app\api\endpoints\email.py               74     43  41.89%   46-95, 105-124, 131-142
+app\api\endpoints\features.py            15      1  93.33%   22
+app\api\endpoints\jobs.py                27      4  85.19%   36-52, 63
+app\api\endpoints\logs.py                38     18  52.63%   36-51, 66-82, 90-95
+app\api\endpoints\resumes.py             72     45  37.50%   39, 62-70, 95-106, 132-138, 164-185, 208-213, 239-252
+app\api\endpoints\scheduler.py           46     21  54.35%   18-37, 50-55, 75-79, 89-93, 102
+app\api\endpoints\stats.py               36     23  36.11%   34, 59-113
+app\api\endpoints\telegram.py            10      5  50.00%   11-16
+app\api\endpoints\websockets.py          14      8  42.86%   9-18
+app\automation\browser.py                29     17  41.38%   18-57, 63-68
+app\automation\scrapers\base.py          13      4  69.23%   11-12, 33-34
+app\automation\scrapers\linkedin.py      42     34  19.05%   12-21, 24-63
+app\automation\session.py                26     17  34.62%   10, 16-21, 27-37
+app\core\__init__.py                      0      0 100.00%
+app\core\ai.py                           23      4  82.61%   31-34, 40
+app\core\cache.py                        84     57  32.14%   23-30, 37-39, 50-52, 64-75, 94-102, 114-121, 133-144, 162-170, 190-205
+app\core\csrf.py                         32     21  34.38%   18-21, 35-69, 73, 86
+app\core\error_handlers.py               53     31  41.51%   32-65, 81-94, 109-125, 140-148
+app\core\exceptions.py                   39     16  58.97%   29-32, 39, 46, 53-54, 61, 68, 75, 82-83, 90, 97, 110
+app\core\features.py                     14      6  57.14%   17-23, 31-32
+app\core\logger.py                       30     30   0.00%   1-62
+app\core\logging.py                      82     33  59.76%   18-45, 62, 67, 76, 119-131, 181-187, 199-206, 219-226
+app\core\middleware.py                   23     15  34.78%   14-54
+app\core\pagination.py                   34     11  67.65%   20, 25, 58-60, 92-101
+app\core\rate_limit.py                   68     52  23.53%   27-35, 49-76, 88-110, 116-123, 138, 144-149, 164-177
+app\core\retry.py                        96     96   0.00%   4-223
+app\core\security.py                     92     68  26.09%   33-47, 64-78, 94-98, 112, 126, 139, 159-182, 196-221, 234-235, 248-267, 306-326
+app\db\__init__.py                        0      0 100.00%
+app\db\base.py                            9      1  88.89%   12
+app\db\models.py                         79      0 100.00%
+app\db\session.py                         5      0 100.00%
+app\email\__init__.py                     0      0 100.00%
+app\email\sender.py                      63     39  38.10%   41-99, 105-110
+app\main.py                              70     31  55.71%   33-57, 73-108, 131, 150, 163, 171-185
+app\models\job.py                        20      0 100.00%
+app\notifications\__init__.py             0      0 100.00%
+app\notifications\telegram.py            30     18  40.00%   19-45
+app\repositories\__init__.py              2      0 100.00%
+app\repositories\base.py                103     85  17.48%   38-39, 54-61, 77-80, 102-118, 133-146, 161-171, 188-206, 222-238, 253-266
+app\repositories\job.py                  55     39  29.09%   30, 54-66, 88-96, 111-133, 157-170, 186
+app\repositories\resume.py               36     23  36.11%   29, 51-59, 81-89, 104-111
+app\repositories\team.py                 35     22  37.14%   29, 44-51, 66-77, 92-103
+app\repositories\user.py                 55     38  30.91%   29, 44-51, 66-73, 85-86, 98-99, 127-135, 156-163, 175-185
+app\scheduler\__init__.py                 1      0 100.00%
+app\scheduler\job_wrapper.py             44     27  38.64%   38-88, 96, 101
+app\scheduler\jobs.py                    77     63  18.18%   15-43, 50-102, 107-125, 131-146
+app\scheduler\scheduler.py               45     21  53.33%   24-73, 76-79, 82, 88, 91, 94
+app\schemas\__init__.py                   0      0 100.00%
+app\schemas\ai.py                        25      0 100.00%
+app\schemas\job.py                       32      0 100.00%
+app\schemas\log.py                       15      0 100.00%
+app\schemas\resume.py                    17      0 100.00%
+app\schemas\team.py                      13     13   0.00%   1-17
+app\schemas\token.py                     12      0 100.00%
+app\schemas\user.py                      23      0 100.00%
+app\services\__init__.py                  0      0 100.00%
+app\services\ai_service.py               49     28  42.86%   25-27, 33-53, 56-80, 83-90, 93-104, 107-124, 127-138, 141-150, 154-155
+app\services\auth_service.py             60     39  35.00%   34, 50-64, 81-97, 109-116, 128-135, 147-150, 170-173, 193-207
+app\services\bot.py                      83     83   0.00%   4-220
+app\services\email.py                    55     55   0.00%   4-152
+app\services\job_scraper.py              41     26  36.59%   17-60, 66
+app\services\job_service.py              49     31  36.73%   30, 47-53, 74-82, 95-110, 134-143, 161-167, 188-196, 208-211, 235-241
+app\services\resume.py                   41     41   0.00%   4-192
+app\services\resume_service.py           59     38  35.59%   36, 53-87, 104-110, 129-136, 155-162, 179-189, 207-213, 230-236
+app\services\socket_manager.py           18      9  50.00%   10-11, 14-15, 18-23
+app\services\team_service.py             38     38   0.00%   8-150
+--------------------------------------------------------------------
+TOTAL                                  2680   1597  40.41%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+=========================== short test summary info ===========================
+ERROR tests/test_local_ai.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=================== 1 skipped, 6 warnings, 1 error in 4.81s ===================
