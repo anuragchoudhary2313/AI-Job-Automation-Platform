@@ -1,7 +1,14 @@
-from typing import Optional
+from typing import Optional, Annotated, Any
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator
 from app.models.enums import JobStatus
+
+def stringify_object_id(v: Any) -> Any:
+    if v and hasattr(v, "__str__"):
+        return str(v)
+    return v
+
+PyObjectId = Annotated[str, BeforeValidator(stringify_object_id)]
 
 class JobBase(BaseModel):
     title: str
@@ -27,8 +34,8 @@ class JobUpdate(BaseModel):
     status: Optional[JobStatus] = None
 
 class Job(JobBase):
-    id: str
-    team_id: Optional[str] = None
+    id: PyObjectId
+    team_id: Optional[PyObjectId] = None
     applied_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None

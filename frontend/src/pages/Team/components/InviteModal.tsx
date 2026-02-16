@@ -30,10 +30,10 @@ export function InviteModal({ isOpen, onClose }: InviteModalProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
+            <label htmlFor="invite-role" className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
             <div className="relative">
               <Shield className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <select className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
+              <select id="invite-role" className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
                 <option value="member">Member</option>
                 <option value="admin">Admin</option>
                 <option value="viewer">Viewer</option>

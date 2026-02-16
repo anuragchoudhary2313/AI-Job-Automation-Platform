@@ -46,14 +46,12 @@ export type JobStatus = 'pending' | 'applied' | 'interview' | 'offer' | 'rejecte
 
 export interface Resume {
   id: string;
-  title?: string;
-  filename?: string;
-  content?: string;
-  path?: string;
-  file_path?: string;
-  job_id?: string;
-  team_id: string;
   user_id: string;
+  content?: string;
+  file_path?: string;
+  filename?: string;
+  template?: string;
+  job_id?: string;
   created_at: string;
   updated_at?: string;
 }

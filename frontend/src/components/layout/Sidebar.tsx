@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import {
   LayoutDashboard, Briefcase, FileText, Settings, Shield, Terminal, Users,
@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip } from '../ui/Tooltip';
 import { useFeatures } from '../../contexts/FeatureContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -21,7 +22,10 @@ const navigation = [
 
 export function Sidebar() {
   const { isEnabled } = useFeatures();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
   // Initialize from localStorage or default to false
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -44,6 +48,11 @@ export function Sidebar() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <motion.div
@@ -79,10 +88,12 @@ export function Sidebar() {
         </div>
       </div>
 
+
       {/* Collapse Toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="absolute -right-3 top-20 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full p-1.5 shadow-sm hover:shadow-md transition-all z-20 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 dark:hover:border-gray-700 hover:scale-110 active:scale-95"
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         <motion.div
           animate={{ rotate: collapsed ? 0 : 180 }}
@@ -169,7 +180,7 @@ export function Sidebar() {
           collapsed ? "justify-center" : "gap-3"
         )}>
           <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-inner ring-2 ring-white dark:ring-gray-950">
-            JD
+            {user?.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}
           </div>
           <AnimatePresence>
             {!collapsed && (
@@ -179,18 +190,24 @@ export function Sidebar() {
                 exit={{ opacity: 0, width: 0 }}
                 className="flex-1 overflow-hidden"
               >
-                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">John Doe</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Premium Plan</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  {user?.full_name || 'User'}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  {user?.email || 'Premium Plan'}
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
           <AnimatePresence>
             {!collapsed && (
               <motion.button
+                onClick={handleLogout}
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                aria-label="Sign out"
               >
                 <LogOut className="h-4 w-4" />
               </motion.button>

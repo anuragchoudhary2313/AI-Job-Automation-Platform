@@ -20,7 +20,7 @@ class BrowserManager:
             
             # Launch Chromium
             self.browser = await self.playwright.chromium.launch(
-                headless=settings.PLAYWRIGHT_HEADLESS,
+                headless=getattr(settings, "PLAYWRIGHT_HEADLESS", True),
                 args=[
                     "--disable-blink-features=AutomationControlled",
                     "--no-sandbox",

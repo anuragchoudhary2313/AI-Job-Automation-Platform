@@ -8,27 +8,40 @@ from app.services.socket_manager import manager
 router = APIRouter()
 
 @router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
+async def websocket_endpoint(websocket: WebSocket):
+    print("WS: Endpoint hit")
     try:
+        # Get token from query params manually to avoid validation errors causing immediate disconnect
+        token = websocket.query_params.get("token")
+        
+        if not token:
+            print("WS Error: Missing token")
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+
         # Validate token
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
             )
+            print(f"WS: Token decoded successfully for sub: {payload.get('sub')}")
         except Exception as e:
             print(f"WS Token Validation Error: {e}")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
 
         user_id = payload.get("sub")
-        print(f"WS Connection Request from user: {user_id}")
-
+        
         if user_id is None:
             print("WS Error: No user_id in token")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
             
-        await manager.connect(websocket)
+        # Accept connection explicitly
+        await websocket.accept()
+        
+        # Register with manager
+        manager.add_connection(websocket)
         print(f"WS Connected: {user_id}")
         
         try:

@@ -34,7 +34,7 @@ class AIService:
         """
         client = ai_client.get_async_client()
         if not client:
-            return self._mock_response(prompt)
+            return self._mock_response(prompt, json_mode=json_mode)
             
         try:
             # use fast model by default if not specified
@@ -70,7 +70,9 @@ class AIService:
             return content
         except Exception as e:
             logger.error(f"AI API error: {e}")
-            return self._mock_response(prompt)
+            return self._mock_response(prompt, json_mode=json_mode)
+
+
 
     async def generate_structured_resume(self, job_description: str) -> dict:
         prompt = f"""
@@ -208,9 +210,47 @@ class AIService:
         """
         return await self._generate_json(prompt, model=settings.AI_MODEL_FAST)
 
-    def _mock_response(self, prompt: str) -> str:
+    def _mock_response(self, prompt: str, json_mode: bool = False) -> str:
         """Fallback mock response."""
         logger.warning("Returning mock AI response.")
+        
+        if json_mode:
+            return json.dumps({
+                "summary": "This is a mock AI summary generated because the AI service is currently unavailable or not configured. Please check your API keys.",
+                "skills": ["Mock Skill 1", "Mock Skill 2", "Python", "React", "FastAPI"],
+                "experience": [
+                    {
+                        "title": "Software Engineer (Mock)",
+                        "content": [
+                            "Optimized backend performance by 20% using asyncio.",
+                            "Developed a scalable frontend architecture with React."
+                        ]
+                    }
+                ],
+                "education": [
+                    {
+                        "title": "Bachelor of Science in Computer Science (Mock University)",
+                        "content": ["Graduated with Honors", "Focus on AI and Distributed Systems"]
+                    }
+                ],
+                "projects": [
+                    {
+                        "title": "AI Job Automation Platform",
+                        "content": ["Built a full-stack SaaS application for automating job applications."]
+                    }
+                ],
+                "recipient": "Hiring Manager",
+                "company": "Example Corp",
+                "content": "Dear Hiring Manager,\n\nI am writing to express my interest in the position. [Mock Cover Letter Content]\n\nSincerely,\n[Your Name]",
+                "tone": "professional",
+                "personal_info": {
+                        "name": "John Doe (Mock)",
+                        "email": "john@example.com", 
+                        "phone": "123-456-7890",
+                        "links": ["linkedin.com/in/johndoe"]
+                }
+            })
+            
         return f"[MOCK AI RESPONSE] Processed: {prompt[:50]}..."
 
 # Global instance

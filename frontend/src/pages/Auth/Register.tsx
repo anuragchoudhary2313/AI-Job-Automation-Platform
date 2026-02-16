@@ -70,6 +70,7 @@ export function Register() {
           <div className="relative">
             <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
             <Input
+              id="fullName"
               placeholder="Full Name"
               className="pl-10"
               autoFocus
@@ -83,6 +84,7 @@ export function Register() {
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
             <Input
+              id="email"
               type="email"
               placeholder="name@company.com"
               className="pl-10"
@@ -97,6 +99,7 @@ export function Register() {
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
               <Input
+                id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="pl-10 pr-10"
@@ -109,6 +112,7 @@ export function Register() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-20 focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -125,6 +129,7 @@ export function Register() {
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
             <Input
+              id="confirmPassword"
               type={showPassword ? "text" : "password"}
               placeholder="Confirm Password"
               className="pl-10"

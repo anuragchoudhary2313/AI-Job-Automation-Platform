@@ -15,13 +15,13 @@ def get_job_service(
 ) -> JobService:
     return JobService(job_repo)
 
-@router.get("/scrape")
+@router.post("/scrape")
 async def trigger_scrape(
     keyword: str, 
     location: str, 
     limit: int = 5,
     background_tasks: BackgroundTasks = None,
-    current_user: UserModel = Depends(deps.require_admin)
+    current_user: UserModel = Depends(deps.get_current_active_user)
 ):
     """
     Triggers a background job scraping task.

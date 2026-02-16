@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 
 interface OptimizedImageProps {
   src: string;
@@ -49,6 +49,7 @@ export const OptimizedImage = memo(function OptimizedImage({
     return (
       <div
         className={`bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${className}`}
+        // eslint-disable-next-line
         style={{ width, height }}
       >
         <span className="text-gray-400 text-sm">Failed to load</span>

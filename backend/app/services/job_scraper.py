@@ -14,7 +14,7 @@ class JobScraperService:
         self.browser_manager = BrowserManager()
         
     async def scrape_jobs(self, keyword: str, location: str, limit: int = 10):
-        if not settings.JOB_SCRAPING_ENABLED:
+        if not getattr(settings, "JOB_SCRAPING_ENABLED", False):
             logger.warning("Job scraping is disabled by feature flag.")
             return {"message": "Scraping disabled"}
 

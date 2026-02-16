@@ -5,8 +5,9 @@ from pydantic import Field
 
 class Resume(Document):
     user_id: PydanticObjectId # Reference to User ID
-    content: str
+    content: Optional[str] = None  # Make optional since we extract from PDF
     file_path: Optional[str] = None
+    filename: Optional[str] = None  # Original filename for display
     template: str = "professional"
     job_id: Optional[PydanticObjectId] = None # Optional reference to a specific job
     

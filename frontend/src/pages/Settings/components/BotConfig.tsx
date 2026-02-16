@@ -8,7 +8,7 @@ export function BotConfig() {
   const { toast } = useToast();
 
   const handleSave = () => {
-    toast('Configuration saved successfully', 'success');
+    toast.success('Configuration saved successfully');
   };
 
   return (
@@ -38,10 +38,10 @@ export function BotConfig() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Schedule</label>
+            <label htmlFor="bot-schedule" className="text-sm font-medium text-gray-700 dark:text-gray-300">Schedule</label>
             <div className="relative">
               <Clock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <select className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
+              <select id="bot-schedule" className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
                 <option>Every 6 Hours</option>
                 <option>Daily at 9 AM</option>
                 <option>Continuous</option>
@@ -49,10 +49,10 @@ export function BotConfig() {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Resume Template</label>
+            <label htmlFor="resume-template" className="text-sm font-medium text-gray-700 dark:text-gray-300">Resume Template</label>
             <div className="relative">
               <FileText className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <select className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
+              <select id="resume-template" className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 pl-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:text-gray-50 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-900">
                 <option>Standard Modern</option>
                 <option>Tech Minimalist</option>
                 <option>Creative Bold</option>

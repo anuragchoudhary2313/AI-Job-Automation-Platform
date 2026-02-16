@@ -37,13 +37,25 @@ class ResumeRepository(BaseRepository[Resume]):
             # Strategy: Find users in team, then find resumes for those users.
             
             from app.models.user import User
-            users = await User.find(User.team_id == team_id).to_list()
-            user_ids = [str(u.id) for u in users]
+            from beanie import PydanticObjectId
             
-            return await Resume.find({"user_id": {"$in": user_ids}}).sort("-created_at").skip(skip).limit(limit).to_list()
+            print(f"\n[REPO] Getting resumes for team: {team_id}")
+            users = await User.find(User.team_id == team_id).to_list()
+            print(f"[REPO] Found {len(users)} users in team {team_id}")
+            
+            user_ids = [PydanticObjectId(u.id) for u in users]  # Convert to ObjectIds
+            print(f"[REPO] User IDs: {[str(uid) for uid in user_ids]}")
+            
+            logger.info(f"Found {len(users)} users in team {team_id}, querying resumes for {len(user_ids)} user IDs")
+            
+            resumes = await Resume.find({"user_id": {"$in": user_ids}}).sort("-created_at").skip(skip).limit(limit).to_list()
+            print(f"[REPO] Found {len(resumes)} resumes\n")
+            
+            return resumes
             
         except Exception as e:
-            logger.error(f"Error getting resumes for team {team_id}: {str(e)}")
+            print(f"[REPO ERROR] {str(e)}")
+            logger.error(f"Error getting resumes for team {team_id}: {str(e)}", exc_info=True)
             raise DatabaseError("Failed to get resumes") from e
     
     async def get_by_user(

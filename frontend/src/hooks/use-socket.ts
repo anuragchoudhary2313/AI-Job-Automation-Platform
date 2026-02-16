@@ -11,6 +11,8 @@ export function useWebSocket(url: string) {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
+    if (!url) return;
+
     // Basic implementation - in prod use a robust library or context
     const socket = new WebSocket(url);
     socketRef.current = socket;

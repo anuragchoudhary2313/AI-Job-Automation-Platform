@@ -30,24 +30,22 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
     if (files.length > 0 && files[0]) {
       handleUpload(files[0]);
     }
-  }, []);
+  }, [onUpload]);
 
   const handleUpload = async (file: File) => {
+    if (!onUpload) return;
+
     setUploading(true);
     setProgress(0);
 
     try {
-      // Call real API via useResumes hook (will be passed as prop)
-      // For now, simulate progress while upload happens
+      // Simulate progress while upload happens
       const progressInterval = setInterval(() => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 200);
 
-      // This will be replaced with actual uploadResume call from parent
-      // await uploadResume(file);
-
-      // Simulate upload for now - will be wired in parent component
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the actual upload function passed from parent
+      await onUpload(file);
 
       clearInterval(progressInterval);
       setProgress(100);
@@ -66,14 +64,13 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
   return (
     <div
       className={cn(
-        "relative rounded-xl border-2 border-dashed transition-all duration-200 p-8 flex flex-col items-center justify-center text-center",
+        "relative rounded-xl border-2 border-dashed transition-all duration-200 p-8 flex flex-col items-center justify-center text-center min-h-[200px]",
         dragging ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700",
         uploading && "pointer-events-none opacity-80"
       )}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      style={{ minHeight: '200px' }}
     >
       {uploading ? (
         <div className="w-full max-w-xs space-y-4">
@@ -85,7 +82,8 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Please wait while we process your file.</p>
           </div>
           <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-500 transition-all duration-300 ease-out" style={{ width: `${progress}%` }}></div>
+            {/* eslint-disable-next-line */}
+            <div className="h-full bg-blue-500 transition-all duration-300 ease-out" style={{ width: `${progress}%` }} />
           </div>
         </div>
       ) : (
@@ -97,7 +95,7 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
             <p className="font-medium text-gray-900 dark:text-gray-100">Click to upload or drag and drop</p>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">PDF, DOCX up to 10MB</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => document.getElementById('file-upload')?.click()}>
+          <Button variant="outline" size="sm" onClick={() => document.getElementById('file-upload')?.click()} disabled={disabled}>
             Select File
           </Button>
           <input
@@ -105,6 +103,7 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
             type="file"
             className="hidden"
             accept=".pdf,.docx"
+            aria-label="Upload resume file"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) handleUpload(file);

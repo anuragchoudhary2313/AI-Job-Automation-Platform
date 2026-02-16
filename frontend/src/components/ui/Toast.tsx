@@ -73,7 +73,11 @@ const ToastDisplay = () => {
           ${t.type === 'info' ? 'bg-white border-gray-200 text-gray-900' : ''}
         `}>
           <span className="flex-1">{t.message}</span>
-          <button onClick={() => setToasts(prev => prev.filter(i => i.id !== t.id))} className="text-gray-500 hover:text-gray-900">
+          <button
+            onClick={() => setToasts(prev => prev.filter(i => i.id !== t.id))}
+            className="text-gray-500 hover:text-gray-900"
+            aria-label="Close notification"
+          >
             <X size={16} />
           </button>
         </div>

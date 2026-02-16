@@ -1,4 +1,5 @@
-import { MoreHorizontal, Shield, Users } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { MoreHorizontal, Shield, Users, Edit2, Trash2, Mail } from 'lucide-react';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { LoadingTable } from '../../../components/ui/LoadingTable';
 import {
@@ -6,6 +7,7 @@ import {
 } from '../../../components/ui/Table';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
+import { toast } from '../../../components/ui/Toast';
 
 interface Member {
   id: number;
@@ -25,6 +27,26 @@ const members: Member[] = [
 ];
 
 export function MembersList({ isLoading = false }: { isLoading?: boolean }) {
+  const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setActiveMenuId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleAction = (action: string, member: Member) => {
+    toast.success(`${action} action triggered for ${member.name}`);
+    setActiveMenuId(null);
+  };
+
   if (isLoading) {
     return <LoadingTable columnCount={5} headers={['User', 'Role', 'Status', 'Last Active', 'Actions']} />;
   }
@@ -41,7 +63,7 @@ export function MembersList({ isLoading = false }: { isLoading?: boolean }) {
   }
 
   return (
-    <div className="rounded-md border dark:border-gray-800 bg-white dark:bg-gray-950 overflow-hidden">
+    <div className="rounded-md border dark:border-gray-800 bg-white dark:bg-gray-950 overflow-hidden relative min-h-[400px]">
       <div className="p-4 border-b dark:border-gray-800">
         <h3 className="font-semibold text-gray-900 dark:text-white">Team Members</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">Manage who has access to this workspace.</p>
@@ -88,10 +110,51 @@ export function MembersList({ isLoading = false }: { isLoading?: boolean }) {
               <TableCell className="text-sm text-gray-500 dark:text-gray-400">
                 {member.lastActive}
               </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon">
+              <TableCell className="text-right relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={activeMenuId === member.id ? 'bg-gray-100 dark:bg-gray-800' : ''}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMenuId(activeMenuId === member.id ? null : member.id);
+                  }}
+                >
                   <MoreHorizontal className="h-4 w-4 text-gray-500" />
                 </Button>
+
+                {activeMenuId === member.id && (
+                  <div
+                    ref={menuRef}
+                    className="absolute right-0 top-10 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right text-left"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="py-1">
+                      <button
+                        onClick={() => handleAction('Edit Role', member)}
+                        className="w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-left"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                        Edit Role
+                      </button>
+                      <button
+                        onClick={() => handleAction('Resend Invite', member)}
+                        className="w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-left"
+                      >
+                        <Mail className="h-4 w-4" />
+                        Resend Invite
+                      </button>
+                      <div className="border-t border-gray-100 dark:border-gray-800 my-1"></div>
+                      <button
+                        onClick={() => handleAction('Remove', member)}
+                        className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 text-left"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Remove Member
+                      </button>
+                    </div>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}

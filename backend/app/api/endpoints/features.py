@@ -19,12 +19,13 @@ def get_features():
     Get current state of all feature flags.
     Public endpoint for frontend configuration.
     """
+    from app.core.features import features
     return {
-        "ai_resume": settings.FEATURE_AI_RESUME,
-        "ai_cover_letter": settings.FEATURE_AI_COVER_LETTER,
-        "email_automation": settings.FEATURE_EMAIL_AUTOMATION,
-        "job_scraping": settings.FEATURE_JOB_SCRAPING,
-        "auto_apply": settings.FEATURE_AUTO_APPLY,
-        "teams": settings.FEATURE_TEAMS,
-        "admin_panel": settings.FEATURE_ADMIN_PANEL
+        "ai_resume": features.is_enabled("ai_resume"),
+        "ai_cover_letter": features.is_enabled("ai_cover_letter"),
+        "email_automation": features.is_enabled("email_automation"),
+        "job_scraping": features.is_enabled("job_scraping"),
+        "auto_apply": features.is_enabled("auto_apply"),
+        "teams": features.is_enabled("teams"),
+        "admin_panel": features.is_enabled("admin_panel")
     }

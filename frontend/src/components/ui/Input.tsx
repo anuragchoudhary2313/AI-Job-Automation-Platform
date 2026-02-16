@@ -11,7 +11,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, label, error, success, id, ...props }, ref) => {
     // Generate simple ID if needed for label association
-    const inputId = id || (label ? `input-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined);
+    const inputId = id || props.name || (label ? `input-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined);
 
     return (
       <div className="w-full space-y-1.5 group">

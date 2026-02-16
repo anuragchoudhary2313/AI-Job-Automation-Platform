@@ -3,9 +3,11 @@ import apiClient from '../lib/api';
 export interface Resume {
   id: string;
   user_id: string;
-  team_id: string;
-  file_url: string;
-  parsed_data: any;
+  content?: string;
+  file_path?: string;
+  filename?: string;
+  template?: string;
+  job_id?: string;
   created_at: string;
   updated_at?: string;
 }
@@ -13,6 +15,8 @@ export interface Resume {
 export const resumeService = {
   async getResumes(): Promise<Resume[]> {
     const response = await apiClient.get<Resume[]>('/resumes');
+    console.log('Resume API Response:', response.data);
+    console.log('Number of resumes:', response.data?.length);
     return response.data;
   },
 

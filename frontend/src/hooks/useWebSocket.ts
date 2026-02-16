@@ -65,6 +65,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         return;
       }
 
+      // Prevent duplicate connections
+      if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) {
+        console.log("WebSocket already connected or connecting, skipping.");
+        return;
+      }
+
       // Create WebSocket connection
       // VITE_WS_URL already includes /ws, so we don't need to append it again
       // ensuring we don't end up with /ws/ws
@@ -101,10 +107,20 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       };
 
       ws.onerror = (error) => {
+        // Ignore errors if we are closing (common in React StrictMode dev)
+        if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) return;
         console.error('WebSocket error:', error);
       };
 
       ws.onclose = (event: CloseEvent) => {
+        // Ignore 1005 (No Status) if we initiated the close or it's a dev-mode flicker
+        if (event.code === 1005) {
+          console.log("WebSocket closed normally (1005).");
+          setIsConnected(false);
+          onDisconnectRef.current?.();
+          return;
+        }
+
         console.log('WebSocket disconnected', event.code, event.reason);
         setIsConnected(false);
         onDisconnectRef.current?.();

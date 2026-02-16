@@ -74,13 +74,16 @@ class ResumeService:
         except Exception as e:
             logger.error(f"Failed to parse resume with AI: {e}")
 
-        # Create DB entry
-        resume = await self.resume_repo.create(
-            file_path=file_path,
-            user_id=str(user.id),
+        # Create DB entry - use PydanticObjectId for user_id
+        from beanie import PydanticObjectId
+        resume = Resume(
+            user_id=PydanticObjectId(user.id),  # Convert to ObjectId
             content=content,
+            file_path=file_path,
+            filename=file.filename,  # Store original filename
             parsed_data=parsed_data
         )
+        await resume.insert()
         
         logger.info(f"Resume uploaded and parsed: {resume.id} by user {user.id}")
         return resume

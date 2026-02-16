@@ -23,6 +23,7 @@ export function JobsFilter({ onSearch, onStatusChange, onSortChange }: JobsFilte
       <div className="flex gap-2">
         <div className="relative">
           <select
+            aria-label="Filter by status"
             className="h-10 w-[150px] appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-100"
             onChange={(e) => onStatusChange(e.target.value === 'Status: All' ? '' : e.target.value.toLowerCase())}
           >
@@ -36,6 +37,7 @@ export function JobsFilter({ onSearch, onStatusChange, onSortChange }: JobsFilte
         </div>
         <div className="relative">
           <select
+            aria-label="Sort jobs"
             className="h-10 w-[150px] appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-100"
             onChange={(e) => onSortChange(e.target.value)}
           >

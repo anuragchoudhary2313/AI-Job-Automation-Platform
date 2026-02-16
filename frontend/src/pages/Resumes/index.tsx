@@ -73,9 +73,9 @@ export default function Resumes() {
           />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {resumes.map((resume) => (
+            {resumes.map((resume, index) => (
               <ResumeCard
-                key={resume.id}
+                key={resume.id || `resume-${index}`}
                 resume={resume}
                 onDelete={handleDelete}
                 onDownload={handleDownload}

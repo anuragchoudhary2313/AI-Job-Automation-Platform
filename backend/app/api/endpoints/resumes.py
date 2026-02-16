@@ -37,7 +37,15 @@ async def upload_resume(
     """Upload a resume file (PDF) for the team."""
     try:
         resume = await resume_service.save_resume_file(file, current_user)
-        return resume
+        
+        # Convert Beanie model to dict for Pydantic schema
+        resume_dict = resume.dict(by_alias=False)
+        resume_dict["id"] = str(resume.id)
+        resume_dict["user_id"] = str(resume.user_id)
+        if resume.job_id:
+            resume_dict["job_id"] = str(resume.job_id)
+        
+        return resume_dict
         
     except HTTPException:
         raise
@@ -58,12 +66,35 @@ async def list_resumes(
 ) -> Any:
     """List all resumes for the team."""
     try:
+        print(f"\n=== LIST RESUMES REQUEST ===")
+        print(f"User ID: {current_user.id}, Team ID: {current_user.team_id}")
+        logger.info(f"=== LIST RESUMES REQUEST ===")
+        logger.info(f"User ID: {current_user.id}, Team ID: {current_user.team_id}")
+        
         resumes = await resume_service.get_resumes(
             user=current_user,
             skip=skip,
             limit=limit
         )
-        return resumes
+        
+        print(f"Found {len(resumes)} resumes for team {current_user.team_id}")
+        logger.info(f"Found {len(resumes)} resumes for team {current_user.team_id}")
+        
+        # Convert Beanie models to dicts for Pydantic schema
+        resume_list = []
+        for resume in resumes:
+            resume_dict = resume.dict(by_alias=False)
+            resume_dict["id"] = str(resume.id)
+            resume_dict["user_id"] = str(resume.user_id)
+            if resume.job_id:
+                resume_dict["job_id"] = str(resume.job_id)
+            resume_list.append(resume_dict)
+            print(f"Resume: {resume_dict.get('filename', 'no filename')} - ID: {resume_dict['id']}")
+            logger.info(f"Resume: {resume_dict.get('filename', 'no filename')} - ID: {resume_dict['id']}")
+        
+        print(f"Returning {len(resume_list)} resumes\n")
+        logger.info(f"Returning {len(resume_list)} resumes")
+        return resume_list
         
     except Exception as e:
         logger.error(f"Error listing resumes: {str(e)}", exc_info=True)

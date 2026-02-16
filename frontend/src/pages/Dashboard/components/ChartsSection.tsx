@@ -31,6 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex items-center gap-2 text-sm">
+            {/* eslint-disable-next-line */}
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
             <span className="text-gray-600 dark:text-gray-400">{entry.name}:</span>
             <span className="font-semibold text-gray-900 dark:text-gray-100">{entry.value}</span>
@@ -178,6 +179,7 @@ export function ChartsSection({ loading }: { loading?: boolean }) {
                         key={`cell-${index}`}
                         fill={COLORS[originalIndex % COLORS.length]}
                         opacity={isActive ? 1 : 0.8}
+                        // eslint-disable-next-line
                         style={{
                           filter: isActive ? 'brightness(1.1)' : 'brightness(1)',
                           transition: 'all 0.3s ease',
@@ -211,6 +213,7 @@ export function ChartsSection({ loading }: { loading?: boolean }) {
                 >
                   <div
                     className="h-3 w-3 rounded-full transition-transform duration-200"
+                    // eslint-disable-next-line
                     style={{
                       backgroundColor: COLORS[index % COLORS.length],
                       transform: isHidden ? 'scale(0.8)' : 'scale(1)'

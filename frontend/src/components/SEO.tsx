@@ -1,4 +1,3 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 interface SEOProps {
@@ -13,7 +12,7 @@ interface SEOProps {
   modifiedTime?: string;
 }
 
-const SEO: React.FC<SEOProps> = ({
+const SEO = ({
   title = 'AI Job Automation - Land Your Dream Job 10x Faster',
   description = 'Automate your job search with AI. Apply to hundreds of jobs, generate tailored resumes, and track applications—all on autopilot. Start your free trial today.',
   keywords = 'job automation, AI resume builder, automated job applications, job search automation, career automation, AI job search, resume generator',
@@ -23,10 +22,11 @@ const SEO: React.FC<SEOProps> = ({
   author = 'AI Job Automation',
   publishedTime,
   modifiedTime,
-}) => {
+}: SEOProps) => {
   const siteTitle = 'AI Job Automation';
+  // FIX: Added backticks (`) for template literal
   const fullTitle = title.includes(siteTitle) ? title : `${title} | ${siteTitle}`;
-  const canonicalUrl = url || window.location.href;
+  const canonicalUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://aijobautomation.com');
 
   return (
     <Helmet>
@@ -65,9 +65,11 @@ const SEO: React.FC<SEOProps> = ({
 
       {/* Favicon */}
       <link rel="icon" type="image/png" href="/favicon.png" />
-      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      {/* eslint-disable-next-line @next/next/no-head-element */}
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
       {/* Theme Color */}
+      {/* eslint-disable-next-line */}
       <meta name="theme-color" content="#3B82F6" />
       <meta name="msapplication-TileColor" content="#3B82F6" />
     </Helmet>

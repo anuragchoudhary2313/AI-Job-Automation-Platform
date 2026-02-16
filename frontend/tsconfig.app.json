@@ -30,6 +30,7 @@
     "noUncheckedSideEffectImports": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
