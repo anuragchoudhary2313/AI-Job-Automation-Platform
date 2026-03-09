@@ -103,7 +103,8 @@ class TestTeamManagement:
                 "team_name": "My New Team"
             }
         )
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_201_CREATED
         user_data = response.json()
         assert "team_id" in user_data
         assert user_data["team_id"] is not None
+

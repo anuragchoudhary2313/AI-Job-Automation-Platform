@@ -123,12 +123,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             now = datetime.now()
             cutoff = now - timedelta(hours=1)
 
-            # Remove entries older than 1 hour
-            self.clients = {
-                ip: (tokens, last_update)
-                for ip, (tokens, last_update) in self.clients.items()
-                if last_update > cutoff
-            }
+            # Remove entries older than 1 hour while preserving defaultdict behavior.
+            stale_ips = [
+                ip
+                for ip, (_, last_update) in self.clients.items()
+                if last_update <= cutoff
+            ]
+            for ip in stale_ips:
+                self.clients.pop(ip, None)
 
 
 # Stricter rate limits for sensitive endpoints

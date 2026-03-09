@@ -20,16 +20,16 @@ class BaseRepository(Generic[ModelType]):
     """
     Base repository class with common CRUD operations using Beanie.
     """
-    
+
     def __init__(self, model: Type[ModelType]) -> None:
         """
         Initialize repository.
-        
+
         Args:
             model: Beanie Document class
         """
         self.model = model
-    
+
     async def get_by_id(self, id: Any) -> Optional[ModelType]:
         """
         Get a single record by ID.
@@ -39,7 +39,7 @@ class BaseRepository(Generic[ModelType]):
         except Exception as e:
             logger.error(f"Error getting {self.model.__name__} by ID {id}: {str(e)}")
             raise DatabaseError(f"Failed to get {self.model.__name__}") from e
-    
+
     async def get_or_404(self, id: Any) -> ModelType:
         """
         Get a single record by ID or raise 404.
@@ -53,12 +53,12 @@ class BaseRepository(Generic[ModelType]):
             raise
         except Exception as e:
             raise DatabaseError(f"Failed to get {self.model.__name__}") from e
-    
+
     async def get_all(
         self,
         skip: int = 0,
         limit: int = 100,
-        filters: Optional[Dict[str, Any]] = None
+        filters: Optional[Dict[str, Any]] = None,
     ) -> List[ModelType]:
         """
         Get all records with optional filtering and pagination.
@@ -69,7 +69,7 @@ class BaseRepository(Generic[ModelType]):
         except Exception as e:
             logger.error(f"Error getting all {self.model.__name__}: {str(e)}")
             raise DatabaseError(f"Failed to get {self.model.__name__} records") from e
-    
+
     async def create(self, **kwargs: Any) -> ModelType:
         """
         Create a new record.
@@ -82,20 +82,20 @@ class BaseRepository(Generic[ModelType]):
         except Exception as e:
             logger.error(f"Error creating {self.model.__name__}: {str(e)}")
             raise DatabaseError(f"Failed to create {self.model.__name__}") from e
-    
+
     async def update(self, id: Any, **kwargs: Any) -> ModelType:
         """
         Update an existing record.
         """
         try:
             instance = await self.get_or_404(id)
-            
-            # Filter out None values just in case, or apply all
-            update_data = {k: v for k, v in kwargs.items() if v is not None}
-            
+
+            # Preserve explicit None values so callers can clear optional fields.
+            update_data = dict(kwargs)
+
             if update_data:
                 await instance.set(update_data)
-                
+
             logger.info(f"Updated {self.model.__name__} with ID {id}")
             return instance
         except NotFoundError:
@@ -103,7 +103,7 @@ class BaseRepository(Generic[ModelType]):
         except Exception as e:
             logger.error(f"Error updating {self.model.__name__} {id}: {str(e)}")
             raise DatabaseError(f"Failed to update {self.model.__name__}") from e
-    
+
     async def delete(self, id: Any) -> bool:
         """
         Delete a record.
@@ -118,7 +118,7 @@ class BaseRepository(Generic[ModelType]):
         except Exception as e:
             logger.error(f"Error deleting {self.model.__name__} {id}: {str(e)}")
             raise DatabaseError(f"Failed to delete {self.model.__name__}") from e
-            
+
     async def count(self, filters: Optional[Dict[str, Any]] = None) -> int:
         """
         Count records.

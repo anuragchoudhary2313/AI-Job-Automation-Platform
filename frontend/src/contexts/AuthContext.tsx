@@ -58,8 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -76,3 +78,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+

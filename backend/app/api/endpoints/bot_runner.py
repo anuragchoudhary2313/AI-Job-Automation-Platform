@@ -1,6 +1,7 @@
 """
 Bot runner endpoint - triggers bot automation on demand.
 """
+from datetime import datetime
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, status
 from typing import Any
 
@@ -17,63 +18,91 @@ _running_bots: dict = {}
 
 
 async def _run_bot_with_logging(user_id: str, user_email: str):
-    """Run bot automation and broadcast log events via WebSocket."""
+    """Run bot automation and stream log events via user-scoped WebSocket."""
     try:
         _running_bots[user_id] = True
 
-        await manager.broadcast({
-            "event": "log",
-            "level": "info",
-            "message": f"🤖 Bot started for {user_email}",
-            "timestamp": __import__("datetime").datetime.now().strftime("%H:%M:%S")
-        })
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "log",
+                "level": "info",
+                "message": f"Bot started for {user_email}",
+                "timestamp": datetime.now().strftime("%H:%M:%S"),
+            },
+        )
 
-        await manager.broadcast({
-            "event": "log",
-            "level": "info",
-            "message": "📋 Fetching pending jobs...",
-            "timestamp": __import__("datetime").datetime.now().strftime("%H:%M:%S")
-        })
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "log",
+                "level": "info",
+                "message": "Fetching pending jobs...",
+                "timestamp": datetime.now().strftime("%H:%M:%S"),
+            },
+        )
 
         # Import and run bot service
         from app.services.bot import bot_service
+
         results = await bot_service.run_job_automation(user_id)
 
-        await manager.broadcast({
-            "event": "log",
-            "level": "info",
-            "message": f"✅ Bot completed: {results.get('jobs_applied', 0)}/{results.get('jobs_processed', 0)} jobs applied",
-            "timestamp": __import__("datetime").datetime.now().strftime("%H:%M:%S")
-        })
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "log",
+                "level": "info",
+                "message": (
+                    f"Bot completed: {results.get('jobs_applied', 0)}/"
+                    f"{results.get('jobs_processed', 0)} jobs applied"
+                ),
+                "timestamp": datetime.now().strftime("%H:%M:%S"),
+            },
+        )
 
-        if results.get('errors'):
-            for err in results['errors'][:5]:
-                await manager.broadcast({
-                    "event": "log",
-                    "level": "error",
-                    "message": f"❌ Error on job {err.get('job_id', '?')}: {err.get('error', 'Unknown')}",
-                    "timestamp": __import__("datetime").datetime.now().strftime("%H:%M:%S")
-                })
+        if results.get("errors"):
+            for err in results["errors"][:5]:
+                await manager.send_to_user(
+                    user_id,
+                    {
+                        "event": "log",
+                        "level": "error",
+                        "message": (
+                            f"Error on job {err.get('job_id', '?')}: "
+                            f"{err.get('error', 'Unknown')}"
+                        ),
+                        "timestamp": datetime.now().strftime("%H:%M:%S"),
+                    },
+                )
 
-        await manager.broadcast({
-            "event": "bot_status",
-            "status": "completed",
-            "results": results
-        })
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "bot_status",
+                "status": "completed",
+                "results": results,
+            },
+        )
 
     except Exception as e:
         logger.error(f"Bot automation error for user {user_id}: {e}", exc_info=True)
-        await manager.broadcast({
-            "event": "log",
-            "level": "error",
-            "message": f"❌ Bot error: {str(e)}",
-            "timestamp": __import__("datetime").datetime.now().strftime("%H:%M:%S")
-        })
-        await manager.broadcast({
-            "event": "bot_status",
-            "status": "error",
-            "error": str(e)
-        })
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "log",
+                "level": "error",
+                "message": f"Bot error: {str(e)}",
+                "timestamp": datetime.now().strftime("%H:%M:%S"),
+            },
+        )
+        await manager.send_to_user(
+            user_id,
+            {
+                "event": "bot_status",
+                "status": "error",
+                "error": str(e),
+            },
+        )
     finally:
         _running_bots.pop(user_id, None)
 
@@ -93,22 +122,15 @@ async def start_bot(
     if user_id in _running_bots:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Bot is already running for this user"
+            detail="Bot is already running for this user",
         )
 
     logger.info(f"Bot start requested by user {user_id}")
 
     # Run in background
-    background_tasks.add_task(
-        _run_bot_with_logging,
-        user_id,
-        current_user.email
-    )
+    background_tasks.add_task(_run_bot_with_logging, user_id, current_user.email)
 
-    return {
-        "message": "Bot started successfully",
-        "status": "running"
-    }
+    return {"message": "Bot started successfully", "status": "running"}
 
 
 @router.get("/status")
@@ -119,6 +141,4 @@ async def get_bot_status(
     Check if the bot is currently running.
     """
     user_id = str(current_user.id)
-    return {
-        "running": user_id in _running_bots
-    }
+    return {"running": user_id in _running_bots}
