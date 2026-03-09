@@ -24,12 +24,12 @@ const statusData = [
 const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#ef4444'];
 
 // Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { color?: string; name?: string; value?: number | string }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-900 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 animate-in fade-in duration-200">
         <p className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry: { color?: string; name?: string; value?: number | string }, index: number) => (
           <div key={index} className="flex items-center gap-2 text-sm">
             {/* eslint-disable-next-line */}
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
@@ -44,11 +44,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 // Custom Pie Tooltip
-const CustomPieTooltip = ({ active, payload }: any) => {
+const CustomPieTooltip = ({ active, payload }: { active?: boolean; payload?: { color?: string; name?: string; value?: number | string }[] }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
+    if (!data) return null;
     const total = statusData.reduce((sum, item) => sum + item.value, 0);
-    const percentage = ((data.value / total) * 100).toFixed(1);
+    const percentage = ((Number(data.value || 0) / total) * 100).toFixed(1);
 
     return (
       <div className="bg-white dark:bg-gray-900 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 animate-in fade-in duration-200">

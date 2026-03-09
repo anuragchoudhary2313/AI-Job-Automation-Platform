@@ -4,7 +4,7 @@
  * Type-safe local storage hook with automatic JSON serialization.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { UseLocalStorageReturn } from '@/types/hooks';
 
 export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStorageReturn<T> {

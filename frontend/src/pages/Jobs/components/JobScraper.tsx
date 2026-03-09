@@ -6,23 +6,44 @@ import { toast } from '../../../components/ui/Toast';
 import { jobService } from '../../../services/job.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '../../../lib/api';
+import { useWebSocket } from '../../../hooks/useWebSocket';
 
 
 
 export function JobScraper() {
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState('');
+  const [isScrapingInProgress, setIsScrapingInProgress] = useState(false);
   const [formData, setFormData] = useState({
     keyword: '',
     location: '',
     limit: 10,
   });
-  // Removed scrapedJobs state as the new service doesn't return immediate results to display
+
+  // Listen to live scraping updates via WebSocket
+  useWebSocket({
+    onActivity: (activity) => {
+      // Check if it's a scraping activity to update progress
+      if (activity.type === 'scraping' || activity.type === 'error' || (activity.type === 'success' && activity.title.includes('Scrap'))) {
+        setProgress(activity.description || activity.title);
+        // If success or error, we might end the visual spinner
+        if (activity.type === 'success' || activity.type === 'error') {
+          setIsScrapingInProgress(false);
+          if (activity.type === 'success') {
+            queryClient.invalidateQueries({ queryKey: ['jobs'] });
+          }
+        }
+      } else if (activity.title.toLowerCase().includes('scrap')) {
+        // Fallback matched by title
+        setProgress(activity.description || activity.title);
+      }
+    }
+  });
 
   const scrapeMutation = useMutation({
     mutationFn: (data: typeof formData) =>
       jobService.scrapeJobs(data.keyword, data.location, data.limit),
-    onSuccess: (data: any) => {
+    onSuccess: (data: { message: string; jobs_found: number }) => {
       // Ideally the backend returns the jobs, but if it returns a task ID or generic message, we might need to change this.
       // The mock above expected { jobs: [], count: 0 }
       // But jobService.scrapeJobs returns { message, jobs_found }
@@ -54,6 +75,7 @@ export function JobScraper() {
     }
 
     setProgress('Initiating scraping agent...');
+    setIsScrapingInProgress(true);
 
     // Simulate progress steps if we want purely UI feedback, otherwise better to rely on real status
     // For now, we just call the mutation
@@ -120,10 +142,10 @@ export function JobScraper() {
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={scrapeMutation.isPending}
+              disabled={scrapeMutation.isPending || isScrapingInProgress}
               className="min-w-[200px]"
             >
-              {scrapeMutation.isPending ? (
+              {(scrapeMutation.isPending || isScrapingInProgress) ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   {progress || 'Scraping...'}

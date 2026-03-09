@@ -1,6 +1,6 @@
 from typing import Optional, Annotated, Any
 from datetime import datetime
-from pydantic import BaseModel, BeforeValidator
+from pydantic import BaseModel, BeforeValidator, ConfigDict
 from app.models.enums import JobStatus
 
 def stringify_object_id(v: Any) -> Any:
@@ -40,8 +40,7 @@ class Job(JobBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class JobCreateResponse(BaseModel):
     """Response for job creation, indicating if job was created or already existed."""

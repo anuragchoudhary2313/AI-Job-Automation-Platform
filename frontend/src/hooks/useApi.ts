@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import apiClient, { getErrorMessage } from '@/lib/api';
 import { useToast } from '@/components/Toast';
-import { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 
-interface UseApiOptions {
-  onSuccess?: (data: any) => void;
+interface UseApiOptions<T = unknown> {
+  onSuccess?: (data: T) => void;
   onError?: (error: string) => void;
   showSuccessToast?: boolean;
   showErrorToast?: boolean;
@@ -14,7 +14,7 @@ interface UseApiOptions {
 /**
  * Custom hook for API calls with automatic error handling
  */
-export function useApi<T = any>(options: UseApiOptions = {}) {
+export function useApi<T = unknown>(options: UseApiOptions<T> = {}) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +76,7 @@ export function useApi<T = any>(options: UseApiOptions = {}) {
 /**
  * Hook for API calls with retry functionality
  */
-export function useApiWithRetry<T = any>(options: UseApiOptions = {}) {
+export function useApiWithRetry<T = unknown>(options: UseApiOptions<T> = {}) {
   const api = useApi<T>(options);
   const [retryCount, setRetryCount] = useState(0);
   const [lastConfig, setLastConfig] = useState<AxiosRequestConfig | null>(null);

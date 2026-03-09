@@ -38,8 +38,8 @@ export const resumeService = {
     return response.data;
   },
 
-  async parseResume(id: string): Promise<any> {
-    const response = await apiClient.post<any>(`/resumes/${id}/parse`);
+  async parseResume(id: string): Promise<Record<string, unknown>> {
+    const response = await apiClient.post<Record<string, unknown>>(`/resumes/${id}/parse`);
     return response.data;
   },
 

@@ -4,8 +4,8 @@
  * Type definitions for custom hook return values.
  */
 
-import { User, Job, Resume, Stats } from './models';
-import { ApiError } from './api';
+import type { User, Job, Resume, Stats } from './models';
+import type { ApiError } from './api';
 
 export interface AsyncState<T> {
   data: T | null;
@@ -59,8 +59,8 @@ export interface UseStatsReturn {
 
 export interface UseWebSocketReturn {
   connected: boolean;
-  lastMessage: any;
-  sendMessage: (message: any) => void;
+  lastMessage: unknown;
+  sendMessage: (message: unknown) => void;
   connect: () => void;
   disconnect: () => void;
 }

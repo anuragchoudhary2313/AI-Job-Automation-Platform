@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 from beanie import Document, Indexed, Link, PydanticObjectId
-from pydantic import Field
+from pydantic import Field, ConfigDict
 from app.models.enums import JobStatus
 from app.models.user import User
 from app.models.team import Team
@@ -41,8 +41,8 @@ class Job(Document):
             [("team_id", 1), ("created_at", -1)]
         ]
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "title": "Senior Software Engineer",
                 "company": "Google",
@@ -53,6 +53,7 @@ class Job(Document):
                 "user_id": "60d5ecb8b392d40015f8c8d2"
             }
         }
+    )
 
 class ScrapedJob(Document):
     title: str

@@ -103,7 +103,7 @@ export function getErrorMessage(error: unknown): string {
 
     // HTTP error responses
     const status = error.response.status;
-    const data = error.response.data as any;
+    const data = error.response.data as Record<string, unknown>;
 
     // Use server error message if available
     if (data?.detail) {
@@ -114,7 +114,7 @@ export function getErrorMessage(error: unknown): string {
       // Handle array of errors (e.g. FastAPI validation errors)
       if (Array.isArray(data.detail)) {
         return data.detail
-          .map((d: any) => {
+          .map((d: Record<string, unknown> | string) => {
             if (typeof d === 'string') return d;
             const message = d.msg || d.message || d.error || JSON.stringify(d);
 
@@ -146,9 +146,10 @@ export function getErrorMessage(error: unknown): string {
 
       // Handle object errors
       if (typeof data.detail === 'object' && data.detail !== null) {
-        if (data.detail.message) return data.detail.message;
-        if (data.detail.msg) return data.detail.msg;
-        if (data.detail.error) return data.detail.error;
+        const d = data.detail as Record<string, unknown>;
+        if (d.message) return d.message as string;
+        if (d.msg) return d.msg as string;
+        if (d.error) return d.error as string;
         // Fallback for unknown object structure
         try {
           return JSON.stringify(data.detail);

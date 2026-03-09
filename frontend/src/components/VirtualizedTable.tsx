@@ -59,7 +59,6 @@ export function VirtualizedTable<T extends { id: number | string }>({
       {/* Table Header */}
       {/* Table Header */}
       <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        {/* eslint-disable-next-line */}
         <div className="grid" style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}>
           {columns.map((column) => (
             <div
@@ -76,10 +75,9 @@ export function VirtualizedTable<T extends { id: number | string }>({
       <div
         ref={parentRef}
         className="overflow-auto"
-        style={{ height: '600px' }} // eslint-disable-line
+        style={{ height: '600px' }}
       >
         <div
-          // eslint-disable-next-line
           style={{
             height: `${totalSize}px`,
             width: '100%',
@@ -94,7 +92,6 @@ export function VirtualizedTable<T extends { id: number | string }>({
                 key={item.id}
                 className={`absolute top-0 left-0 w-full border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${onRowClick ? 'cursor-pointer' : ''
                   }`}
-                // eslint-disable-next-line
                 style={{
                   height: `${virtualRow.size}px`,
                   transform: `translateY(${virtualRow.start}px)`,
@@ -103,7 +100,6 @@ export function VirtualizedTable<T extends { id: number | string }>({
               >
                 <div
                   className="grid h-full items-center"
-                  // eslint-disable-next-line
                   style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
                 >
                   {columns.map((column) => (

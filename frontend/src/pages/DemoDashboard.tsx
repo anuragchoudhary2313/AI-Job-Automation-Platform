@@ -1,5 +1,4 @@
-import React from 'react';
-import { BarChart3, FileText, Mail, TrendingUp, Zap, Clock } from 'lucide-react';
+import { BarChart3, Mail, TrendingUp, Clock } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { demoStats, demoJobs, demoChartData, demoLogs } from '../data/demoData';
 

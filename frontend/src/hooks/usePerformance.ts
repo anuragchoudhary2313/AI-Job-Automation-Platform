@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 
 /**
  * Custom hook for debounced values
@@ -24,22 +24,23 @@ export function useDebounce<T>(value: T, delay: number = 300): T {
  * Custom hook for throttled callbacks
  * Limits function execution frequency
  */
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (...args: never[]) => unknown>(
   callback: T,
   delay: number = 300
 ): T {
-  const [lastRun, setLastRun] = useState(Date.now());
+  const lastRun = useRef(Date.now());
 
   return useCallback(
-    ((...args) => {
+    (...args: Parameters<T>) => {
       const now = Date.now();
-      if (now - lastRun >= delay) {
-        setLastRun(now);
+      if (now - lastRun.current >= delay) {
+        lastRun.current = now;
         return callback(...args);
       }
-    }) as T,
-    [callback, delay, lastRun]
-  );
+      return undefined;
+    },
+    [callback, delay]
+  ) as unknown as T;
 }
 
 /**

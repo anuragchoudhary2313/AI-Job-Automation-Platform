@@ -25,24 +25,25 @@ const notifyListeners = (toast: Toast) => {
 
 const generateId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
 
-const formatMessage = (msg: any): string => {
+const formatMessage = (msg: unknown): string => {
   if (!msg) return "";
   if (typeof msg === 'string') return msg;
   if (Array.isArray(msg)) {
     return msg.map(m => formatMessage(m)).join(', ');
   }
   if (typeof msg === 'object') {
-    return msg.message || msg.msg || msg.detail || JSON.stringify(msg);
+    const obj = msg as Record<string, unknown>;
+    return (obj.message as string) || (obj.msg as string) || (obj.detail as string) || JSON.stringify(msg);
   }
   return String(msg);
 };
 
 export const toast = {
-  success: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'success' }),
-  error: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'error' }),
-  warning: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'warning' }),
-  info: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
-  message: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
+  success: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'success' }),
+  error: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'error' }),
+  warning: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'warning' }),
+  info: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
+  message: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
   dismiss: () => { },
   loading: () => { },
   promise: () => { },

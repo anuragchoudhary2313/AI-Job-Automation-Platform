@@ -1,0 +1,14 @@
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Dashboard\components\ChartsSection.tsx
+  Line 27: Unexpected any. Specify a different type.
+  Line 32: Unexpected any. Specify a different type.
+  Line 47: Unexpected any. Specify a different type.
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\DemoDashboard.tsx
+  Line 2: 'FileText' is defined but never used.
+  Line 2: 'Zap' is defined but never used.
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Landing\components\Footer.tsx
+  Line 2: 'Mail' is defined but never used.
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Logs\index.tsx
+  Line 68: Unexpected any. Specify a different type.

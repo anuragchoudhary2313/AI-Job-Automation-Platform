@@ -32,8 +32,9 @@ export function InviteModal({ isOpen, onClose, onInvited }: InviteModalProps) {
       setRole('user');
       onInvited?.();
       onClose();
-    } catch (error: any) {
-      const message = error?.response?.data?.detail || 'Failed to send invitation';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const message = axiosError?.response?.data?.detail || 'Failed to send invitation';
       toast.error(message);
     } finally {
       setLoading(false);

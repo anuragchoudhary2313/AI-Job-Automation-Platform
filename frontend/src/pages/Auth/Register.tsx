@@ -55,7 +55,7 @@ export function Register() {
 
       toast.success('Account created successfully! Please log in.');
       navigate('/login');
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       toast.error(errorMessage);
     } finally {

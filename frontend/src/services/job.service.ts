@@ -25,8 +25,8 @@ export interface JobFilters {
 }
 
 export const jobService = {
-  async getStats(): Promise<any> {
-    const response = await apiClient.get<any>('/jobs/stats');
+  async getStats(): Promise<Record<string, unknown>> {
+    const response = await apiClient.get<Record<string, unknown>>('/jobs/stats');
     return response.data;
   },
 

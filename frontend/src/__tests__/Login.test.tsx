@@ -61,7 +61,6 @@ describe('Login Form', () => {
 
   it('submits form with valid credentials', async () => {
     const user = userEvent.setup()
-    const mockLogin = vi.fn()
 
     // Mock successful login
     global.fetch = vi.fn().mockResolvedValue({
@@ -138,7 +137,6 @@ describe('Login Form', () => {
   })
 
   it('navigates to register page', async () => {
-    const user = userEvent.setup()
     render(<Login />)
 
     const registerLink = screen.getByText(/create account/i)

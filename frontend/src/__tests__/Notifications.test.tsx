@@ -29,7 +29,7 @@ class MockWebSocket {
     }, 0)
   }
 
-  simulateMessage(data: any) {
+  simulateMessage(data: unknown) {
     act(() => {
       if (this.onmessage) {
         this.onmessage(new MessageEvent('message', { data: JSON.stringify(data) }))
@@ -59,15 +59,15 @@ describe('WebSocket Notifications', () => {
     vi.clearAllMocks()
     global.WebSocket = vi.fn().mockImplementation((url) => {
       return new MockWebSocket(url)
-    }) as any
+    }) as unknown as typeof WebSocket
   })
 
   const getMockWs = (): MockWebSocket => {
-    const mock = global.WebSocket as any
+    const mock = global.WebSocket as unknown as ReturnType<typeof vi.fn>
     if (mock.mock.results.length === 0) {
       throw new Error("WebSocket not created yet")
     }
-    return mock.mock.results[0].value
+    return mock.mock.results[0]?.value
   }
 
   it('establishes WebSocket connection', async () => {
@@ -231,7 +231,7 @@ describe('WebSocket Notifications', () => {
       play: vi.fn().mockResolvedValue(undefined),
       pause: vi.fn(),
     }
-    global.Audio = vi.fn().mockImplementation(() => mockAudio) as any
+    global.Audio = vi.fn().mockImplementation(() => mockAudio) as unknown as typeof Audio
 
     render(
       <NotificationProvider>

@@ -40,7 +40,7 @@ export function ResetPassword() {
       await authService.resetPassword(token, password);
       toast.success('Password has been reset successfully. You can now login.');
       navigate('/login');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(getErrorMessage(error) || 'Failed to reset password');
     } finally {
       setLoading(false);

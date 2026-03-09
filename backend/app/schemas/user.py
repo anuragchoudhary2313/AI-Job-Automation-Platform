@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from beanie import PydanticObjectId
 from app.models.enums import UserRole
 
@@ -23,9 +23,7 @@ class UserInDBBase(UserBase):
     team_id: Optional[PydanticObjectId] = None
     role: str = UserRole.USER
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class User(UserInDBBase):
     pass

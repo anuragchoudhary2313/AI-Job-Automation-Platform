@@ -44,9 +44,9 @@ export function MembersList({ isLoading: externalLoading = false, refreshKey = 0
       setLoading(true);
       const response = await apiClient.get('/teams/members');
       setMembers(response.data);
-    } catch (error: any) {
-      // If 403 or no team, show empty list
-      if (error?.response?.status !== 403) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status?: number; data?: { detail?: string } } };
+      if (axiosError?.response?.status !== 403) {
         console.error('Failed to fetch team members:', error);
       }
       setMembers([]);
@@ -116,8 +116,9 @@ export function MembersList({ isLoading: externalLoading = false, refreshKey = 0
       setMembers(prev => prev.map(m =>
         getMemberId(m) === id ? { ...m, role: backendRole } : m
       ));
-    } catch (error: any) {
-      const message = error?.response?.data?.detail || 'Failed to update role';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const message = axiosError?.response?.data?.detail || 'Failed to update role';
       toast.error(message);
     } finally {
       setActionLoading(null);
@@ -140,8 +141,9 @@ export function MembersList({ isLoading: externalLoading = false, refreshKey = 0
 
       // Remove from local state
       setMembers(prev => prev.filter(m => getMemberId(m) !== id));
-    } catch (error: any) {
-      const message = error?.response?.data?.detail || 'Failed to remove member';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const message = axiosError?.response?.data?.detail || 'Failed to remove member';
       toast.error(message);
     } finally {
       setActionLoading(null);
@@ -157,8 +159,9 @@ export function MembersList({ isLoading: externalLoading = false, refreshKey = 0
         role: member.role || 'user'
       });
       toast.success(`Invitation resent to ${member.email}`);
-    } catch (error: any) {
-      const message = error?.response?.data?.detail || 'Failed to resend invite';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const message = axiosError?.response?.data?.detail || 'Failed to resend invite';
       toast.error(message);
     } finally {
       setActionLoading(null);

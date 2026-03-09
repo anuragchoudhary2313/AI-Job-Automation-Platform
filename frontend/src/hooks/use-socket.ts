@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 type WebSocketEvent = {
   event: string;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export function useWebSocket(url: string) {

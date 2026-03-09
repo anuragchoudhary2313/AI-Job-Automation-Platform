@@ -76,23 +76,31 @@ function showUpdateNotification() {
 // Check if app is running as PWA
 export function isPWA(): boolean {
   return window.matchMedia('(display-mode: standalone)').matches ||
-    (window.navigator as any).standalone === true;
+    (window.navigator as unknown as { standalone?: boolean }).standalone === true;
 }
 
-// Prompt user to install PWA
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed',
+    platform: string
+  }>;
+  prompt(): Promise<void>;
+}
+
 export function promptInstall() {
-  let deferredPrompt: any = null;
+  let deferredPrompt: BeforeInstallPromptEvent | null = null;
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
-    deferredPrompt = e;
+    deferredPrompt = e as BeforeInstallPromptEvent;
 
     // Show install button
     showInstallButton(deferredPrompt);
   });
 }
 
-function showInstallButton(deferredPrompt: any) {
+function showInstallButton(deferredPrompt: BeforeInstallPromptEvent | null) {
   const installButton = document.createElement('button');
   installButton.className = 'fixed bottom-4 left-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 font-semibold hover:shadow-xl transition-all';
   installButton.textContent = '📱 Install App';

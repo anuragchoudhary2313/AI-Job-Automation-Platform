@@ -67,7 +67,6 @@ const AnimatedButton = React.forwardRef<HTMLButtonElement, AnimatedButtonProps>(
             <span
               key={ripple.id}
               className="absolute bg-white/30 rounded-full animate-ripple"
-              // eslint-disable-next-line
               style={{
                 left: ripple.x,
                 top: ripple.y,

@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
 export interface WebSocketMessage {
-  type: 'notification' | 'activity' | 'status' | 'error';
-  data: any;
+  type: 'notification' | 'activity' | 'status' | 'error' | 'ping' | 'pong';
+  data: unknown;
   timestamp: string;
 }
 
@@ -40,6 +40,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const shouldReconnectRef = useRef(true);
 
   // Keep refs for callbacks to avoid reconnecting when they change
@@ -81,21 +82,35 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         console.log('WebSocket connected');
         setIsConnected(true);
         onConnectRef.current?.();
+
+        // Start heartbeat ping
+        heartbeatIntervalRef.current = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: 'ping', timestamp: new Date().toISOString() }));
+          }
+        }, 30000);
       };
 
       ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
+
+          if (message.type === 'pong') {
+            // Can track latency here if needed
+            return;
+          }
+
           setLastMessage(message);
           onMessageRef.current?.(message);
 
           // Handle activity messages
           if (message.type === 'activity' && onActivityRef.current) {
+            const payload = (message.data as Record<string, unknown>) || {};
             const activity: Activity = {
               id: Date.now().toString(),
-              type: message.data.activityType || 'success',
-              title: message.data.title || 'Activity',
-              description: message.data.description || '',
+              type: (payload.activityType as Activity['type']) || 'success',
+              title: (payload.title as string) || 'Activity',
+              description: (payload.description as string) || '',
               time: formatTimeAgo(new Date(message.timestamp)),
               timestamp: new Date(message.timestamp).getTime(),
             };
@@ -113,6 +128,11 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       };
 
       ws.onclose = (event: CloseEvent) => {
+        if (heartbeatIntervalRef.current) {
+          clearInterval(heartbeatIntervalRef.current);
+          heartbeatIntervalRef.current = null;
+        }
+
         // Ignore 1005 (No Status) if we initiated the close or it's a dev-mode flicker
         if (event.code === 1005) {
           console.log("WebSocket closed normally (1005).");
@@ -152,13 +172,17 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
     }
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
+    }
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
     }
   }, []);
 
-  const sendMessage = useCallback((message: any) => {
+  const sendMessage = useCallback((message: unknown) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     } else {

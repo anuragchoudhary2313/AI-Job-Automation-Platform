@@ -1,0 +1,146 @@
+﻿
+> ai-job-automation-frontend@1.0.0 lint
+> eslint . --report-unused-disable-directives --max-warnings 0
+
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\components\ui\Toast.tsx
+  28:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  41:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  42:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  43:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  44:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\hooks\use-socket.ts
+  5:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\hooks\useApi.ts
+   7:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  17:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  79:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\hooks\useLocalStorage.ts
+  7:20  error  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\hooks\usePerformance.ts
+  27:49  error    Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  27:59  error    Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  33:10  warning  React Hook useCallback received a function whose dependencies are unknown. Pass an inline function instead  react-hooks/exhaustive-deps
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\hooks\useWebSocket.ts
+    7:9   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  184:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\lib\api.ts
+  106:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  117:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\lib\utils.ts
+  43:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  43:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Admin\components\UsersTable.tsx
+    1:44  error  'useRef' is defined but never used        @typescript-eslint/no-unused-vars
+  139:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  156:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  178:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  382:85  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  396:85  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Auth\ForgotPassword.tsx
+  24:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Auth\Login.tsx
+  68:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Auth\Register.tsx
+  58:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Auth\ResetPassword.tsx
+  43:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Dashboard\components\ChartsSection.tsx
+   27:52  error  Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+   32:30  error  Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+   34:14  error  Unused eslint-disable directive (no problems were reported)
+   47:48  error  Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+  182:25  error  Unused eslint-disable directive (no problems were reported)
+  216:21  error  Unused eslint-disable directive (no problems were reported)
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\DemoDashboard.tsx
+  2:21  error  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+  2:49  error  'Zap' is defined but never used       @typescript-eslint/no-unused-vars
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Jobs\components\JobScraper.tsx
+  46:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Jobs\components\JobsTable.tsx
+  193:69  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Jobs\components\ScrapedJobsList.tsx
+  51:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Landing\components\Footer.tsx
+  2:37  error  'Mail' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Logs\index.tsx
+  68:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Resumes\components\ResumeGenerator.tsx
+  41:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Resumes\components\UploadArea.tsx
+  33:6   warning  React Hook useCallback has a missing dependency: 'handleUpload'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  85:14  error    Unused eslint-disable directive (no problems were reported)
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Team\components\InviteModal.tsx
+  35:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\pages\Team\components\MembersList.tsx
+   47:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  119:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  143:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\services\job.service.ts
+  28:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  29:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\services\resume.service.ts
+  41:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  42:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\test\setup.ts
+  5:1  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\test\utils.tsx
+  65:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\types\components.ts
+  51:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\types\hooks.ts
+  62:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\utils\logger.ts
+  14:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  24:74  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  61:31  error  'entry' is defined but never used         @typescript-eslint/no-unused-vars
+  66:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  70:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  74:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  78:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  88:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  89:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  91:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\anura\ai-job-automation-saas\frontend\src\utils\serviceWorker.ts
+  79:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  84:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  95:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 74 problems (72 errors, 2 warnings)
+  4 errors and 0 warnings potentially fixable with the `--fix` option.
+

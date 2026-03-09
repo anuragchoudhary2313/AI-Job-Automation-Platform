@@ -190,7 +190,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                       className="flex items-center gap-1 cursor-pointer hover:opacity-75 transition-opacity"
                       onClick={(e) => handleStatusClick(job.id, e)}
                     >
-                      <Badge variant={STATUS_VARIANT[job.status] as any} className="capitalize">
+                      <Badge variant={STATUS_VARIANT[job.status] as "default" | "warning" | "secondary" | "danger" | "success"} className="capitalize">
                         {job.status}
                       </Badge>
                       <ChevronDown className="h-3 w-3 text-gray-400" />

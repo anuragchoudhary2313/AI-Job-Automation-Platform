@@ -26,11 +26,21 @@ class JobService:
         """Get job by ID with authorization check."""
         job = await self.job_repo.get_or_404(job_id)
 
-        # Check authorization
-        # Convert user.team_id (if str) to match job.team_id (str)
-        logger.info(f"Authorization check - Job ID: {job_id}, Job team_id: {job.team_id}, User team_id: {user.team_id}")
-        if str(job.team_id) != str(user.team_id):
-            logger.info(f"Authorization failed - Job team_id: '{job.team_id}' != User team_id: '{user.team_id}'")
+        # Check authorization — use str() comparison to handle mixed ObjectId/str types in MongoDB
+        user_team_str = str(user.team_id) if user.team_id is not None else None
+        job_team_str = str(job.team_id) if job.team_id is not None else None
+        logger.info(f"Authorization check - Job ID: {job_id}, Job team_id: {job_team_str}, User team_id: {user_team_str}")
+
+        # If user has no team_id, fall back to checking user_id ownership
+        if user_team_str is None:
+            if str(job.user_id) != str(user.id):
+                logger.info(f"Authorization failed - user has no team, and job user_id '{job.user_id}' != user id '{user.id}'")
+                raise AuthorizationError("You don't have access to this job")
+            return job
+
+        # Compare stringified team_ids (handles ObjectId vs str type mismatches in MongoDB)
+        if job_team_str != user_team_str:
+            logger.info(f"Authorization failed - Job team_id: '{job_team_str}' != User team_id: '{user_team_str}'")
             raise AuthorizationError("You don't have access to this job")
 
         return job

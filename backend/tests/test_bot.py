@@ -5,7 +5,7 @@ Tests for scheduler, email sending, resume generation, and web scraping.
 import pytest
 from fastapi import status
 from unittest.mock import Mock, patch, MagicMock
-from app.db.models import Job, JobStatus
+from app.models import Job, JobStatus
 
 
 import pytest

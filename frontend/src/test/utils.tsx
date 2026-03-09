@@ -1,5 +1,5 @@
-import { ReactElement } from 'react'
-import { render, RenderOptions } from '@testing-library/react'
+import type { ReactElement } from 'react'
+import { render, type RenderOptions } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 
@@ -62,7 +62,7 @@ export const mockApiResponse = <T,>(data: T, delay = 0) => {
 }
 
 // Mock fetch helper
-export const mockFetch = (data: any, ok = true) => {
+export const mockFetch = (data: unknown, ok = true) => {
   global.fetch = vi.fn().mockResolvedValue({
     ok,
     json: async () => data,

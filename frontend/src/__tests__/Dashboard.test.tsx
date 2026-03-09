@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../test/utils'
-import { Dashboard } from '../pages/Dashboard'
+import Dashboard from '../pages/Dashboard'
 
 describe('Dashboard', () => {
   beforeEach(() => {
@@ -117,13 +117,13 @@ describe('Dashboard', () => {
     vi.useFakeTimers()
     render(<Dashboard />)
 
-    const initialCallCount = (global.fetch as any).mock.calls.length
+    const initialCallCount = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.length
 
     // Fast-forward 30 seconds
     vi.advanceTimersByTime(30000)
 
     await waitFor(() => {
-      expect((global.fetch as any).mock.calls.length).toBeGreaterThan(initialCallCount)
+      expect((global.fetch as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(initialCallCount)
     })
 
     vi.useRealTimers()

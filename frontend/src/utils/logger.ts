@@ -11,7 +11,7 @@ interface LogEntry {
   level: LogLevel;
   message: string;
   timestamp: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 class Logger {
@@ -21,7 +21,7 @@ class Logger {
     this.isDevelopment = import.meta.env.DEV;
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, any>): void {
+  private log(level: LogLevel, message: string, context?: Record<string, unknown>): void {
     const entry: LogEntry = {
       level,
       message,
@@ -61,21 +61,22 @@ class Logger {
   private sendToErrorTracking(entry: LogEntry): void {
     // Implement error tracking service integration
     // e.g., Sentry, LogRocket, etc.
+    console.error('Error tracked:', entry);
   }
 
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.log('debug', message, context);
   }
 
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.log('info', message, context);
   }
 
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.log('warn', message, context);
   }
 
-  error(message: string, context?: Record<string, any>): void {
+  error(message: string, context?: Record<string, unknown>): void {
     this.log('error', message, context);
   }
 }
@@ -85,8 +86,8 @@ export const logger = new Logger();
 
 // Export convenience methods
 export const log = {
-  debug: (message: string, context?: Record<string, any>) => logger.debug(message, context),
-  info: (message: string, context?: Record<string, any>) => logger.info(message, context),
-  warn: (message: string, context?: Record<string, any>) => logger.warn(message, context),
-  error: (message: string, context?: Record<string, any>) => logger.error(message, context),
+  debug: (message: string, context?: Record<string, unknown>) => logger.debug(message, context),
+  info: (message: string, context?: Record<string, unknown>) => logger.info(message, context),
+  warn: (message: string, context?: Record<string, unknown>) => logger.warn(message, context),
+  error: (message: string, context?: Record<string, unknown>) => logger.error(message, context),
 };

@@ -21,7 +21,7 @@ export function ForgotPassword() {
     try {
       await authService.forgotPassword(email);
       setSubmitted(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(getErrorMessage(error) || 'Failed to send reset email');
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Search, MoreHorizontal, Shield, UserCog, UserX, UserCheck, Trash2, Key } from 'lucide-react';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { LoadingTable } from '../../../components/ui/LoadingTable';
@@ -136,8 +136,9 @@ export function UsersTable() {
       fetchUsers(searchQuery);
 
       // We don't close the modal immediately so they can see the password
-    } catch (error: any) {
-      const msg = error.response?.data?.detail || 'Failed to create user';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const msg = axiosError.response?.data?.detail || 'Failed to create user';
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
@@ -153,8 +154,9 @@ export function UsersTable() {
       toast.success(`User ${isActivating ? 'activated' : 'suspended'} successfully`);
       setActiveMenuId(null);
       fetchUsers(searchQuery);
-    } catch (error: any) {
-      const msg = error.response?.data?.detail || 'Failed to update user status';
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const msg = axiosError.response?.data?.detail || 'Failed to update user status';
       toast.error(msg);
     }
   };
@@ -175,9 +177,10 @@ export function UsersTable() {
       toast.success('User deleted successfully');
       setActiveMenuId(null);
       fetchUsers(searchQuery);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Delete user failed:', error);
-      const msg = error.response?.data?.detail || 'Failed to delete user';
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      const msg = axiosError.response?.data?.detail || 'Failed to delete user';
       toast.error(msg);
     }
   };
@@ -379,7 +382,7 @@ export function UsersTable() {
                   id="user-role"
                   className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950 disabled:opacity-50"
                   value={newUser.role}
-                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value as User['role'] })}
                   disabled={isSubmitting}
                 >
                   <option value="User">User</option>
@@ -393,7 +396,7 @@ export function UsersTable() {
                   id="user-plan"
                   className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950 disabled:opacity-50"
                   value={newUser.plan}
-                  onChange={(e) => setNewUser({ ...newUser, plan: e.target.value as any })}
+                  onChange={(e) => setNewUser({ ...newUser, plan: e.target.value as User['plan'] })}
                   disabled={isSubmitting}
                 >
                   <option value="Free">Free</option>

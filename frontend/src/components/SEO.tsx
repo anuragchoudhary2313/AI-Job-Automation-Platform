@@ -62,16 +62,6 @@ const SEO = ({
       <meta name="revisit-after" content="7 days" />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-      {/* Favicon */}
-      <link rel="icon" type="image/png" href="/favicon.png" />
-      {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-
-      {/* Theme Color */}
-      {/* eslint-disable-next-line */}
-      <meta name="theme-color" content="#3B82F6" />
-      <meta name="msapplication-TileColor" content="#3B82F6" />
     </Helmet>
   );
 };

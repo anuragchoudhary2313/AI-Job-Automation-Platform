@@ -65,7 +65,7 @@ export function Login() {
 
       toast.success('Welcome back! Logged in successfully.');
       navigate('/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       toast.error(errorMessage);
     } finally {

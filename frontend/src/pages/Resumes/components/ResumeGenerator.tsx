@@ -38,7 +38,7 @@ export function ResumeGenerator() {
       setResumeData(response.data);
       toast.success('Resume generated successfully!');
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('AI Generation Error:', error);
       toast.error(getErrorMessage(error));
     } finally {

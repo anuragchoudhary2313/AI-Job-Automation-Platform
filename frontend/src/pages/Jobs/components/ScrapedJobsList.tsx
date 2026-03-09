@@ -48,8 +48,9 @@ export function ScrapedJobsList() {
       }
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || 'Failed to add job');
+    onError: (error: unknown) => {
+      const axiosError = error as { response?: { data?: { detail?: string } } };
+      toast.error(axiosError.response?.data?.detail || 'Failed to add job');
     }
   });
 

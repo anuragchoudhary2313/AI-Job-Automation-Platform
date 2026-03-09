@@ -4,7 +4,7 @@
  * Type definitions for component props.
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface BaseComponentProps {
   className?: string;
@@ -48,7 +48,7 @@ export interface ModalProps extends BaseComponentProps {
 export interface TableColumn<T> {
   key: keyof T | string;
   label: string;
-  render?: (value: any, row: T) => ReactNode;
+  render?: (value: unknown, row: T) => ReactNode;
   sortable?: boolean;
   width?: string;
 }
