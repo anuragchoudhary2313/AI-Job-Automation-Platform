@@ -116,10 +116,15 @@ class EmailService:
                     logger.error(f"Failed to attach file {file_path}: {e}")
         
         # Send email
-        with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
-            server.starttls()
-            server.login(self.smtp_user, self.smtp_password)
-            server.send_message(msg)
+        if self.smtp_port == 465:
+            with smtplib.SMTP_SSL(self.smtp_host, self.smtp_port, timeout=30) as server:
+                server.login(self.smtp_user, self.smtp_password)
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
+                server.starttls()
+                server.login(self.smtp_user, self.smtp_password)
+                server.send_message(msg)
         
         logger.info(f"Email sent successfully to {to_email}")
         return True

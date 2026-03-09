@@ -150,3 +150,44 @@ async def change_password(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred during password change"
         )
+
+from app.schemas.user import ForgotPasswordRequest, ResetPasswordRequest
+
+@router.post("/forgot-password")
+async def forgot_password(
+    request: ForgotPasswordRequest,
+    auth_service: AuthService = Depends(get_auth_service)
+) -> Any:
+    """Request a password reset email."""
+    try:
+        await auth_service.forgot_password(email=request.email)
+        # Always return success to prevent email enumeration
+        return {"message": "If an account with that email exists, a password reset link has been sent."}
+    except Exception as e:
+        logger.error(f"Forgot password error: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred processing the password reset request"
+        )
+
+
+@router.post("/reset-password")
+async def reset_password(
+    request: ResetPasswordRequest,
+    auth_service: AuthService = Depends(get_auth_service)
+) -> Any:
+    """Reset password using token."""
+    try:
+        await auth_service.reset_password(
+            token=request.token,
+            new_password=request.new_password
+        )
+        return {"message": "Password has been reset successfully. You can now login."}
+    except (AuthenticationError, ValidationError) as e:
+        raise handle_exception(e)
+    except Exception as e:
+        logger.error(f"Reset password error: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while resetting the password"
+        )

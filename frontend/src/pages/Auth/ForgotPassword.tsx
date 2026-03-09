@@ -4,18 +4,28 @@ import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { AuthLayout } from './AuthLayout';
+import { authService } from '../../services/auth.service';
+import { toast } from '../../components/ui/Toast';
+import { getErrorMessage } from '../../lib/api';
 
 export function ForgotPassword() {
+  const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email) return;
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await authService.forgotPassword(email);
       setSubmitted(true);
-    }, 1500);
+    } catch (error: any) {
+      toast.error(getErrorMessage(error) || 'Failed to send reset email');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -51,7 +61,14 @@ export function ForgotPassword() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-          <Input type="email" placeholder="Email Address" className="pl-10" required />
+          <Input
+            type="email"
+            placeholder="Email Address"
+            className="pl-10"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
 
         <Button type="submit" className="w-full" size="lg" isLoading={loading}>
@@ -68,3 +85,5 @@ export function ForgotPassword() {
     </AuthLayout>
   );
 }
+
+export default ForgotPassword;

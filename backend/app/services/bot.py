@@ -5,6 +5,10 @@ import logging
 import asyncio
 from typing import List, Dict, Any
 
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 from app.models.job import Job, JobStatus
 from app.models.user import User
 from app.services.email import email_service
@@ -39,9 +43,24 @@ class BotService:
         try:
             logger.info(f"Starting job automation for user {user_id}")
             
-            # Create automation run record
+            # Fetch user first
+            user = await User.get(user_id)
+            if not user:
+                logger.warning(f"No user found for {user_id}")
+                return results
+
+            # Get user's primary resume
+            resumes = await resume_service.get_user_resumes(user=user)
+            if not resumes:
+                logger.warning(f"No resumes found for {user_id}")
+                return results
+                
+            resume = resumes[0] # Use most recent
+            
+            # Create automation run record with required resume_id
             run = await AutomationRun(
                 user_id=user_id,
+                resume_id=resume.id,
                 status="running",
                 applied_jobs=[],
                 applied_count=0
@@ -50,19 +69,6 @@ class BotService:
             # Get pending jobs
             jobs = await self._get_pending_jobs(user_id)
             results['jobs_processed'] = len(jobs)
-            
-            # Get user's primary resume
-            resumes = await resume_service.get_user_resumes(user_id=user_id) # Wait, my get_user_resumes takes User object.
-            # I should fix service to take ID or pass User.
-            # For now, I'll fetch user first.
-            user = await User.get(user_id)
-            if not user or not resumes:
-                logger.warning(f"No user or resumes found for {user_id}")
-                run.status = "failed"
-                await run.save()
-                return results
-                
-            resume = resumes[0] # Use most recent
             
             # Process each job with individual timeout
             for job in jobs:
@@ -103,9 +109,10 @@ class BotService:
     
     async def _get_pending_jobs(self, user_id: str) -> List[Job]:
         """Get pending jobs for user."""
-        # Beanie query
+        from beanie import PydanticObjectId
+        # Beanie query - user_id must be PydanticObjectId for exact match
         return await Job.find(
-            Job.user_id == user_id,
+            Job.user_id == PydanticObjectId(user_id),
             Job.status == JobStatus.PENDING
         ).limit(10).to_list()
     

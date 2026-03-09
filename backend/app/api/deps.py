@@ -64,7 +64,8 @@ async def require_admin(current_user: User = Depends(get_current_user)) -> User:
     role_name = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
     admin_value = UserRole.ADMIN.value if hasattr(UserRole.ADMIN, "value") else str(UserRole.ADMIN)
     
-    if role_name != admin_value:
+    logger.info(f"Checking Admin Role: User has '{role_name}', Expected '{admin_value}'")
+    if role_name.lower() != admin_value.lower():
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )

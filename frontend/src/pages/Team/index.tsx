@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { TeamStats } from './components/TeamStats';
 import { MembersList } from './components/MembersList';
 import { InviteModal } from './components/InviteModal';
@@ -7,6 +7,11 @@ import { UserPlus } from 'lucide-react';
 
 export function Team() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleInvited = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -22,9 +27,13 @@ export function Team() {
       </div>
 
       <TeamStats />
-      <MembersList />
+      <MembersList refreshKey={refreshKey} />
 
-      <InviteModal isOpen={isInviteOpen} onClose={() => setIsInviteOpen(false)} />
+      <InviteModal
+        isOpen={isInviteOpen}
+        onClose={() => setIsInviteOpen(false)}
+        onInvited={handleInvited}
+      />
     </div>
   );
 }

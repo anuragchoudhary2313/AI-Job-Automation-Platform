@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Search, MoreHorizontal, Shield, UserCog } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Search, MoreHorizontal, Shield, UserCog, UserX, UserCheck, Trash2, Key } from 'lucide-react';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { LoadingTable } from '../../../components/ui/LoadingTable';
 import { Input } from '../../../components/ui/Input';
@@ -10,9 +10,10 @@ import {
 import { Badge } from '../../../components/ui/Badge';
 import { toast } from '../../../components/ui/Toast';
 import { Modal } from '../../../components/ui/Modal';
+import apiClient from '../../../lib/api';
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: 'Admin' | 'User';
@@ -21,38 +22,75 @@ interface User {
   joined: string;
 }
 
-const initialUsers: User[] = [
-  { id: 1, name: 'Anurag', email: 'anurag@admin.com', role: 'Admin', plan: 'Enterprise', status: 'Active', joined: 'Jan 1, 2026' },
-  { id: 2, name: 'John Doe', email: 'john@user.com', role: 'User', plan: 'Pro', status: 'Active', joined: 'Feb 12, 2026' },
-  { id: 3, name: 'Jane Smith', email: 'jane@user.com', role: 'User', plan: 'Free', status: 'Active', joined: 'Feb 15, 2026' },
-  { id: 4, name: 'Bad Actor', email: 'spam@bot.com', role: 'User', plan: 'Free', status: 'Suspended', joined: 'Feb 18, 2026' },
-];
-
-export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
+export function UsersTable() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Add User State
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newUser, setNewUser] = useState<Partial<User>>({
     role: 'User',
     plan: 'Free',
-    status: 'Active'
   });
 
-  // Filter users based on search query
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Temp Password display
+  const [createdPassword, setCreatedPassword] = useState<string | null>(null);
+
+  // Actions menu state
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+
+  const fetchUsers = useCallback(async (search = '') => {
+    setIsLoading(true);
+    try {
+      const response = await apiClient.get<User[]>('/admin/users', {
+        params: { search: search || undefined }
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Failed to fetch users', error);
+      toast.error('Failed to load users');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // Debounced search
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      fetchUsers(searchQuery);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [searchQuery, fetchUsers]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
+  // Click outside listener to close menus
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // If the click is not on a menu toggle or the menu itself, close it
+      if (!(event.target as HTMLElement).closest('.user-menu-container')) {
+        setActiveMenuId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleExportCSV = () => {
     try {
       const headers = ['ID,Name,Email,Role,Plan,Status,Joined'];
-      const rows = filteredUsers.map(u =>
-        `${u.id},"${u.name}","${u.email}",${u.role},${u.plan},${u.status},"${u.joined}"`
+      const rows = users.map(u =>
+        `"${u.id}","${u.name}","${u.email}",${u.role},${u.plan},${u.status},"${u.joined}"`
       );
       const csvContent = [headers, ...rows].join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -72,44 +110,85 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
   };
 
   const handleAddUser = () => {
+    setCreatedPassword(null);
+    setNewUser({ role: 'User', plan: 'Free' });
     setIsAddUserOpen(true);
   };
 
-  const saveNewUser = (e: React.FormEvent) => {
+  const saveNewUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUser.name || !newUser.email) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    const userToAdd: User = {
-      id: Math.max(...users.map(u => u.id), 0) + 1,
-      name: newUser.name,
-      email: newUser.email,
-      role: (newUser.role as 'Admin' | 'User') || 'User',
-      plan: (newUser.plan as 'Free' | 'Pro' | 'Enterprise') || 'Free',
-      status: 'Active',
-      joined: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    };
+    setIsSubmitting(true);
+    try {
+      const response = await apiClient.post('/admin/users', {
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+        plan: newUser.plan
+      });
 
-    setUsers([...users, userToAdd]);
-    setIsAddUserOpen(false);
-    setNewUser({ role: 'User', plan: 'Free', status: 'Active' }); // Reset form
-    toast.success('User added successfully');
+      toast.success('User added successfully');
+      setCreatedPassword(response.data.temp_password);
+      fetchUsers(searchQuery);
+
+      // We don't close the modal immediately so they can see the password
+    } catch (error: any) {
+      const msg = error.response?.data?.detail || 'Failed to create user';
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleUserAction = (userName: string) => {
-    toast.info(`Opening actions menu for ${userName}`);
-    // In a real app, this would open a dropdown menu with actions like Edit, Delete, etc.
+  const toggleUserStatus = async (user: User) => {
+    const isActivating = user.status === 'Suspended';
+    try {
+      await apiClient.put(`/admin/users/${user.id}/status`, {
+        is_active: isActivating
+      });
+      toast.success(`User ${isActivating ? 'activated' : 'suspended'} successfully`);
+      setActiveMenuId(null);
+      fetchUsers(searchQuery);
+    } catch (error: any) {
+      const msg = error.response?.data?.detail || 'Failed to update user status';
+      toast.error(msg);
+    }
   };
 
-  if (isLoading) {
+  const deleteUser = async (userId: string, name: string) => {
+    if (!userId || userId === 'undefined') {
+      console.error('Attempted to delete user with invalid ID:', userId, name);
+      toast.error('Cannot delete: Invalid user ID');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to permanently delete ${name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await apiClient.delete(`/admin/users/${userId}`);
+      toast.success('User deleted successfully');
+      setActiveMenuId(null);
+      fetchUsers(searchQuery);
+    } catch (error: any) {
+      console.error('Delete user failed:', error);
+      const msg = error.response?.data?.detail || 'Failed to delete user';
+      toast.error(msg);
+    }
+  };
+
+  if (isLoading && users.length === 0) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="relative w-72">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input placeholder="Search users..." className="pl-9" disabled />
+            <Input placeholder="Search users..." className="pl-9" value="" disabled />
           </div>
           <div className="flex gap-2">
             <Button variant="outline" disabled>Export CSV</Button>
@@ -127,19 +206,21 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
         <div className="relative w-72">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Search users..."
+            placeholder="Search users by name or email..."
             className="pl-9"
             value={searchQuery}
             onChange={handleSearchChange}
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportCSV}>Export CSV</Button>
+          <Button variant="outline" onClick={handleExportCSV} disabled={users.length === 0}>
+            Export CSV
+          </Button>
           <Button variant="primary" onClick={handleAddUser}>Add User</Button>
         </div>
       </div>
 
-      {filteredUsers.length === 0 ? (
+      {users.length === 0 ? (
         <EmptyState
           icon={UserCog}
           title={searchQuery ? "No users found" : "No users"}
@@ -147,8 +228,8 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
           action={{ label: "Add User", onClick: handleAddUser }}
         />
       ) : (
-        <div className="rounded-md border dark:border-gray-800 bg-white dark:bg-gray-950 overflow-hidden">
-          <Table>
+        <div className="rounded-md border dark:border-gray-800 bg-white dark:bg-gray-950">
+          <Table className="overflow-visible">
             <TableHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
               <TableRow>
                 <TableHead>User</TableHead>
@@ -160,8 +241,8 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
+              {users.map((user, index) => (
+                <TableRow key={user.id || `user-${index}`}>
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium text-gray-900 dark:text-white">{user.name}</span>
@@ -185,14 +266,42 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-gray-500 dark:text-gray-400">{user.joined}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right relative user-menu-container">
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleUserAction(user.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const menuId = `${user.id}-${index}`;
+                        setActiveMenuId(activeMenuId === menuId ? null : menuId);
+                      }}
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
+
+                    {/* Simplified dropdown menu for actions */}
+                    {activeMenuId === `${user.id}-${index}` && (
+                      <div className="absolute right-8 top-10 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border dark:border-gray-700 z-50">
+                        <div className="py-1">
+                          <button
+                            onClick={() => toggleUserStatus(user)}
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            {user.status === 'Active' ? (
+                              <><UserX className="h-4 w-4 mr-2" /> Suspend User</>
+                            ) : (
+                              <><UserCheck className="h-4 w-4 mr-2" /> Activate User</>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => deleteUser(user.id, user.name)}
+                            className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" /> Delete permanently
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -204,69 +313,106 @@ export function UsersTable({ isLoading = false }: { isLoading?: boolean }) {
       {/* Add User Modal */}
       <Modal
         isOpen={isAddUserOpen}
-        onClose={() => setIsAddUserOpen(false)}
+        onClose={() => {
+          setIsAddUserOpen(false);
+          setCreatedPassword(null);
+        }}
         title="Add New User"
       >
-        <form onSubmit={saveNewUser} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-            <Input
-              placeholder="John Doe"
-              value={newUser.name || ''}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-              required
-            />
-          </div>
+        {createdPassword ? (
+          <div className="space-y-4">
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <h3 className="text-green-800 dark:text-green-300 font-medium mb-1">User created successfully!</h3>
+              <p className="text-sm text-green-700 dark:text-green-400 mb-4">
+                Please securely share these credentials with the new user. They will be forced to change their password on first login.
+              </p>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
-            <Input
-              type="email"
-              placeholder="john@example.com"
-              value={newUser.email || ''}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              required
-            />
-          </div>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-gray-500 uppercase">Email</label>
+                <div className="font-mono bg-white dark:bg-gray-950 p-2 rounded border dark:border-gray-800">{newUser.email}</div>
 
-          <div className="grid grid-cols-2 gap-4">
+                <label className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1 mt-3">
+                  <Key className="w-3 h-3" /> Temporary Password
+                </label>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 font-mono text-lg bg-white dark:bg-gray-950 p-2 rounded border dark:border-gray-800 select-all">
+                    {createdPassword}
+                  </code>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end mt-6">
+              <Button onClick={() => setIsAddUserOpen(false)} variant="primary">
+                Done
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={saveNewUser} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="user-role" className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
-              <select
-                id="user-role"
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950"
-                value={newUser.role}
-                onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
-              >
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+              <Input
+                placeholder="John Doe"
+                value={newUser.name || ''}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                required
+                disabled={isSubmitting}
+              />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="user-plan" className="text-sm font-medium text-gray-700 dark:text-gray-300">Plan</label>
-              <select
-                id="user-plan"
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950"
-                value={newUser.plan}
-                onChange={(e) => setNewUser({ ...newUser, plan: e.target.value as any })}
-              >
-                <option value="Free">Free</option>
-                <option value="Pro">Pro</option>
-                <option value="Enterprise">Enterprise</option>
-              </select>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+              <Input
+                type="email"
+                placeholder="john@example.com"
+                value={newUser.email || ''}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                required
+                disabled={isSubmitting}
+              />
             </div>
-          </div>
 
-          <div className="flex justify-end gap-3 mt-6">
-            <Button type="button" variant="outline" onClick={() => setIsAddUserOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              Add User
-            </Button>
-          </div>
-        </form>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="user-role" className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
+                <select
+                  id="user-role"
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950 disabled:opacity-50"
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
+                  disabled={isSubmitting}
+                >
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="user-plan" className="text-sm font-medium text-gray-700 dark:text-gray-300">Plan</label>
+                <select
+                  id="user-plan"
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-950 disabled:opacity-50"
+                  value={newUser.plan}
+                  onChange={(e) => setNewUser({ ...newUser, plan: e.target.value as any })}
+                  disabled={isSubmitting}
+                >
+                  <option value="Free">Free</option>
+                  <option value="Pro">Pro</option>
+                  <option value="Enterprise">Enterprise</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <Button type="button" variant="outline" onClick={() => setIsAddUserOpen(false)} disabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting}>
+                Create User
+              </Button>
+            </div>
+          </form>
+        )}
       </Modal>
     </div>
   );

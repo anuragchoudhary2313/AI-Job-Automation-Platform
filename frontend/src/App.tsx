@@ -10,6 +10,8 @@ import { MainLayout } from './components/layout/MainLayout';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Login = lazy(() => import('./pages/Auth/Login'));
 const Register = lazy(() => import('./pages/Auth/Register'));
+const ForgotPassword = lazy(() => import('./pages/Auth/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/Auth/ResetPassword'));
 const Jobs = lazy(() => import('./pages/Jobs'));
 const Resumes = lazy(() => import('./pages/Resumes'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -41,6 +43,8 @@ function App() {
           <Route path="/demo" element={<DemoDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected routes with layout */}
           <Route element={<MainLayout />}>

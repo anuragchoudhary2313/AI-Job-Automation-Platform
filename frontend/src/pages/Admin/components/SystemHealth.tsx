@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle2, AlertTriangle, XCircle, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
 import { toast } from '../../../components/ui/Toast';
+import apiClient from '../../../lib/api';
 
 interface ServiceStatus {
   name: string;
@@ -11,39 +12,33 @@ interface ServiceStatus {
   uptime: string;
 }
 
-const initialServices: ServiceStatus[] = [
-  { name: 'PostgreSQL Database', status: 'Operational', uptime: '99.98%' },
-  { name: 'Redis Cache', status: 'Operational', uptime: '99.99%' },
-  { name: 'Scraper Engine (Selenium)', status: 'Degraded', uptime: '98.50%' },
-  { name: 'SMTP Email Service', status: 'Operational', uptime: '99.95%' },
-  { name: 'OpenAI API Gateway', status: 'Downtime', uptime: '95.00%' },
-];
-
-const getRandomStatus = (): 'Operational' | 'Degraded' | 'Downtime' => {
-  const rand = Math.random();
-  if (rand > 0.9) return 'Downtime';
-  if (rand > 0.7) return 'Degraded';
-  return 'Operational';
-};
-
 export function SystemHealth() {
-  const [services, setServices] = useState<ServiceStatus[]>(initialServices);
+  const [services, setServices] = useState<ServiceStatus[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleRefresh = () => {
+  const fetchHealth = async (showToast = false) => {
     setIsRefreshing(true);
-    toast.info('Refreshing system health...');
+    if (showToast) toast.info('Refreshing system health...');
 
-    // Simulate API call to refresh service statuses
-    setTimeout(() => {
-      const updatedServices = services.map(service => ({
-        ...service,
-        status: getRandomStatus(),
-      }));
-      setServices(updatedServices);
+    try {
+      const response = await apiClient.get<ServiceStatus[]>('/admin/health');
+      setServices(response.data);
+      if (showToast) toast.success('System health updated!');
+    } catch (error) {
+      console.error('Failed to fetch system health', error);
+      if (showToast) toast.error('Failed to get system health');
+    } finally {
       setIsRefreshing(false);
-      toast.success('System health updated!');
-    }, 1000);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchHealth(false);
+  }, []);
+
+  const handleRefresh = () => {
+    fetchHealth(true);
   };
 
   return (
@@ -65,6 +60,9 @@ export function SystemHealth() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          {services.length === 0 && !isRefreshing && (
+            <div className="text-sm text-gray-500 text-center py-4">No health data available</div>
+          )}
           {services.map((service) => (
             <div key={service.name} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-3">

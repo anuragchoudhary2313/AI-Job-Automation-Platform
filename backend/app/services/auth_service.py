@@ -166,3 +166,78 @@ class AuthService:
         await self.user_repo.update(user_id, password_hash=hashed_password)
         
         logger.info(f"Password changed for user {user_id}")
+
+    async def forgot_password(self, email: str, frontend_url: str = "http://localhost:5173") -> None:
+        """Generate a password reset token and send to user's email."""
+        user = await self.user_repo.get_by_email(email)
+        if not user:
+            # Silently return to prevent email enumeration attacks
+            logger.info(f"Password reset requested for non-existent email: {email}")
+            return
+            
+        # Generate token valid for 30 minutes
+        expire = datetime.utcnow() + timedelta(minutes=30)
+        to_encode = {
+            "sub": str(user.id),
+            "exp": expire,
+            "type": "password_reset"
+        }
+        reset_token = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+        
+        # Send email
+        from app.services.email import email_service
+        reset_link = f"{frontend_url}/reset-password?token={reset_token}"
+        
+        email_body = f"""
+        <html>
+            <body>
+                <h2>Password Reset Request</h2>
+                <p>Hello {user.full_name or 'there'},</p>
+                <p>You requested a password reset for your AI Job Automation Platform account.</p>
+                <p>Please click the link below to set a new password. This link will expire in 30 minutes.</p>
+                <br>
+                <a href="{reset_link}" style="padding: 10px 20px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <br><br>
+                <p>If you didn't request this, you can safely ignore this email.</p>
+            </body>
+        </html>
+        """
+        
+        try:
+            await email_service.send_email_async(
+                to_email=user.email,
+                subject="Password Reset Request",
+                body=email_body,
+                html=True
+            )
+            logger.info(f"Password reset email sent to {email}")
+        except Exception as e:
+            logger.error(f"Failed to send password reset email to {email}: {e}")
+            raise
+
+    async def reset_password(self, token: str, new_password: str) -> None:
+        """Reset password using a token."""
+        try:
+            payload = security.decode_token(token)
+            
+            if payload.get("type") != "password_reset":
+                raise AuthenticationError("Invalid token type")
+                
+            user_id = payload.get("sub")
+            if not user_id:
+                raise AuthenticationError("Token subject missing")
+            
+        except JWTError:
+            raise AuthenticationError("Invalid or expired reset token")
+            
+        # Validate new password
+        if len(new_password) < 8:
+            raise ValidationError("Password must be at least 8 characters long")
+            
+        user = await self.user_repo.get_or_404(user_id)
+        
+        # Update password
+        hashed_password = security.get_password_hash(new_password)
+        await self.user_repo.update(user_id, password_hash=hashed_password)
+        
+        logger.info(f"Password reset successfully for user {user_id} via token")

@@ -22,14 +22,19 @@ async def init_db():
         client = AsyncIOMotorClient(settings.MONGODB_URI)
         database = client[settings.MONGODB_DB_NAME]
         
+        from app.models.job import ScrapedJob
+        from app.models.log import Log
+        
         document_models = [
             User, 
             Team, 
             Resume, 
             Job, 
+            ScrapedJob,
             Match, 
             AutomationRun, 
-            AgentLog
+            AgentLog,
+            Log
         ]
         
         await init_beanie(database=database, document_models=document_models)

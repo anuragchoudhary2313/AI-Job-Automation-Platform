@@ -29,10 +29,26 @@ async def trigger_scrape(
     # Enforce Feature Flag
     features.require("job_scraping")
     
-    # Passing current_user's team_id if needed, but scraper is global for now.
-    # Updated scrape_jobs to not require DB session
-    result = await job_scraper_service.scrape_jobs(keyword, location, limit)
-    return result
+    if background_tasks:
+        background_tasks.add_task(job_scraper_service.scrape_jobs, keyword, location, limit)
+        return {"message": "Job scraping initialized in the background", "status": "started"}
+    else:
+        # Fallback for synchronous if needed (though BackgroundTasks is usually present in FastAPI)
+        result = await job_scraper_service.scrape_jobs(keyword, location, limit)
+        return result
+
+@router.get("/scraped")
+async def list_scraped_jobs(
+    skip: int = 0,
+    limit: int = 100,
+    current_user: UserModel = Depends(deps.get_current_user)
+):
+    """
+    List global scraped jobs from the scraped_jobs collection.
+    """
+    from app.models.job import ScrapedJob
+    jobs = await ScrapedJob.find_all().sort("-created_at").skip(skip).limit(limit).to_list()
+    return [{**job.dict(), "id": str(job.id)} for job in jobs]
 
 @router.get("/stats")
 async def get_stats(
@@ -59,20 +75,6 @@ async def list_jobs(
     """
     return await job_service.get_jobs(current_user, skip, limit, status, search, sort)
 
-@router.get("/scraped", response_model=List[JobSchema])
-async def list_scraped_jobs(
-    skip: int = 0,
-    limit: int = 100,
-    job_service: JobService = Depends(get_job_service),
-    current_user: UserModel = Depends(deps.get_current_user)
-):
-    """
-    List global scraped jobs. 
-    (Assuming distinction is made via status or source, need to clarify service method)
-    For now, returning all jobs or implementing dedicated method.
-    """
-    # Assuming scraped jobs have 'pending' status?
-    return await job_service.get_jobs(current_user, skip, limit, status="pending")
 
 @router.get("/{job_id}", response_model=JobSchema)
 async def read_job(

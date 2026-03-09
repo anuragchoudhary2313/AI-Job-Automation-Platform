@@ -11,7 +11,7 @@ import { useFeatures } from '../../contexts/FeatureContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Jobs', href: '/jobs', icon: Briefcase },
   { name: 'Resumes', href: '/resumes', icon: FileText },
   { name: 'Logs', href: '/logs', icon: Terminal },

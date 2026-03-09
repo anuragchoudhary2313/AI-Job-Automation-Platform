@@ -32,3 +32,10 @@ class User(UserInDBBase):
 
 class UserInDB(UserInDBBase):
     password_hash: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str

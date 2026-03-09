@@ -10,12 +10,12 @@ import { Button } from '../ui/Button';
 import { CommandMenu } from '../ui/CommandMenu';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Toaster } from '../ui/Toast';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function MainLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { user, loading } = useAuth();
+  const { user, isLoading: loading } = useAuth();
 
   // Dynamic Page Title
   useEffect(() => {
