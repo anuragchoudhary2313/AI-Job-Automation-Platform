@@ -25,13 +25,25 @@ const notifyListeners = (toast: Toast) => {
 
 const generateId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
 
+const formatMessage = (msg: any): string => {
+  if (!msg) return "";
+  if (typeof msg === 'string') return msg;
+  if (Array.isArray(msg)) {
+    return msg.map(m => formatMessage(m)).join(', ');
+  }
+  if (typeof msg === 'object') {
+    return msg.message || msg.msg || msg.detail || JSON.stringify(msg);
+  }
+  return String(msg);
+};
+
 export const toast = {
-  success: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'success' }),
-  error: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'error' }),
-  warning: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'warning' }),
-  info: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'info' }),
-  message: (msg: string) => notifyListeners({ id: generateId(), message: msg, type: 'info' }),
-  dismiss: () => { }, // No-op for now
+  success: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'success' }),
+  error: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'error' }),
+  warning: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'warning' }),
+  info: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
+  message: (msg: any) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
+  dismiss: () => { },
   loading: () => { },
   promise: () => { },
   custom: () => { },

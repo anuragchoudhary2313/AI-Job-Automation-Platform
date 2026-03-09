@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Body
 from typing import List, Any, Optional
 from app.api import deps
 from app.services.job_scraper import job_scraper_service
@@ -89,7 +89,7 @@ async def read_job(
 
 @router.post("/", response_model=JobSchema)
 async def create_job(
-    job_in: JobCreate,
+    job_in: JobCreate = Body(...),
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user)
 ) -> Any:
@@ -101,7 +101,7 @@ async def create_job(
 @router.put("/{job_id}", response_model=JobSchema)
 async def update_job(
     job_id: str,
-    job_in: JobUpdate,
+    job_in: JobUpdate = Body(...),
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user)
 ) -> Any:
