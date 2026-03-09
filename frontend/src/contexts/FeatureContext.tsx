@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import apiClient from '../lib/api';
 
 interface FeatureFlags {
   ai_resume: boolean;
@@ -39,13 +40,8 @@ export const FeatureProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
-        const response = await fetch('/api/v1/features/');
-        if (response.ok) {
-          const data = await response.json();
-          setFeatures(data);
-        } else {
-          console.error('Failed to fetch feature flags');
-        }
+        const response = await apiClient.get<FeatureFlags>('/features/');
+        setFeatures(response.data);
       } catch (error) {
         console.error('Error fetching feature flags:', error);
       } finally {

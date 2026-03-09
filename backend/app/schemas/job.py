@@ -42,3 +42,9 @@ class Job(JobBase):
 
     class Config:
         from_attributes = True
+
+class JobCreateResponse(BaseModel):
+    """Response for job creation, indicating if job was created or already existed."""
+    job: Job
+    created: bool  # True if newly created, False if already existed
+    message: str

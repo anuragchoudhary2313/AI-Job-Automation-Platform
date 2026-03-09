@@ -39,8 +39,13 @@ export function ScrapedJobsList() {
         status: 'pending'
       });
     },
-    onSuccess: () => {
-      toast.success('Added to your applications!');
+    onSuccess: (response) => {
+      const data = response.data;
+      if (data.created) {
+        toast.success(data.message || 'Added to your applications!');
+      } else {
+        toast.info(data.message || 'This job is already in your applications.');
+      }
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error: any) => {

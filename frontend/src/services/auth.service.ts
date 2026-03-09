@@ -15,6 +15,14 @@ export interface LoginResponse {
   token_type: string;
 }
 
+export interface RegisterData {
+  email: string;
+  password: string;
+  full_name: string;
+  username?: string;
+  team_name?: string;
+}
+
 export const authService = {
   async login(formData: FormData | URLSearchParams): Promise<LoginResponse> {
     const config = formData instanceof URLSearchParams
@@ -25,7 +33,7 @@ export const authService = {
     return response.data;
   },
 
-  async register(data: any): Promise<User> {
+  async register(data: RegisterData): Promise<User> {
     const response = await apiClient.post<User>('/auth/register', data);
     return response.data;
   },

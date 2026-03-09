@@ -6,12 +6,13 @@ export interface Job {
   company: string;
   location: string;
   description: string;
-  source: string;
-  url: string;
+  source?: string;
+  job_url?: string;
   salary_range?: string;
   date_posted?: string;
-  status: 'new' | 'applied' | 'interviewing' | 'rejected' | 'offer';
+  status: 'pending' | 'applied' | 'interviewing' | 'rejected' | 'offered' | 'failed';
   applied_at?: string;
+  created_at?: string;
 }
 
 export interface JobFilters {

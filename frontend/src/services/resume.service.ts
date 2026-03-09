@@ -15,8 +15,6 @@ export interface Resume {
 export const resumeService = {
   async getResumes(): Promise<Resume[]> {
     const response = await apiClient.get<Resume[]>('/resumes');
-    console.log('Resume API Response:', response.data);
-    console.log('Number of resumes:', response.data?.length);
     return response.data;
   },
 

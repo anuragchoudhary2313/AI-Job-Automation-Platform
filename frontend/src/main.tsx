@@ -32,7 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </Router>
         </FeatureProvider>
       </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   </React.StrictMode>
 );

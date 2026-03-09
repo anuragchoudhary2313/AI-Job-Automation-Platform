@@ -1,67 +1,63 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query, status
-from typing import List
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 from jose import jwt, JWTError
 from app.core import security
 from app.core.config import settings
+from app.core.logging import get_logger
 from app.services.socket_manager import manager
 
 router = APIRouter()
+logger = get_logger(__name__)
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    print("WS: Endpoint hit")
+    logger.debug("WS: Endpoint hit")
     try:
-        # Get token from query params manually to avoid validation errors causing immediate disconnect
         token = websocket.query_params.get("token")
-        
+
         if not token:
-            print("WS Error: Missing token")
+            logger.warning("WS: Missing token, rejecting connection")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
 
-        # Validate token
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
             )
-            print(f"WS: Token decoded successfully for sub: {payload.get('sub')}")
-        except Exception as e:
-            print(f"WS Token Validation Error: {e}")
+            logger.debug(f"WS: Token decoded for sub: {payload.get('sub')}")
+        except JWTError as e:
+            logger.warning(f"WS: Token validation failed: {e}")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
 
         user_id = payload.get("sub")
-        
+
         if user_id is None:
-            print("WS Error: No user_id in token")
+            logger.warning("WS: No user_id in token payload")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
-            
-        # Accept connection explicitly
+
         await websocket.accept()
-        
-        # Register with manager
-        manager.add_connection(websocket)
-        print(f"WS Connected: {user_id}")
-        
+        manager.connect_user(user_id, websocket)
+        logger.info(f"WS: User {user_id} connected")
+
         try:
             while True:
                 data = await websocket.receive_text()
-                # Echo logic or command handling
-                # For now just keep connection alive
-                await manager.broadcast({"event": "message", "sender": user_id, "text": data})
+                # Route message only to the sending user's connections
+                await manager.send_to_user(
+                    user_id, {"event": "message", "sender": user_id, "text": data}
+                )
         except WebSocketDisconnect:
-            print(f"WS Disconnected: {user_id}")
-            manager.disconnect(websocket)
-            await manager.broadcast({"event": "disconnect", "client": user_id})
+            logger.info(f"WS: User {user_id} disconnected")
+            manager.disconnect_user(user_id, websocket)
         except Exception as e:
-            print(f"WS Loop Error: {e}")
-            manager.disconnect(websocket)
-            
+            logger.error(f"WS: Loop error for user {user_id}: {e}")
+            manager.disconnect_user(user_id, websocket)
+
     except Exception as e:
-        print(f"WS Critical Error: {e}")
-        # Try to close if still open
+        logger.error(f"WS: Critical error: {e}", exc_info=True)
         try:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
-        except:
+        except Exception:
             pass

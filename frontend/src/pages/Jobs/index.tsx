@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { JobsFilter } from './components/JobsFilter';
 import { JobsTable } from './components/JobsTable';
 import { JobScraper } from './components/JobScraper';
@@ -9,6 +9,7 @@ export function Jobs() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [sort, setSort] = useState('');
+  const scraperRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -16,6 +17,10 @@ export function Jobs() {
     search: debouncedSearch,
     status,
     sort
+  };
+
+  const scrollToScraper = () => {
+    scraperRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -28,7 +33,7 @@ export function Jobs() {
       </div>
 
       {/* Job Scraper Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div ref={scraperRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <JobScraper />
         <ScrapedJobsList />
       </div>
@@ -37,8 +42,9 @@ export function Jobs() {
         onSearch={setSearch}
         onStatusChange={setStatus}
         onSortChange={setSort}
+        onNewApplication={scrollToScraper}
       />
-      <JobsTable filters={filters} />
+      <JobsTable filters={filters} onStartScan={scrollToScraper} />
     </div>
   );
 }
