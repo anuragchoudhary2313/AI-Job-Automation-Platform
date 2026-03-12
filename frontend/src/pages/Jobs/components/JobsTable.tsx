@@ -198,11 +198,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                     {openStatusMenu === job.id && (
                       <div
                         data-dropdown="true"
-                        className="absolute left-0 top-full z-[999] mt-1 w-36 rounded-md border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800"
-                        style={{
-                          position: 'absolute',
-                          zIndex: 9999
-                        }}
+                        className="absolute left-0 top-full z-[9999] mt-1 w-36 rounded-md border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800"
                       >
                         {STATUS_OPTIONS.map((s) => (
                           <button

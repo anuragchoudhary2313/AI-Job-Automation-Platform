@@ -23,16 +23,7 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
     setDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    const files = e.dataTransfer.files;
-    if (files.length > 0 && files[0]) {
-      handleUpload(files[0]);
-    }
-  }, [onUpload]);
-
-  const handleUpload = async (file: File) => {
+  const handleUpload = useCallback(async (file: File) => {
     if (!onUpload) return;
 
     setUploading(true);
@@ -59,7 +50,16 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
       setProgress(0);
       throw error;
     }
-  };
+  }, [onUpload]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0]) {
+      handleUpload(files[0]);
+    }
+  }, [handleUpload]);
 
   return (
     <div
@@ -83,7 +83,8 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
           </div>
           <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             {/* eslint-disable-next-line */}
-            <div className="h-full bg-blue-500 transition-all duration-300 ease-out" style={{ width: `${progress}%` }} />
+            <style>{`[data-progress="${progress}"] { width: ${progress}%; }`}</style>
+            <div className="h-full bg-blue-500 transition-all duration-300 ease-out" data-progress={progress} />
           </div>
         </div>
       ) : (

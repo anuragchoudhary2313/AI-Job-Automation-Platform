@@ -64,16 +64,13 @@ const AnimatedButton = React.forwardRef<HTMLButtonElement, AnimatedButtonProps>(
         {/* Ripple Container */}
         <span className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-md">
           {ripples.map((ripple) => (
-            <span
-              key={ripple.id}
-              className="absolute bg-white/30 rounded-full animate-ripple"
-              style={{
-                left: ripple.x,
-                top: ripple.y,
-                width: 0,
-                height: 0,
-              }}
-            />
+            <React.Fragment key={ripple.id}>
+              <style>{`[data-ripple-id="${ripple.id}"] { left: ${ripple.x}px; top: ${ripple.y}px; width: 0; height: 0; }`}</style>
+              <span
+                className="absolute bg-white/30 rounded-full animate-ripple"
+                data-ripple-id={ripple.id}
+              />
+            </React.Fragment>
           ))}
         </span>
 

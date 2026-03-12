@@ -1,6 +1,6 @@
 from typing import Optional, Annotated, Any
 from datetime import datetime
-from pydantic import BaseModel, BeforeValidator, ConfigDict
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 from app.models.enums import JobStatus
 
 def stringify_object_id(v: Any) -> Any:
@@ -11,13 +11,13 @@ def stringify_object_id(v: Any) -> Any:
 PyObjectId = Annotated[str, BeforeValidator(stringify_object_id)]
 
 class JobBase(BaseModel):
-    title: str
-    company: str
-    description: str
-    location: Optional[str] = None
-    salary_range: Optional[str] = None
-    job_url: Optional[str] = None
-    hr_email: Optional[str] = None
+    title: str = Field(..., min_length=2, max_length=100, description="The job title")
+    company: str = Field(..., min_length=2, max_length=100, description="The company name")
+    description: str = Field(..., min_length=10, description="Detailed job description")
+    location: Optional[str] = Field(None, max_length=100)
+    salary_range: Optional[str] = Field(None, max_length=50)
+    job_url: Optional[str] = Field(None, pattern=r"^https?://", description="Valid HTTP URL")
+    hr_email: Optional[str] = Field(None, description="Valid email address")
     status: JobStatus = JobStatus.PENDING
 
 class JobCreate(JobBase):

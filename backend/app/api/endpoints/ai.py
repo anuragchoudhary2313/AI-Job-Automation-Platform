@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
 from pydantic import BaseModel
 from typing import Optional
 from app.services.ai_service import ai_service
@@ -111,6 +111,27 @@ async def generate_cover_letter(
         raise HTTPException(status_code=500, detail="AI generation failed")
 
 
+@router.post("/match")
+async def match_job_and_resume(
+    job_description: str = Body(..., embed=True),
+    resume_text: str = Body(..., embed=True),
+    current_user: User = Depends(deps.get_current_user),
+):
+    """
+    Execute a stateful matching workflow using LangGraph.
+    Provides deep analysis, scoring, and optimization advice.
+    """
+    from app.services.matching_engine import matching_engine
+    
+    try:
+        result = await matching_engine.match(job_description, resume_text)
+        if result.get("error"):
+            raise HTTPException(status_code=500, detail=result["error"])
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Orchestrated matching failed")
+
+
 @router.post("/email", response_model=str)
 async def personalize_email(
     request: EmailPersonalizationRequest,
@@ -119,10 +140,10 @@ async def personalize_email(
     """
     Personalize an email template using AI.
     """
-    features.require("email_automation")
+    features.require("ai_email_personalization")
     try:
         return await ai_service.personalize_email(
             request.template, request.company_name, request.role
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail="AI generation failed")
+        raise HTTPException(status_code=500, detail="AI personalization failed")

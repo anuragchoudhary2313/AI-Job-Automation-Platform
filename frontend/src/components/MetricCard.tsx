@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface MetricCardProps {
   title: string;
@@ -28,32 +29,40 @@ export const MetricCard = memo(function MetricCard({
 
   const getTrendColor = () => {
     if (!change) return 'text-gray-500';
-    if (change > 0) return 'text-green-600';
-    return 'text-red-600';
+    if (change > 0) return 'text-green-500';
+    return 'text-red-500';
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-lg ${color}`}>
+    <motion.div 
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="relative overflow-hidden bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border border-white/20 dark:border-gray-800/50 rounded-xl shadow-sm p-6 hover:shadow-xl transition-all duration-300"
+    >
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+      
+      <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className={`p-3 rounded-lg bg-opacity-10 backdrop-blur-sm ${color} transition-transform group-hover:scale-110`}>
           {icon}
         </div>
         {change !== undefined && (
-          <div className={`flex items-center gap-1 ${getTrendColor()}`}>
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-full bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 ${getTrendColor()}`}>
             {getTrendIcon()}
-            <span className="text-sm font-medium">
+            <span className="text-xs font-semibold">
               {Math.abs(change)}%
             </span>
           </div>
         )}
       </div>
-      <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">
-        {title}
-      </h3>
-      <p className="text-3xl font-bold text-gray-900 dark:text-white">
-        {value.toLocaleString()}
-      </p>
-    </div>
+      
+      <div className="relative z-10">
+        <h3 className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 tracking-tight">
+          {title}
+        </h3>
+        <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter">
+          {value.toLocaleString()}
+        </p>
+      </div>
+    </motion.div>
   );
 });
 

@@ -3,7 +3,6 @@ from datetime import datetime
 from beanie import Document, Indexed, PydanticObjectId
 from pydantic import Field, EmailStr
 from app.models.enums import UserRole
-from app.models.team import Team
 
 class User(Document):
     username: Indexed(str, unique=True)

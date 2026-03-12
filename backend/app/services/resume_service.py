@@ -94,14 +94,14 @@ class ResumeService:
         resume = await self.resume_repo.get_or_404(resume_id)
 
         # Check ownership first
-        if resume.user_id == str(user.id):
+        if str(resume.user_id) == str(user.id):
             return resume
 
         # Fall back to team membership check
         from app.models.user import User as UserModel
 
         resume_owner = await UserModel.get(resume.user_id)
-        if resume_owner and resume_owner.team_id == str(user.team_id):
+        if resume_owner and str(resume_owner.team_id) == str(user.team_id):
             return resume
 
         raise AuthorizationError("You don't have access to this resume")
@@ -109,12 +109,18 @@ class ResumeService:
     async def get_resumes(
         self, user: User, skip: int = 0, limit: int = 100
     ) -> List[Resume]:
-        """Get resumes for user's team."""
-        resumes = await self.resume_repo.get_by_team(
-            team_id=str(user.team_id), skip=skip, limit=limit
-        )
-
-        logger.info(f"Retrieved {len(resumes)} resumes for team {user.team_id}")
+        """Get resumes for user's team, or user only if no team."""
+        if user.team_id:
+            resumes = await self.resume_repo.get_by_team(
+                team_id=str(user.team_id), skip=skip, limit=limit
+            )
+            logger.info(f"Retrieved {len(resumes)} resumes for team {user.team_id}")
+        else:
+            resumes = await self.resume_repo.get_by_user(
+                user_id=str(user.id), skip=skip, limit=limit
+            )
+            logger.info(f"Retrieved {len(resumes)} resumes for user {user.id}")
+            
         return resumes
 
     async def get_user_resumes(
@@ -130,11 +136,12 @@ class ResumeService:
 
     async def create_resume(self, resume_data: ResumeCreate, user: User) -> Resume:
         """Create a new resume."""
+        from beanie import PydanticObjectId
         resume = await self.resume_repo.create(
             content=resume_data.content,
             file_path=resume_data.file_path,
-            job_id=str(resume_data.job_id) if resume_data.job_id else None,
-            user_id=str(user.id),
+            job_id=PydanticObjectId(resume_data.job_id) if resume_data.job_id else None,
+            user_id=PydanticObjectId(user.id),
         )
 
         logger.info(f"Created resume {resume.id} for user {user.id}")
@@ -157,13 +164,13 @@ class ResumeService:
 
         if resume:
             # Authorization check
-            if resume.user_id == str(user.id):
+            if str(resume.user_id) == str(user.id):
                 return resume
 
             from app.models.user import User as UserModel
 
             resume_owner = await UserModel.get(resume.user_id)
-            if resume_owner and resume_owner.team_id == str(user.team_id):
+            if resume_owner and str(resume_owner.team_id) == str(user.team_id):
                 return resume
 
             raise AuthorizationError("You don't have access to this resume")

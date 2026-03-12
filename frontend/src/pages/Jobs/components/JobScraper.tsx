@@ -49,7 +49,7 @@ export function JobScraper() {
       // But jobService.scrapeJobs returns { message, jobs_found }
       // So we might need to adjust or invalidate queries to fetch new jobs.
 
-      toast.success(`Scraping started! Found ${data.jobs_found} potential jobs.`);
+      toast.success(`Scraping started! Found ${data.jobs_found ?? 0} potential jobs.`);
       // Invalidate jobs to show new ones if they are added to DB
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },

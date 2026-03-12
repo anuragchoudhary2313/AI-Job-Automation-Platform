@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { useToast } from '../ui/Toast';
-import { useWebSocket } from '@/hooks/useWebSocket';
+import { toast } from '../ui/Toast';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 export interface Notification {
   id: string;
@@ -24,12 +24,10 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { toast } = useToast();
 
   const playSound = useCallback(() => {
     try {
-      // Very short "pop" sound
-      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"); // Short beep
+      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
       audio.volume = 0.5;
       audio.play().catch(e => console.log("Audio play failed (user interaction needed first)", e));
     } catch (e) {
@@ -64,22 +62,26 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         toast.info(n.message);
         break;
     }
-  }, [toast, playSound]);
+  }, [playSound]);
 
-  // Use shared WebSocket hook
+  // Handle incoming WebSocket notification messages
   useWebSocket({
     onMessage: (message) => {
-      // Handle generic notification messages
-      if (message.type === 'notification' || !message.type) {
-        const data = message.data || message; // Handle wrapped or direct data
+      // The server sends { type: 'notification', data: { title, message, type } }
+      if (message.type === 'notification') {
+        const data = message.data as {
+          title?: string;
+          message?: string;
+          type?: 'info' | 'success' | 'warning' | 'error';
+        };
 
         // Ignore empty messages
-        if (!data.title && !data.message) return;
+        if (!data?.title && !data?.message) return;
 
         addNotification({
           title: data.title || 'Notification',
           message: data.message || '',
-          type: data.type || 'info'
+          type: data.type || 'info',
         });
       }
     },
@@ -88,7 +90,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     },
     onDisconnect: () => {
       console.log("NotificationContext: WS Disconnected");
-    }
+    },
   });
 
   const markAsRead = (id: string) => {

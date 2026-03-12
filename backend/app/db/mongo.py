@@ -9,21 +9,22 @@ from app.core.logging import get_logger
 from app.models.user import User
 from app.models.team import Team
 from app.models.resume import Resume
-from app.models.job import Job
+from app.models.job import Job, ScrapedJob
 from app.models.match import Match
 from app.models.automation import AutomationRun
-from app.models.log import AgentLog
+from app.models.log import AgentLog, Log
 
 logger = get_logger(__name__)
 
 async def init_db():
     """Initialize MongoDB connection and Beanie ODM."""
     try:
-        client = AsyncIOMotorClient(settings.MONGODB_URI)
+        client = AsyncIOMotorClient(
+            settings.MONGODB_URI,
+            serverSelectionTimeoutMS=20000,
+            connectTimeoutMS=20000,
+        )
         database = client[settings.MONGODB_DB_NAME]
-        
-        from app.models.job import ScrapedJob
-        from app.models.log import Log
         
         document_models = [
             User, 

@@ -155,6 +155,20 @@ class StrictRateLimitMiddleware(RateLimitMiddleware):
         return await call_next(request)
 
 
+class AIRateLimitMiddleware(RateLimitMiddleware):
+    """
+    Rate limiting for high-cost AI endpoints.
+    """
+    def __init__(self, app):
+        # 10 AI calls per minute
+        super().__init__(app, calls=10, period=60)
+
+    async def dispatch(self, request: Request, call_next):
+        if "/api/v1/ai/" in request.url.path:
+            return await super().dispatch(request, call_next)
+        return await call_next(request)
+
+
 def get_rate_limit_key(request: Request) -> str:
     """
     Get rate limit key for request.

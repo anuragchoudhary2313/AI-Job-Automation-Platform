@@ -1,23 +1,25 @@
 """
 Enhanced main application with health checks and fault tolerance.
 """
+import asyncio
+import sys
+import logging
+
+# Fix for Playwright on Windows - MUST be at the very top
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
-import asyncio
-import sys
-
-# Fix for Playwright on Windows
-if sys.platform == 'win32':
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 import logging
 
 from app.api.api import api_router
 from app.api.endpoints import websockets
 from app.core.config import settings
-from app.core.rate_limit import RateLimitMiddleware, StrictRateLimitMiddleware
+from app.core.rate_limit import RateLimitMiddleware, StrictRateLimitMiddleware, AIRateLimitMiddleware
 from app.core.csrf import CSRFProtectionMiddleware
 # from app.services.scheduler import start_scheduler, shutdown_scheduler, health_check_scheduler
 from app.scheduler.scheduler import start_scheduler, shutdown_scheduler, get_scheduler
@@ -153,6 +155,7 @@ if settings.RATE_LIMIT_ENABLED:
         period=settings.RATE_LIMIT_PERIOD
     )
     app.add_middleware(StrictRateLimitMiddleware)
+    app.add_middleware(AIRateLimitMiddleware)
 
 # CSRF Protection
 if settings.ENABLE_CSRF_PROTECTION and settings.is_production:

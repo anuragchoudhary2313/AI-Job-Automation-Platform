@@ -24,9 +24,14 @@ class TelegramService:
             return False
 
         url = f"{self.base_url}/sendMessage"
+        import html
+        safe_message = html.escape(message) if "</b>" not in message else message 
+        # Note: If it already has tags, we assume it's pre-formatted. 
+        # For error alerts, we should probably be careful.
+        
         payload = {
             "chat_id": self.chat_id,
-            "text": message,
+            "text": safe_message,
             "parse_mode": "HTML"
         }
 

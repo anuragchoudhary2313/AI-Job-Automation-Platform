@@ -24,18 +24,26 @@ class ResumeRepository(BaseRepository[Resume]):
     ) -> List[Resume]:
         """Get resumes for a specific team via user membership."""
         try:
-            from app.models.user import User
             from beanie import PydanticObjectId
+            from app.models.user import User
+            
+            # Guard against invalid team_id
+            if not team_id or team_id == "None":
+                logger.warning(f"Invalid team_id provided to get_by_team: {team_id}")
+                return []
 
-            users = await User.find(User.team_id == team_id).to_list()
-            user_ids = [PydanticObjectId(u.id) for u in users]
+            # Ensure team_id is a PydanticObjectId if it's a string
+            team_id_obj = PydanticObjectId(team_id) if isinstance(team_id, str) else team_id
+            
+            users = await User.find(User.team_id == team_id_obj).to_list()
+            user_ids = [u.id for u in users]
 
             logger.info(
                 f"Found {len(users)} users in team {team_id}, querying their resumes"
             )
 
             resumes = (
-                await Resume.find({"user_id": {"$in": user_ids}})
+                await Resume.find({"user_id": {"$in": user_ids + [str(uid) for uid in user_ids]}})
                 .sort("-created_at")
                 .skip(skip)
                 .limit(limit)
@@ -56,8 +64,12 @@ class ResumeRepository(BaseRepository[Resume]):
     ) -> List[Resume]:
         """Get resumes created by a specific user."""
         try:
+            from beanie import PydanticObjectId
+            user_id_obj = PydanticObjectId(user_id) if isinstance(user_id, str) else user_id
+            user_id_str = str(user_id)
+            
             return (
-                await Resume.find(Resume.user_id == user_id)
+                await Resume.find({"user_id": {"$in": [user_id_obj, user_id_str]}})
                 .sort("-created_at")
                 .skip(skip)
                 .limit(limit)
@@ -70,7 +82,11 @@ class ResumeRepository(BaseRepository[Resume]):
     async def get_by_job(self, job_id: str) -> Optional[Resume]:
         """Get resume for a specific job."""
         try:
-            return await Resume.find_one(Resume.job_id == job_id)
+            from beanie import PydanticObjectId
+            job_id_obj = PydanticObjectId(job_id) if isinstance(job_id, str) else job_id
+            job_id_str = str(job_id)
+            
+            return await Resume.find_one({"job_id": {"$in": [job_id_obj, job_id_str]}})
         except Exception as e:
             logger.error(f"Error getting resume for job {job_id}: {str(e)}")
             raise DatabaseError("Failed to get job resume") from e

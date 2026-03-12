@@ -53,6 +53,9 @@ async def upload_resume(
         raise
     except Exception as e:
         logger.error(f"Error uploading resume: {str(e)}", exc_info=True)
+        from app.core.exceptions import AppException
+        if isinstance(e, AppException):
+            raise handle_exception(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while uploading resume",
@@ -96,6 +99,9 @@ async def list_resumes(
 
     except Exception as e:
         logger.error(f"Error listing resumes: {str(e)}", exc_info=True)
+        from app.core.exceptions import AppException
+        if isinstance(e, AppException):
+            raise handle_exception(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while listing resumes",
@@ -115,6 +121,9 @@ async def get_resume(
 
     except Exception as e:
         logger.error(f"Error getting resume {resume_id}: {str(e)}", exc_info=True)
+        from app.core.exceptions import AppException
+        if isinstance(e, AppException):
+            raise handle_exception(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while getting resume",
@@ -148,6 +157,9 @@ async def download_resume(
         raise
     except Exception as e:
         logger.error(f"Error downloading resume {resume_id}: {str(e)}", exc_info=True)
+        from app.core.exceptions import AppException
+        if isinstance(e, AppException):
+            raise handle_exception(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while downloading resume",
@@ -167,6 +179,9 @@ async def delete_resume(
 
     except Exception as e:
         logger.error(f"Error deleting resume {resume_id}: {str(e)}", exc_info=True)
+        from app.core.exceptions import AppException
+        if isinstance(e, AppException):
+            raise handle_exception(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while deleting resume",

@@ -59,7 +59,8 @@ export function VirtualizedTable<T extends { id: number | string }>({
       {/* Table Header */}
       {/* Table Header */}
       <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="grid" style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}>
+        <style>{`[data-grid-cols="${columns.length}"] { grid-template-columns: repeat(${columns.length}, 1fr); }`}</style>
+        <div className="grid" data-grid-cols={columns.length}>
           {columns.map((column) => (
             <div
               key={column.key}
@@ -74,34 +75,29 @@ export function VirtualizedTable<T extends { id: number | string }>({
       {/* Virtualized Table Body */}
       <div
         ref={parentRef}
-        className="overflow-auto"
-        style={{ height: '600px' }}
+        className="overflow-auto h-[600px]"
       >
+        <style>{`[data-total-size="${totalSize}"] { height: ${totalSize}px; }`}</style>
         <div
-          style={{
-            height: `${totalSize}px`,
-            width: '100%',
-            position: 'relative',
-          }}
+          data-total-size={totalSize}
+          className="w-full relative"
         >
           {virtualItems.map((virtualRow) => {
             const item = data[virtualRow.index];
             if (!item) return null;
             return (
-              <div
-                key={item.id}
-                className={`absolute top-0 left-0 w-full border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${onRowClick ? 'cursor-pointer' : ''
-                  }`}
-                style={{
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-                onClick={() => handleRowClick(item)}
-              >
+              <React.Fragment key={item.id}>
+                <style>{`[data-vr-id="${item.id}"] { height: ${virtualRow.size}px; transform: translateY(${virtualRow.start}px); }`}</style>
                 <div
-                  className="grid h-full items-center"
-                  style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
+                  data-vr-id={item.id}
+                  className={`absolute top-0 left-0 w-full border-b border-gray-100 dark:border-gray-800/50 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 backdrop-blur-[2px] transition-all duration-300 ${onRowClick ? 'cursor-pointer' : ''
+                    }`}
+                  onClick={() => handleRowClick(item)}
                 >
+                  <div
+                    className="grid h-full items-center"
+                    data-grid-cols={columns.length}
+                  >
                   {columns.map((column) => (
                     <div
                       key={column.key}
@@ -112,7 +108,8 @@ export function VirtualizedTable<T extends { id: number | string }>({
                   ))}
                 </div>
               </div>
-            );
+            </React.Fragment>
+          );
           })}
         </div>
       </div>

@@ -49,20 +49,22 @@ export const OptimizedImage = memo(function OptimizedImage({
     return (
       <div
         className={`bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${className}`}
-        style={{ width, height }}
+        data-w={width} data-h={height}
       >
+        <style>{`[data-w="${width}"][data-h="${height}"] { width: ${width ? `${width}px` : 'auto'}; height: ${height ? `${height}px` : 'auto'}; }`}</style>
         <span className="text-gray-400 text-sm">Failed to load</span>
       </div>
     );
   }
 
   return (
-    <div className={`relative ${className}`} style={{ width, height }}>
+    <div className={`relative ${className}`} data-w={width} data-h={height}>
+      <style>{`[data-w="${width}"][data-h="${height}"] { width: ${width ? `${width}px` : 'auto'}; height: ${height ? `${height}px` : 'auto'}; }`}</style>
       {/* Placeholder while loading */}
       {!isLoaded && (
         <div
           className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse"
-          style={{ width, height }}
+          data-w={width} data-h={height}
         />
       )}
 

@@ -3,8 +3,8 @@ from datetime import datetime
 from beanie import Document, Indexed, Link, PydanticObjectId
 from pydantic import Field, ConfigDict
 from app.models.enums import JobStatus
-from app.models.user import User
-from app.models.team import Team
+# from app.models.user import User
+# from app.models.team import Team
 
 class Job(Document):
     """Job model using Beanie (MongoDB)."""

@@ -32,7 +32,8 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
         {payload.map((entry: { color?: string; name?: string; value?: number | string }, index: number) => (
           <div key={index} className="flex items-center gap-2 text-sm">
             {/* eslint-disable-next-line */}
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
+            <style>{`[data-color="${entry.color}"] { background-color: ${entry.color}; }`}</style>
+            <div className="w-3 h-3 rounded-full" data-color={entry.color} />
             <span className="text-gray-600 dark:text-gray-400">{entry.name}:</span>
             <span className="font-semibold text-gray-900 dark:text-gray-100">{entry.value}</span>
           </div>
@@ -212,13 +213,10 @@ export function ChartsSection({ loading }: { loading?: boolean }) {
                   className={`flex items-center gap-2 transition-all duration-200 hover:scale-105 cursor-pointer ${isHidden ? 'opacity-40' : 'opacity-100'
                     }`}
                 >
+                  <style>{`[data-legend="${entry.name}"] { background-color: ${COLORS[index % COLORS.length]}; transform: ${isHidden ? 'scale(0.8)' : 'scale(1)'}; }`}</style>
                   <div
                     className="h-3 w-3 rounded-full transition-transform duration-200"
-                    // eslint-disable-next-line
-                    style={{
-                      backgroundColor: COLORS[index % COLORS.length],
-                      transform: isHidden ? 'scale(0.8)' : 'scale(1)'
-                    }}
+                    data-legend={entry.name}
                   />
                   <span className={`text-gray-600 dark:text-gray-400 ${isHidden ? 'line-through' : ''}`}>
                     {entry.name}

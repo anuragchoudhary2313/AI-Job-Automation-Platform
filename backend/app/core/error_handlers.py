@@ -56,8 +56,9 @@ async def error_handling_middleware(request: Request, call_next):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={
                     "error": "Internal server error",
-                    "message": "An unexpected error occurred. Please try again later.",
-                    "detail": "An unexpected error occurred. Please try again later.",
+                    "code": "SERVER_ERROR",
+                    "message": "An unexpected error occurred. Our engineers have been notified.",
+                    "tip": "Check our status page or try again in a few minutes.",
                     "request_id": request_id
                 }
             )

@@ -15,11 +15,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     // Variants
     const variants = {
-      primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:-translate-y-[1px]",
-      secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 hover:-translate-y-[1px]",
-      outline: "border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 hover:-translate-y-[1px]",
-      ghost: "hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100",
-      danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm hover:-translate-y-[1px]",
+      primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-blue-500/20",
+      secondary: "bg-white/10 backdrop-blur-md border border-white/20 text-gray-900 dark:text-gray-100 hover:bg-white/20 transition-all",
+      outline: "border border-gray-300 bg-transparent hover:bg-gray-50/50 backdrop-blur-sm text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800/50",
+      ghost: "hover:bg-gray-100/50 backdrop-blur-sm hover:text-gray-900 dark:hover:bg-gray-800/50 dark:hover:text-gray-100",
+      danger: "bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-red-500/20",
     }
 
     // Sizes
