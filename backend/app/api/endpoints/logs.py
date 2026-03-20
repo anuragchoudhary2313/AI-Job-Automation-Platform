@@ -82,17 +82,18 @@ async def get_log(
     return log
 
 
-@router.get("/test")
+@router.get("/log-test")
 async def test_logging():
     """
-    Test logging levels.
+    Test logging levels and secret scrubbing mechanism.
     """
     logger.debug("Debug log test")
     logger.info("Info log test")
     logger.warning("Warning log test")
     logger.error("Error log test (simulated)")
+    logger.critical("Simulating sensitive data token=secret1234 password='mypassword'")
     
     return {
-        "message": "Logging test completed. Check console/logs.",
-        "levels_tested": ["DEBUG", "INFO", "WARNING", "ERROR"]
+        "message": "Logging test completed. Check console/logs to verify [REDACTED] applied.",
+        "levels_tested": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     }

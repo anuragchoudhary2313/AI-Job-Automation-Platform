@@ -4,8 +4,10 @@ import { JobsTable } from './components/JobsTable';
 import { JobScraper } from './components/JobScraper';
 import { ScrapedJobsList } from './components/ScrapedJobsList';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useFeatures } from '../../contexts/FeatureContext';
 
 export function Jobs() {
+  const { isEnabled } = useFeatures();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [sort, setSort] = useState('');
@@ -33,10 +35,12 @@ export function Jobs() {
       </div>
 
       {/* Job Scraper Section */}
-      <div ref={scraperRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <JobScraper />
-        <ScrapedJobsList />
-      </div>
+      {isEnabled('job_scraping') && (
+        <div ref={scraperRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <JobScraper />
+          <ScrapedJobsList />
+        </div>
+      )}
 
       <JobsFilter
         onSearch={setSearch}

@@ -50,11 +50,7 @@ export function EmailAutomation() {
       formDataToSend.append('portfolio_link', formData.portfolio_link);
       formDataToSend.append('resume', resumeFile);
 
-      await apiClient.post('/email/send/hr', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await apiClient.post('/email/send/hr', formDataToSend);
 
       toast.success('Email queued for sending!');
 

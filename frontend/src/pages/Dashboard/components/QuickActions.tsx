@@ -1,4 +1,5 @@
-import { Play, Mail, FileText, Settings } from 'lucide-react';
+import { Play, Settings, RefreshCw, Mail, Download } from 'lucide-react';
+import apiClient from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -10,8 +11,18 @@ export function QuickActions({ loading }: { loading?: boolean }) {
 
   if (loading) return null;
 
-  const handleAutoApply = () => {
-    toast.info('Auto-Apply feature coming soon!');
+  const handleAutoApply = async () => {
+    try {
+      toast.loading('Starting Multi-Agent Orchestration...', { id: 'auto-apply' });
+      await apiClient.post('/agent/multi-apply', {
+        keyword: 'Software Engineer',
+        location: 'Remote',
+        limit: 5
+      });
+      toast.success('Autonomous agents dispatched!', { id: 'auto-apply' });
+    } catch (e) {
+      toast.error('Failed to trigger auto-apply sequence.', { id: 'auto-apply' });
+    }
     // navigate('/jobs'); // Uncomment when ready
   };
 

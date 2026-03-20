@@ -35,8 +35,8 @@ export interface UseJobsReturn {
   loading: boolean;
   error: ApiError | null;
   createJob: (data: Partial<Job>) => Promise<Job>;
-  updateJob: (id: number, data: Partial<Job>) => Promise<Job>;
-  deleteJob: (id: number) => Promise<void>;
+  updateJob: (id: string, data: Partial<Job>) => Promise<Job>;
+  deleteJob: (id: string) => Promise<void>;
   refetch: () => Promise<void>;
 }
 
@@ -45,8 +45,8 @@ export interface UseResumesReturn {
   loading: boolean;
   error: ApiError | null;
   uploadResume: (file: File) => Promise<Resume>;
-  deleteResume: (id: number) => Promise<void>;
-  downloadResume: (id: number) => Promise<void>;
+  deleteResume: (id: string) => Promise<void>;
+  downloadResume: (id: string) => Promise<void>;
   refetch: () => Promise<void>;
 }
 

@@ -1,6 +1,7 @@
 import logging
 import sys
 import json
+import re
 from pathlib import Path
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from typing import List
@@ -45,6 +46,26 @@ class StructuredFormatter(logging.Formatter):
             return super().format(record)
 
 
+class SecretScrubberFormatter(logging.Formatter):
+    """
+    Wraps an existing formatter and regex-replaces sensitive secrets
+    (like tokens, passwords, API keys) entirely before outputting.
+    """
+    def __init__(self, base_formatter: logging.Formatter):
+        super().__init__()
+        self.base_formatter = base_formatter
+        # Look for typical secret patterns
+        self.patterns = [
+            (re.compile(r'(?i)(password|secret|token|api[-_]?key|authorization|bearer)[\'"]?\s*[:=]\s*[\'"]?([^\s\'",}]+)[\'"]?'), r'\1: "[REDACTED]"')
+        ]
+
+    def format(self, record: logging.LogRecord) -> str:
+        s = self.base_formatter.format(record)
+        for pattern, replacement in self.patterns:
+            s = pattern.sub(replacement, s)
+        return s
+
+
 def setup_logging():
     """
     Configure the logging system based on environment settings.
@@ -56,6 +77,7 @@ def setup_logging():
     - Structured JSON logs in production
     - Request tracking
     - Error file for ERROR+ logs
+    - Secret scrubbing mechanics
     """
     global _setup_done
     if _setup_done:
@@ -73,11 +95,13 @@ def setup_logging():
     # Define formats
     if settings.is_production:
         # Structured JSON format for production
-        formatter = StructuredFormatter()
+        base_formatter = StructuredFormatter()
     else:
         # Human-readable format for development
         log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        formatter = logging.Formatter(log_format)
+        base_formatter = logging.Formatter(log_format)
+        
+    formatter = SecretScrubberFormatter(base_formatter)
     
     # Configure root logger
     root_logger = logging.getLogger()

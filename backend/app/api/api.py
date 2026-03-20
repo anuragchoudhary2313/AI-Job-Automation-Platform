@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from app.api.endpoints import auth, websockets, scheduler, logs, stats, resumes, jobs, ai, email, telegram, users, teams, bot_runner, admin
+from app.api.endpoints import auth, websockets, scheduler, logs, stats, resumes, jobs, ai, email, telegram, users, teams, bot_runner, admin, agent
 
 api_router = APIRouter()
+api_router.include_router(agent.router, prefix="/agent", tags=["agent"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(scheduler.router, prefix="/schedule", tags=["schedule"])
 api_router.include_router(logs.router, prefix="/logs", tags=["logs"])

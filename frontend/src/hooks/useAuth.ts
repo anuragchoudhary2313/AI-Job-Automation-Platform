@@ -9,8 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { UseAuthReturn, RegisterData } from '@/types/hooks';
 import type { User } from '@/types/models';
 import type { ApiError, LoginResponse } from '@/types/api';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import apiClient, { getErrorMessage } from '@/lib/api';
 
 export function useAuth(): UseAuthReturn {
   const [user, setUser] = useState<User | null>(null);
@@ -28,22 +27,12 @@ export function useAuth(): UseAuthReturn {
       }
 
       try {
-        const response = await fetch(`${API_URL}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
-          // Token invalid, clear it
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-        }
+        const response = await apiClient.get('/auth/me');
+        setUser(response.data);
       } catch (err) {
         console.error('Auth check failed:', err);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
       } finally {
         setLoading(false);
       }
@@ -61,41 +50,23 @@ export function useAuth(): UseAuthReturn {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
+      const response = await apiClient.post<LoginResponse>('/auth/login', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: formData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw {
-          message: errorData.detail || 'Login failed',
-          status: response.status,
-        };
-      }
-
-      const data: LoginResponse = await response.json();
+      const data = response.data;
 
       // Store tokens
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
 
       // Fetch user data
-      const userResponse = await fetch(`${API_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${data.access_token}`,
-        },
-      });
-
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUser(userData);
-      }
+      const userResponse = await apiClient.get('/auth/me');
+      setUser(userResponse.data);
     } catch (err) {
-      const apiError = err as ApiError;
+      const apiError = { message: getErrorMessage(err) } as ApiError;
       setError(apiError);
       throw apiError;
     } finally {
@@ -114,26 +85,11 @@ export function useAuth(): UseAuthReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw {
-          message: errorData.detail || 'Registration failed',
-          status: response.status,
-        };
-      }
-
+      await apiClient.post('/auth/register', data);
       // Auto-login after registration
       await login(data.email, data.password);
     } catch (err) {
-      const apiError = err as ApiError;
+      const apiError = { message: getErrorMessage(err) } as ApiError;
       setError(apiError);
       throw apiError;
     } finally {

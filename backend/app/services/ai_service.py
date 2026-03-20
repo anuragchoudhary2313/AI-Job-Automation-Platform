@@ -210,6 +210,90 @@ class AIService:
         """
         return await self._generate_json(prompt, model=settings.AI_MODEL_FAST)
 
+    async def evaluate_job_match(self, job_description: str, user_profile: str) -> dict:
+        """
+        AI Decision classification for job matching.
+        """
+        prompt = f"""
+        You are an expert technical recruiter and AI agent evaluating if a candidate matches a job.
+        Evaluate the job description against the provided user profile.
+        
+        User Profile:
+        {user_profile[:1000]}
+        
+        Job Description:
+        {job_description[:2000]}
+        
+        Requirements:
+        1. Output valid JSON only.
+        2. Set "decision" to exactly "apply", "skip", or "maybe". Default to "skip" if unsure.
+        3. Set "confidence" to a float between 0.0 and 1.0.
+        4. Set "reason" to a concise string explaining the decision.
+        
+        Output format:
+        {{
+            "decision": "skip",
+            "confidence": 0.85,
+            "reason": "Candidate lacks required cloud architecture experience."
+        }}
+        """
+        try:
+            result = await self._generate_json(prompt, model=settings.AI_MODEL_FAST)
+            # Safe parsing
+            decision = result.get("decision", "skip").lower()
+            if decision not in ["apply", "skip", "maybe"]:
+                decision = "skip"
+            
+            return {
+                "decision": decision,
+                "confidence": float(result.get("confidence", 0.0)),
+                "reason": str(result.get("reason", "No reason provided."))
+            }
+        except Exception as e:
+            logger.error(f"AI Decision match failed: {e}")
+            return {"decision": "skip", "confidence": 0.0, "reason": "AI evaluation failed."}
+
+    async def classify_recruiter_email(self, email_body: str) -> dict:
+        """
+        AI Classifier isolating unstructured email replies into distinct JSON statuses.
+        """
+        prompt = f"""
+        You are an expert HR parser analyzing recruiter replies.
+        Read the following email body and classify the recruiter's intent.
+        
+        Email Body:
+        {email_body[:3000]}
+        
+        Requirements:
+        1. Output valid JSON only.
+        2. Set "classification" to exactly: "interview", "rejected", or "received".
+           - "interview": They want to schedule a call, interview, or sent an assessment.
+           - "rejected": They declined the application or moved forward with others.
+           - "received": They just acknowledged receipt, auto-reply, or asked to wait.
+        3. Set "company_name" to the extracted name of the company if discernible (else null).
+        
+        Output format:
+        {{
+            "classification": "rejected",
+            "company_name": "Google",
+            "summary": "Standard rejection template"
+        }}
+        """
+        try:
+            result = await self._generate_json(prompt, model=settings.AI_MODEL_FAST)
+            classification = result.get("classification", "received").lower()
+            if classification not in ["interview", "rejected", "received"]:
+                classification = "received"
+            
+            return {
+                "classification": classification,
+                "company_name": result.get("company_name"),
+                "summary": str(result.get("summary", ""))
+            }
+        except Exception as e:
+            logger.error(f"AI Email Classification failed: {e}")
+            return {"classification": "received", "company_name": None, "summary": "Failed to parse."}
+
     def _mock_response(self, prompt: str, json_mode: bool = False) -> str:
         """Fallback mock response."""
         logger.warning("Returning mock AI response.")

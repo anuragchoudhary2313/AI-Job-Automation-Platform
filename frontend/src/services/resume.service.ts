@@ -21,9 +21,7 @@ export const resumeService = {
   async uploadResume(file: File): Promise<Resume> {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await apiClient.post<Resume>('/resumes/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await apiClient.post<Resume>('/resumes/upload', formData);
     return response.data;
   },
 

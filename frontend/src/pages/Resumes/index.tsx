@@ -6,8 +6,10 @@ import { Upload, FileText } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { useResumes } from '../../hooks/useResumes';
+import { useFeatures } from '../../contexts/FeatureContext';
 
 export default function Resumes() {
+  const { isEnabled } = useFeatures();
   const { resumes, loading, uploadResume, deleteResume, downloadResume } = useResumes();
   const [uploading, setUploading] = useState(false);
 
@@ -55,7 +57,7 @@ export default function Resumes() {
       </div>
 
       {/* AI Resume Generator */}
-      <ResumeGenerator />
+      {isEnabled('ai_resume') && <ResumeGenerator />}
 
       <UploadArea onUpload={handleUpload} disabled={uploading} />
 
