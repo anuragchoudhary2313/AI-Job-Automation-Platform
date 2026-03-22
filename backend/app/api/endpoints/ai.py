@@ -29,6 +29,7 @@ class EmailPersonalizationRequest(BaseModel):
 
 class ResumeGenerationRequest(BaseModel):
     job_description: str
+    resume_text: Optional[str] = None
 
 
 @router.post("/resume/generate", response_model=str)
@@ -60,6 +61,21 @@ async def generate_structured_resume(
         return StructuredResume(**data)
     except Exception as e:
         raise HTTPException(status_code=500, detail="AI generation failed")
+
+
+@router.post("/resume/generate-latex", response_model=str)
+async def generate_latex_resume(
+    request: ResumeGenerationRequest,
+    current_user: User = Depends(deps.get_current_user),
+):
+    """
+    Generate optimized resume formatted as LaTeX code.
+    """
+    features.require("ai_resume")
+    try:
+        return await ai_service.generate_latex_resume(request.job_description, request.resume_text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="AI LaTeX generation failed")
 
 
 @router.post("/cover-letter/generate-structured", response_model=CoverLetter)

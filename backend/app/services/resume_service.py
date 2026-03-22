@@ -6,7 +6,7 @@ from typing import List, Optional
 import os
 import shutil
 from datetime import datetime
-from fastapi import UploadFile, HTTPException, status
+from fastapi import UploadFile, HTTPException, status, BackgroundTasks
 
 from app.core.exceptions import AuthorizationError
 from app.core.logging import get_logger
@@ -29,8 +29,8 @@ class ResumeService:
         """Initialize resume service."""
         self.resume_repo = resume_repo
 
-    async def save_resume_file(self, file: UploadFile, user: User) -> Resume:
-        """Validate and save uploaded resume file, then create DB record."""
+    async def save_resume_file(self, file: UploadFile, user: User, background_tasks: Optional[BackgroundTasks] = None) -> Resume:
+        """Validate and save uploaded resume file, then create DB record and queue processing."""
         # Validate file type
         if not file.filename or not file.filename.endswith(".pdf"):
             raise HTTPException(
@@ -67,13 +67,6 @@ class ResumeService:
             logger.error(f"Failed to extract text from PDF: {e}")
             content = "Failed to extract text"
 
-        # Parse resume content using AI
-        parsed_data = {}
-        try:
-            parsed_data = await ai_service.parse_resume(content)
-        except Exception as e:
-            logger.error(f"Failed to parse resume with AI: {e}")
-
         # Create DB entry - use PydanticObjectId for user_id
         from beanie import PydanticObjectId
 
@@ -82,12 +75,67 @@ class ResumeService:
             content=content,
             file_path=file_path,
             filename=file.filename,  # Store original filename
-            parsed_data=parsed_data,
+            parsed_data={"status": "processing"},
         )
         await resume.insert()
 
-        logger.info(f"Resume uploaded and parsed: {resume.id} by user {user.id}")
+        logger.info(f"Resume uploaded: {resume.id} by user {user.id}")
+        
+        # Async execution of LLM processing
+        if background_tasks is not None:
+            background_tasks.add_task(self.parse_and_update_resume, str(resume.id), content)
+        else:
+            # Fallback for sync contexts
+            try:
+                parsed_data = await ai_service.parse_resume(content)
+                resume.parsed_data = parsed_data
+                await resume.save()
+            except Exception as e:
+                logger.error(f"Sync fallback parse failed: {e}")
+                
         return resume
+        
+    async def save_generated_resume(self, parsed_data: dict, user: User, content: str = "") -> Resume:
+        """Save an AI-generated resume from its JSON structure."""
+        from beanie import PydanticObjectId
+        
+        job_title = "Generated Resume"
+        if parsed_data.get("experience") and len(parsed_data["experience"]) > 0:
+            job_title = parsed_data["experience"][0].get("title", job_title)
+            
+        filename = f"{job_title} - AI Generated.json"
+        
+        resume = Resume(
+            user_id=PydanticObjectId(user.id),
+            content=content,
+            filename=filename,
+            parsed_data=parsed_data
+        )
+        await resume.insert()
+        logger.info(f"Generated Resume saved: {resume.id} by user {user.id}")
+        return resume
+        
+    async def parse_and_update_resume(self, resume_id: str, content: str) -> None:
+        """Background task to extract structured JSON from raw resume text."""
+        try:
+            logger.info(f"Starting background parse for resume {resume_id}")
+            parsed_data = await ai_service.parse_resume(content)
+            
+            # Fetch the resume fresh from the DB
+            resume = await self.resume_repo.get_or_404(resume_id)
+            if resume:
+                resume.parsed_data = parsed_data
+                await resume.save()
+                logger.info(f"Finished background parse and updated resume {resume_id}")
+        except Exception as e:
+            logger.error(f"Background resume parsing failed: {e}")
+            try:
+                resume = await self.resume_repo.get_or_404(resume_id)
+                if resume:
+                    resume.parsed_data = {"status": "failed", "error": str(e)}
+                    await resume.save()
+            except:
+                pass
 
     async def get_resume(self, resume_id: str, user: User) -> Resume:
         """Get resume by ID with authorization check."""
@@ -101,7 +149,7 @@ class ResumeService:
         from app.models.user import User as UserModel
 
         resume_owner = await UserModel.get(resume.user_id)
-        if resume_owner and str(resume_owner.team_id) == str(user.team_id):
+        if resume_owner and str(resume_owner.team_id) == str(user.team_id) and str(user.team_id) != "None":
             return resume
 
         raise AuthorizationError("You don't have access to this resume")
@@ -110,7 +158,7 @@ class ResumeService:
         self, user: User, skip: int = 0, limit: int = 100
     ) -> List[Resume]:
         """Get resumes for user's team, or user only if no team."""
-        if user.team_id:
+        if user.team_id and str(user.team_id) != "None":
             resumes = await self.resume_repo.get_by_team(
                 team_id=str(user.team_id), skip=skip, limit=limit
             )
@@ -170,7 +218,7 @@ class ResumeService:
             from app.models.user import User as UserModel
 
             resume_owner = await UserModel.get(resume.user_id)
-            if resume_owner and str(resume_owner.team_id) == str(user.team_id):
+            if resume_owner and str(resume_owner.team_id) == str(user.team_id) and str(user.team_id) != "None":
                 return resume
 
             raise AuthorizationError("You don't have access to this resume")

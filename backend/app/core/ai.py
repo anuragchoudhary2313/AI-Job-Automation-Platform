@@ -41,3 +41,4 @@ class AIClient:
 
 # Global instance
 ai_client = AIClient()
+

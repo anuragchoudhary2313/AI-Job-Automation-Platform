@@ -42,15 +42,20 @@ export function useResumes() {
 
   const downloadResume = async (id: string, fileName: string = 'resume.pdf') => {
     try {
+      const finalFileName = fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`;
       const blob = await resumeService.downloadResume(id);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = fileName;
+      a.download = finalFileName;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      
+      // Delay revoking the object URL to allow the browser to initiate the download with the correct filename.
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

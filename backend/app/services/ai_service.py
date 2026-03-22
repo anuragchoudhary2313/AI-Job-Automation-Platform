@@ -111,6 +111,60 @@ class AIService:
         """
         return await self.generate_text(prompt, model=settings.AI_MODEL_FAST)
 
+    async def generate_latex_resume(self, job_description: str, resume_text: str = None) -> str:
+        """Generates a Jake's Resume LaTeX resume tailored to the job description."""
+        client = ai_client.get_async_client()
+        if not client:
+            return self._mock_latex_response()
+            
+        template_format = self._mock_latex_response()
+        
+        prompt = f"""
+        You are an expert LaTeX resume writer. Format the user's resume perfectly using the provided LaTeX template structure. 
+        Optimize the content beautifully to match the full extent of this job description:
+        
+        Job Description:
+        {job_description[:2000]}...
+        """
+        
+        if resume_text:
+            prompt += f"""
+        
+        IMPORTANT: Base the resume on the following user details and experience. Extract the relevant information from this text and map it directly into the LaTeX template structure:
+        
+        User's Current Resume:
+        {resume_text[:4000]}...
+        """
+        else:
+            prompt += "\n\n(No current resume provided. Generate realistic placeholder content optimized for the job.)"
+            
+        prompt += f"""
+        
+        TEMPLATE STRUCTURE TO USE:
+        =============================
+        {template_format}
+        =============================
+        
+        Output ONLY the valid raw LaTeX code string, starting from \\documentclass and ending with \\end{{document}}.
+        Ensure that it compiles cleanly with Tectonic (XeTeX). Do NOT use \\input{{glyphtounicode}} or \\pdfgentounicode=1.
+        Do NOT wrap output with ```latex or anything else.
+        Produce a professional 1-page template using the placeholders and structural commands shown in the TEMPLATE STRUCTURE. Don't add any introductory or concluding remarks.
+        """
+        response_text = await self.generate_text(prompt, model=settings.AI_MODEL_SMART)
+        
+        if response_text.startswith("[MOCK AI RESPONSE]"):
+            return self._mock_latex_response()
+            
+        response_text = response_text.strip()
+        if response_text.startswith("```latex"):
+            response_text = response_text.replace("```latex\n", "", 1)
+        if response_text.startswith("```"):
+            response_text = response_text.replace("```\n", "", 1)
+        if response_text.endswith("```"):
+            response_text = response_text[:-3]
+            
+        return response_text.strip()
+
     async def generate_resume_bullets(self, bullet: str, job_description: str) -> str:
         prompt = f"""
         Rewrite the following resume bullet point to make it more impactful and relevant to the job description.
@@ -336,6 +390,161 @@ class AIService:
             })
             
         return f"[MOCK AI RESPONSE] Processed: {prompt[:50]}..."
+
+    def _mock_latex_response(self) -> str:
+        """Returns the optimized default LaTeX resume template."""
+        return r'''\documentclass[letterpaper,11pt]{article}
+
+% --- PACKAGES ---
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{graphicx}
+
+% --- PAGE SETUP ---
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% --- SECTION FORMATTING ---
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% --- CUSTOM COMMANDS ---
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+% -----------------------------------------------------------
+% --- DOCUMENT STARTS HERE ---
+% -----------------------------------------------------------
+\begin{document}
+
+% --- HEADING ---
+\begin{center}
+    \textbf{\Huge \scshape Anurag Choudhary} \\ \vspace{3pt}
+    \small 
+    \faMobile \hspace{.5pt} \href{tel:917489542136}{+91 7489542136} $|$ 
+    \faEnvelope \hspace{.5pt} \href{mailto:anuragchoudhary603@gmail.com}{\underline{anuragchoudhary603@gmail.com}} $|$ 
+    \faLinkedin \hspace{.5pt} \href{https://www.linkedin.com}{\underline{LinkedIn}} $|$
+    \faGithub \hspace{.5pt} \href{https://github.com}{\underline{GitHub}}
+\end{center}
+
+% --- OBJECTIVE ---
+\section{Objective}
+\small{Aspiring Full-Stack Developer with hands-on MERN experience, skilled in C++, JavaScript, PHP, and building responsive, CMS-driven web applications using WordPress, REST APIs, and scalable backend systems.}
+\vspace{-2pt}
+
+% --- EDUCATION ---
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Acropolis Institute of Technology \& Research}{Indore, India}
+      {Bachelor of Technology (B.Tech) in Information Technology; \textbf{CGPA: 6.29/10}}{2022 -- 2026}
+    \resumeSubheading
+      {Pahal A School}{Dhamnod, India}
+      {Senior Secondary (12th); \textbf{Percentage: 70.6\%}}{2020 -- 2021}
+  \resumeSubHeadingListEnd
+
+% --- TECHNICAL SKILLS ---
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Programming Languages}{: C++, JavaScript, PHP, Java, MySQL} \\
+     \textbf{Frontend}{: React.js, HTML5, CSS3, Responsive UI, Theme Customization} \\
+     \textbf{Backend}{: Node.js, Express.js, MongoDB, REST APIs} \\
+     \textbf{DevOps \& Tools}{: AWS (EC2, S3, IAM), Git, GitHub, CI/CD Basics, WordPress}
+    }}
+ \end{itemize}
+
+% --- EXPERIENCE ---
+\section{Experience}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Frontend Development Intern}{Aug 2023 -- Sep 2023}
+      {CipherByte Technologies}{Remote}
+      \resumeItemListStart
+        \resumeItem{Developed responsive and SEO-friendly web pages using HTML, CSS, JavaScript, and CMS concepts.}
+        \resumeItem{Customized UI components and layouts similar to WordPress themes.}
+        \resumeItem{Collaborated using Git and Agile practices to deliver production-ready features.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+% --- PROJECTS ---
+\section{Projects}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{Net Shield – Network Security Analyzer} $|$ \emph{React, Python, MongoDB}}{}
+          \resumeItemListStart
+            \resumeItem{Developed a real-time network security analyzer to monitor, detect, and report malicious activity.}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Volunteer Opportunity Exchange Platform} $|$ \emph{PHP, React.js, Node.js, MySQL}}{}
+          \resumeItemListStart
+            \resumeItem{Built a CMS-style full-stack platform enabling user management, content posting, and secure data handling.}
+          \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+% --- ACHIEVEMENTS ---
+\section{Achievements \& Certifications}
+ \begin{itemize}[leftmargin=0.15in, label={$\bullet$}]
+    \small{
+      \item GeeksforGeeks: 3-Star Coder in C++ (Rating: 1669).
+      \item LeetCode: Solved 100+ Data Structures and Algorithm problems.
+      \item Cisco Certified: Introduction to Cybersecurity.
+    }
+ \end{itemize}
+
+\end{document}'''
 
 # Global instance
 ai_service = AIService()

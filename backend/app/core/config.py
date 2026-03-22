@@ -51,8 +51,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     
     # AI Settings
-    AI_MODEL_FAST: str = "llama3-70b-8192"
-    AI_MODEL_SMART: str = "llama3-70b-8192"
+    AI_MODEL_FAST: str = "llama-3.1-8b-instant"
+    AI_MODEL_SMART: str = "llama-3.3-70b-versatile"
     
     # Telegram Settings
     TELEGRAM_ENABLED: bool = False

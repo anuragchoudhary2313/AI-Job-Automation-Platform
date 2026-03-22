@@ -122,6 +122,42 @@ class JobRepository(BaseRepository[Job]):
             logger.error(f"Error getting job stats for team {team_id}: {str(e)}")
             raise DatabaseError("Failed to get job statistics") from e
 
+    async def get_stats_by_user(self, user_id: str) -> Dict[str, Any]:
+        """Get job statistics for a user using server-side aggregation."""
+        try:
+            # Convert string to PydanticObjectId for proper MongoDB comparison
+            user_oid = PydanticObjectId(user_id)
+            pipeline = [
+                {"$match": {"user_id": user_oid}},
+                {
+                    "$group": {
+                        "_id": {"$ifNull": ["$status", "unknown"]},
+                        "count": {"$sum": 1},
+                    }
+                },
+            ]
+            results = await Job.aggregate(pipeline).to_list()
+
+            by_status: Dict[str, int] = {}
+            total = 0
+            for row in results:
+                s = row["_id"]
+                c = row["count"]
+                by_status[s] = c
+                total += c
+
+            return {
+                "total": total,
+                "by_status": by_status,
+                "applied": by_status.get("applied", 0),
+                "interview": by_status.get("interviewing", 0),
+                "offer": by_status.get("offered", 0),
+                "rejected": by_status.get("rejected", 0),
+            }
+        except Exception as e:
+            logger.error(f"Error getting job stats for user {user_id}: {str(e)}")
+            raise DatabaseError("Failed to get job statistics") from e
+
     async def search(
         self, team_id: str, query: str, skip: int = 0, limit: int = 100
     ) -> List[Job]:
@@ -139,4 +175,21 @@ class JobRepository(BaseRepository[Job]):
             )
         except Exception as e:
             logger.error(f"Error searching jobs: {str(e)}")
+            raise DatabaseError("Failed to search jobs") from e
+
+    async def search_by_user(
+        self, user_id: str, query: str, skip: int = 0, limit: int = 100
+    ) -> List[Job]:
+        """Search jobs by title or company for a specific user."""
+        try:
+            user_oid = PydanticObjectId(user_id)
+            search_query = Job.find(
+                Job.user_id == user_oid,
+                Or(RegEx(Job.title, query, "i"), RegEx(Job.company, query, "i")),
+            )
+            return (
+                await search_query.sort("-created_at").skip(skip).limit(limit).to_list()
+            )
+        except Exception as e:
+            logger.error(f"Error searching user jobs: {str(e)}")
             raise DatabaseError("Failed to search jobs") from e

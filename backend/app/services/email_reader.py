@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional
 
 from app.core.config import settings
 from app.services.ai_service import ai_service
-from app.core.telegram import send_telegram_notification
+from app.notifications.telegram import telegram_service
 from app.models.job_application import JobApplication
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ class EmailReaderService:
                 # Telegram execution alert hook
                 if classification in ["interview", "rejected"] and settings.TELEGRAM_ENABLED:
                     alert = f"Recruiter Update! [{classification.upper()}]\nCompany: {company_hint or sender}\nSubject: {subject}"
-                    await send_telegram_notification(alert)
+                    await telegram_service.send_alert(alert)
                     
                 processed_count += 1
                 

@@ -30,6 +30,11 @@ apiClient.interceptors.request.use(
       config.headers['X-CSRF-Token'] = csrfToken;
     }
 
+    // Support multipart/form-data boundary generation natively by the browser
+    if (config.data instanceof FormData && config.headers) {
+      delete config.headers['Content-Type'];
+    }
+
     return config;
   },
   (error) => {

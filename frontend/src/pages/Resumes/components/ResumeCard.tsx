@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 interface ResumeCardProps {
   resume: Resume;
   onDelete?: (id: string) => void;
-  onDownload?: (id: string) => void;
+  onDownload?: (id: string, fileName: string) => void;
 }
 
 export function ResumeCardSkeleton() {
@@ -47,7 +47,7 @@ export function ResumeCard({ resume, onDelete, onDownload }: ResumeCardProps) {
               variant="secondary"
               className="h-9 w-9 rounded-full bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
               title="Download"
-              onClick={() => onDownload(resume.id)}
+              onClick={() => onDownload(resume.id || (resume as any)._id, fileName)}
             >
               <Download className="h-4 w-4" />
             </Button>
@@ -58,7 +58,7 @@ export function ResumeCard({ resume, onDelete, onDownload }: ResumeCardProps) {
               variant="secondary"
               className="h-9 w-9 rounded-full bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"
               title="Delete"
-              onClick={() => onDelete(resume.id)}
+              onClick={() => onDelete(resume.id || (resume as any)._id)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>

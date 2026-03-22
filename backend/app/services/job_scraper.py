@@ -74,6 +74,24 @@ class JobScraperService:
 
         except Exception as e:
             error_details = str(e) or e.__class__.__name__
+            if isinstance(e, NotImplementedError) and __import__("sys").platform == "win32":
+                logger.warning("Playwright threading failed on Windows. Falling back to local scraper module.")
+                await send_progress("Switched to synchronous local scraper...")
+                import sys
+                import os
+                sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+                from bot_engine.scrapers.linkedin import scrape_jobs_from_linkedin
+                
+                jobs_data = scrape_jobs_from_linkedin(keyword, location)
+                new_jobs_count = 0
+                for job_data in jobs_data[:limit]:
+                    existing = await ScrapedJob.find_one(ScrapedJob.link == job_data["link"])
+                    if not existing:
+                        new_job = ScrapedJob(**job_data)
+                        await new_job.insert()
+                        new_jobs_count += 1
+                return {"total": len(jobs_data), "new": new_jobs_count}
+
             logger.error(f"Scraping failed: {error_details}", exc_info=True)
             await send_progress(f"Scraping failed: {error_details}", type="error")
             asyncio.create_task(telegram_service.send_alert(f"⚠️ <b>Job Scraping Failed</b>\nError: {error_details}"))

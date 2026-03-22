@@ -1,4 +1,4 @@
-import { Play, Settings, RefreshCw, Mail, Download } from 'lucide-react';
+import { Play, Settings, RefreshCw, Mail, Download, FileText } from 'lucide-react';
 import apiClient from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/Card';

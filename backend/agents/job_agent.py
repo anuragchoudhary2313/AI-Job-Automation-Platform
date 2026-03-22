@@ -13,7 +13,7 @@ from app.services.job_scraper import job_scraper_service
 from app.services.ai_service import ai_service
 from app.models.user import User
 from app.core.config import settings
-from app.core.telegram import send_telegram_notification
+from app.notifications.telegram import telegram_service
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class JobAutomationAgent:
         """Tool to notify the user via Telegram."""
         logger.info(f"Agent sending notification: {message}")
         if settings.TELEGRAM_ENABLED and settings.TELEGRAM_BOT_TOKEN:
-            await send_telegram_notification(message)
+            await telegram_service.send_alert(message)
             return True
         return False
 

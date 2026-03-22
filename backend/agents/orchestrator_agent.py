@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Any
 
 from app.services.job_scraper import job_scraper_service
-from app.core.telegram import send_telegram_notification
+from app.notifications.telegram import telegram_service
 from app.core.config import settings
 from app.models.user import User
 
@@ -31,7 +31,7 @@ class OrchestratorAgent:
         
         if jobs_found == 0:
             if settings.TELEGRAM_ENABLED and settings.TELEGRAM_BOT_TOKEN:
-                await send_telegram_notification("Multi-Agent Orchestrator found no jobs.")
+                await telegram_service.send_alert("Multi-Agent Orchestrator found no jobs.")
             return {"status": "completed", "applied": 0, "skipped": 0}
 
         applied_count = 0
@@ -117,7 +117,7 @@ class OrchestratorAgent:
         # 4. Final Notification
         summary = f"Multi-Agent pipeline completed. Evaluated: {jobs_found}, Applied: {applied_count}, Skipped: {skipped_count}"
         if settings.TELEGRAM_ENABLED and settings.TELEGRAM_BOT_TOKEN:
-            await send_telegram_notification(summary)
+            await telegram_service.send_alert(summary)
             
         logger.info(summary)
         return {"status": "completed", "applied": applied_count, "skipped": skipped_count}

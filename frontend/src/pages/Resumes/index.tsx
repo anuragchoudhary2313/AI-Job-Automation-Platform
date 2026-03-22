@@ -34,13 +34,21 @@ export default function Resumes() {
     }
   };
 
-  const handleDownload = async (id: string) => {
-    await downloadResume(id);
+  const handleDownload = async (id: string, fileName: string) => {
+    await downloadResume(id, fileName);
   };
 
   const triggerUpload = () => {
     const input = document.getElementById('file-upload') as HTMLInputElement;
     if (input) input.click();
+  };
+
+  const handleCreateNew = () => {
+    if (isEnabled('ai_resume')) {
+      document.getElementById('ai-resume-generator')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      triggerUpload();
+    }
   };
 
   return (
@@ -57,7 +65,11 @@ export default function Resumes() {
       </div>
 
       {/* AI Resume Generator */}
-      {isEnabled('ai_resume') && <ResumeGenerator />}
+      {isEnabled('ai_resume') && (
+        <div id="ai-resume-generator">
+          <ResumeGenerator />
+        </div>
+      )}
 
       <UploadArea onUpload={handleUpload} disabled={uploading} />
 
@@ -81,7 +93,7 @@ export default function Resumes() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {resumes.map((resume, index) => (
               <ResumeCard
-                key={resume.id || `resume-${index}`}
+                key={resume.id || (resume as any)._id || `resume-${index}`}
                 resume={resume}
                 onDelete={handleDelete}
                 onDownload={handleDownload}
@@ -90,7 +102,7 @@ export default function Resumes() {
             {/* Create New Card */}
             <div 
               className="group relative border-2 border-dashed border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-xl flex flex-col items-center justify-center p-6 transition-colors cursor-pointer min-h-[280px]" 
-              onClick={triggerUpload}
+              onClick={handleCreateNew}
             >
               <div className="h-10 w-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
                 <span className="text-xl text-gray-400 group-hover:text-blue-500 transition-colors">+</span>
