@@ -90,7 +90,8 @@ class JobRepository(BaseRepository[Job]):
         """Get job statistics for a team using server-side aggregation."""
         try:
             # Convert string to PydanticObjectId for proper MongoDB comparison
-            team_oid = PydanticObjectId(team_id)
+            from bson import ObjectId
+            team_oid = ObjectId(team_id)
             pipeline = [
                 {"$match": {"team_id": team_oid}},
                 {
@@ -100,7 +101,7 @@ class JobRepository(BaseRepository[Job]):
                     }
                 },
             ]
-            results = await Job.aggregate(pipeline).to_list()
+            results = await Job.get_pymongo_collection().aggregate(pipeline).to_list(length=1000)
 
             by_status: Dict[str, int] = {}
             total = 0
@@ -119,14 +120,15 @@ class JobRepository(BaseRepository[Job]):
                 "rejected": by_status.get("rejected", 0),
             }
         except Exception as e:
-            logger.error(f"Error getting job stats for team {team_id}: {str(e)}")
+            logger.exception(f"Error getting job stats for team {team_id}")
             raise DatabaseError("Failed to get job statistics") from e
 
     async def get_stats_by_user(self, user_id: str) -> Dict[str, Any]:
         """Get job statistics for a user using server-side aggregation."""
         try:
             # Convert string to PydanticObjectId for proper MongoDB comparison
-            user_oid = PydanticObjectId(user_id)
+            from bson import ObjectId
+            user_oid = ObjectId(user_id)
             pipeline = [
                 {"$match": {"user_id": user_oid}},
                 {
@@ -136,7 +138,7 @@ class JobRepository(BaseRepository[Job]):
                     }
                 },
             ]
-            results = await Job.aggregate(pipeline).to_list()
+            results = await Job.get_pymongo_collection().aggregate(pipeline).to_list(length=1000)
 
             by_status: Dict[str, int] = {}
             total = 0
@@ -155,7 +157,7 @@ class JobRepository(BaseRepository[Job]):
                 "rejected": by_status.get("rejected", 0),
             }
         except Exception as e:
-            logger.error(f"Error getting job stats for user {user_id}: {str(e)}")
+            logger.exception(f"Error getting job stats for user {user_id}")
             raise DatabaseError("Failed to get job statistics") from e
 
     async def search(
