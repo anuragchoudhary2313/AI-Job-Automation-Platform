@@ -3,8 +3,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
 async def test_conn():
-    uri = "mongodb+srv://anuragchoudhary603_db_user:Htm25OddTdJoJRWC@cluster0.c7lhl3y.mongodb.net/job_automation?appName=Cluster0"
-    print(f"Connecting to {uri}...")
+    # Load from environment variable for security
+    uri = os.getenv("MONGODB_URI")
+    if not uri:
+        print("❌ Error: MONGODB_URI environment variable not set.")
+        return
+        
+    print("Connecting to MongoDB...")
     try:
         # Increase timeout
         client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=10000)
