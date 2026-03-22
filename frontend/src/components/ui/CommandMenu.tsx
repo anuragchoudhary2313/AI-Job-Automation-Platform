@@ -13,7 +13,7 @@ import {
   Play
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../context/user-theme';
+import { useTheme } from '../../contexts/user-theme';
 import { Button } from './Button';
 
 export function CommandMenu() {
