@@ -50,7 +50,14 @@ class ResumeService:
                 detail="Invalid user identifier for file storage",
             )
         user_dir = os.path.join(UPLOAD_ROOT, safe_user_dir)
-        os.makedirs(user_dir, exist_ok=True)
+        normalized_user_dir = os.path.abspath(user_dir)
+        if not normalized_user_dir.startswith(UPLOAD_ROOT + os.sep):
+            logger.error(f"Attempted path traversal in user directory path: {normalized_user_dir}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid user directory path",
+            )
+        os.makedirs(normalized_user_dir, exist_ok=True)
 
         # Save file with timestamp and sanitized filename
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -62,7 +69,7 @@ class ResumeService:
                 detail="Invalid file name",
             )
         safe_filename = f"{timestamp}_{original_name}"
-        file_path = os.path.join(user_dir, safe_filename)
+        file_path = os.path.join(normalized_user_dir, safe_filename)
         # Normalize and ensure the path stays within the upload root
         normalized_path = os.path.abspath(file_path)
         if not normalized_path.startswith(UPLOAD_ROOT + os.sep):
