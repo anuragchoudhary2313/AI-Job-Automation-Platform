@@ -217,7 +217,7 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
             For now, we simply confirm the start. */}
         {scrapeMutation.isSuccess && (
           <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/10 text-green-700 dark:text-green-300 rounded-md">
-            Scraping task initiated successfully. Check the jobs table or logs for updates.
+            Scraping task initiated successfully. Check the jobs table for updates.
           </div>
         )}
       </CardContent>

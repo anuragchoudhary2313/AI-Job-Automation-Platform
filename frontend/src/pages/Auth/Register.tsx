@@ -10,7 +10,9 @@ import { Input } from '../../components/ui/Input';
 import { AuthLayout } from './AuthLayout';
 import { useToast } from '../../components/ui/Toast';
 import { PasswordStrengthMeter, getPasswordStrength } from '../../components/ui/PasswordStrengthMeter';
-import apiClient, { getErrorMessage } from '../../lib/api';
+import { getErrorMessage } from '../../lib/api';
+import { authService } from '../../services/auth.service';
+import { useAuth } from '../../contexts/AuthContext';
 
 const registerSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,6 +29,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export function Register() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,14 +51,26 @@ export function Register() {
       setLoading(true);
 
       // Register user
-      await apiClient.post('/auth/register', {
+      const registeredUser = await authService.register({
         email: data.email,
         password: data.password,
         full_name: data.fullName
       });
 
-      toast.success('Account created successfully! Please log in.');
-      navigate('/login');
+      // Auto-login immediately after registration for a faster onboarding flow.
+      const formData = new URLSearchParams();
+      formData.append('username', data.email);
+      formData.append('password', data.password);
+
+      const loginResponse = await authService.login(formData);
+      localStorage.setItem('access_token', loginResponse.access_token);
+      localStorage.setItem('refresh_token', loginResponse.refresh_token);
+
+      const user = loginResponse.user ?? registeredUser;
+      login(user);
+
+      toast.success('Account created successfully! Welcome aboard.');
+      navigate('/dashboard');
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       toast.error(errorMessage);

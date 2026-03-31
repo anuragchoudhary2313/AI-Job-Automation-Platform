@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import {
-  LayoutDashboard, Briefcase, FileText, Settings, Shield, Terminal,
+  LayoutDashboard, Briefcase, FileText, Settings, Shield,
   ChevronLeft, LogOut
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -14,7 +14,6 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Jobs', href: '/jobs', icon: Briefcase },
   { name: 'Resumes', href: '/resumes', icon: FileText },
-  { name: 'Logs', href: '/logs', icon: Terminal },
   { name: 'Admin', href: '/admin', icon: Shield },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

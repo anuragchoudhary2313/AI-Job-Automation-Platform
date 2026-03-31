@@ -76,11 +76,11 @@ export function ActivityFeed({ loading }: { loading?: boolean }) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <Card className="border-gray-200/80 dark:border-gray-800">
+      <CardHeader className="pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle className="text-base font-bold">Recent Activity</CardTitle>
             <CardDescription>Real-time log of bot actions</CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export function ActivityFeed({ loading }: { loading?: boolean }) {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}
-                className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-full"
+                className="rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
               >
                 New
               </motion.span>
@@ -109,7 +109,7 @@ export function ActivityFeed({ loading }: { loading?: boolean }) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-8">
+        <div className="space-y-5">
           <AnimatePresence mode="popLayout">
             {activities.map((activity, index) => (
               <motion.div
@@ -128,13 +128,13 @@ export function ActivityFeed({ loading }: { loading?: boolean }) {
                     {getActivityIcon(activity.type)}
                   </div>
                   {index < activities.length - 1 && (
-                    <div className="w-px h-full bg-gray-200 dark:bg-gray-800 my-2" />
+                    <div className="my-2 h-full w-px bg-gray-200 dark:bg-gray-800" />
                   )}
                 </div>
-                <div className="pb-8 last:pb-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.title}</p>
+                <div className="flex-1 pb-5 last:pb-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{activity.title}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{activity.description}</p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{activity.time}</p>
+                  <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">{activity.time}</p>
                 </div>
               </motion.div>
             ))}

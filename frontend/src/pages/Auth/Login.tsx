@@ -59,8 +59,8 @@ export function Login() {
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
 
-      // Fetch user data
-      const user = await authService.getCurrentUser();
+      // Use user from login response to avoid an extra round trip.
+      const user = response.user ?? await authService.getCurrentUser();
       login(user);
 
       toast.success('Welcome back! Logged in successfully.');

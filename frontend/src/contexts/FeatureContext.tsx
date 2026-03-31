@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import axios from 'axios';
 import apiClient from '../lib/api';
 
 interface FeatureFlags {
@@ -36,18 +37,34 @@ export const FeatureProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchFeatures = async () => {
       try {
-        const response = await apiClient.get<FeatureFlags>('/features/');
+        // Do not block app startup for long if backend is unavailable.
+        const response = await apiClient.get<FeatureFlags>('/features/', {
+          timeout: 4000,
+          signal: controller.signal,
+          _suppressGlobalErrorToast: true,
+        });
         setFeatures(response.data);
-      } catch (error) {
-        console.error('Error fetching feature flags:', error);
+      } catch (error: unknown) {
+        // Use defaults quietly when the feature endpoint is slow or offline.
+        if (axios.isAxiosError(error) && (error.code === 'ECONNABORTED' || !error.response)) {
+          // Expected when backend is unavailable; defaults are intentionally used.
+        } else if (!axios.isCancel(error)) {
+          console.error('Error fetching feature flags:', error);
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchFeatures();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const isEnabled = (feature: keyof FeatureFlags) => {

@@ -2,13 +2,15 @@
 Refactored resumes endpoints using service layer.
 """
 
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status, BackgroundTasks, Body
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status, BackgroundTasks, Body, Query, Request, Response
 from fastapi.responses import FileResponse
-from typing import List, Any
+from typing import List, Any, Union
 import os
 import tempfile
 import subprocess
 import uuid
+import hashlib
+import json
 
 from app.api import deps
 from app.core.exceptions import NotFoundError, AuthorizationError, handle_exception
@@ -17,6 +19,7 @@ from app.repositories.resume import ResumeRepository
 from app.services.resume_service import ResumeService
 from app.models.user import User
 from app.schemas.resume import Resume as ResumeSchema
+from app.core.pagination import OffsetPaginatedResponse, create_offset_paginated_response
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -162,10 +165,13 @@ async def save_generated_resume(
         )
 
 
-@router.get("/", response_model=List[ResumeSchema])
+@router.get("/", response_model=Union[List[ResumeSchema], OffsetPaginatedResponse[ResumeSchema]])
 async def list_resumes(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=200),
+    include_meta: bool = Query(False, description="Return pagination metadata envelope"),
+    request: Request = None,
+    response: Response = None,
     current_user: User = Depends(deps.get_current_user),
     resume_service: ResumeService = Depends(get_resume_service),
 ) -> Any:
@@ -178,6 +184,9 @@ async def list_resumes(
         )
 
         logger.info(f"Found {len(resumes)} resumes for user {current_user.id}")
+
+        from app.models.resume import Resume
+        total = await Resume.find({"user_id": {"$in": [current_user.id, str(current_user.id)]}}).count()
 
         # Convert Beanie models to dicts for Pydantic schema
         resume_list = []
@@ -193,6 +202,27 @@ async def list_resumes(
             )
 
         logger.info(f"Returning {len(resume_list)} resumes")
+        etag_seed = {
+            "skip": skip,
+            "limit": limit,
+            "include_meta": include_meta,
+            "total": total,
+            "first": resume_list[0]["id"] if resume_list else None,
+            "last": resume_list[-1]["id"] if resume_list else None,
+        }
+        etag = f'W/"{hashlib.md5(json.dumps(etag_seed, sort_keys=True, default=str).encode()).hexdigest()}"'
+
+        if request:
+            inm = (request.headers.get("if-none-match") or "").strip()
+            if inm == etag:
+                return Response(status_code=304, headers={"ETag": etag, "Cache-Control": "private, max-age=20"})
+
+        if response is not None:
+            response.headers["ETag"] = etag
+            response.headers["Cache-Control"] = "private, max-age=20"
+
+        if include_meta:
+            return create_offset_paginated_response(resume_list, total, skip, limit)
         return resume_list
 
     except Exception as e:

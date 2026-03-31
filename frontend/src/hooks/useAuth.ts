@@ -62,9 +62,13 @@ export function useAuth(): UseAuthReturn {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
 
-      // Fetch user data
-      const userResponse = await apiClient.get('/auth/me');
-      setUser(userResponse.data);
+      // Use user from login response when available to avoid an extra request.
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        const userResponse = await apiClient.get('/auth/me');
+        setUser(userResponse.data);
+      }
     } catch (err) {
       const apiError = { message: getErrorMessage(err) } as ApiError;
       setError(apiError);

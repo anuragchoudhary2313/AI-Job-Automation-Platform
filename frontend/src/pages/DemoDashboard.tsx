@@ -1,6 +1,6 @@
 import { BarChart3, Mail, TrendingUp, Clock } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { demoStats, demoJobs, demoChartData, demoLogs } from '../data/demoData';
+import { demoStats, demoJobs, demoChartData } from '../data/demoData';
 
 const DemoDashboard = () => {
   const getStatusColor = (status: string) => {
@@ -15,19 +15,6 @@ const DemoDashboard = () => {
         return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
       default:
         return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
-    }
-  };
-
-  const getLogColor = (type: string) => {
-    switch (type) {
-      case 'success':
-        return 'text-green-600 dark:text-green-400';
-      case 'warning':
-        return 'text-yellow-600 dark:text-yellow-400';
-      case 'error':
-        return 'text-red-600 dark:text-red-400';
-      default:
-        return 'text-blue-600 dark:text-blue-400';
     }
   };
 
@@ -133,8 +120,7 @@ const DemoDashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Recent Applications */}
+        <div className="grid gap-8">
           <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
               Recent Applications
@@ -160,28 +146,6 @@ const DemoDashboard = () => {
                         Match: {job.matchScore}%
                       </span>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Activity Log */}
-          <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-              Activity Log
-            </h2>
-            <div className="space-y-3">
-              {demoLogs.map((log) => (
-                <div key={log.id} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${getLogColor(log.type)}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {log.message}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      {new Date(log.timestamp).toLocaleString()}
-                    </p>
                   </div>
                 </div>
               ))}

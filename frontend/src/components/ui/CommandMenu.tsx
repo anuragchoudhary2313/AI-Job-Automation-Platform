@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Briefcase,
   FileText,
-  Terminal,
   Settings,
   Search,
   Moon,
@@ -96,13 +95,6 @@ export function CommandMenu() {
             >
               <FileText className="mr-2 h-4 w-4" />
               <span>Resumes</span>
-            </Command.Item>
-            <Command.Item
-              onSelect={() => runCommand(() => navigate('/logs'))}
-              className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-gray-100 aria-selected:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-gray-800 dark:aria-selected:text-gray-50 transition-colors"
-            >
-              <Terminal className="mr-2 h-4 w-4" />
-              <span>Logs</span>
             </Command.Item>
             <Command.Item
               onSelect={() => runCommand(() => navigate('/settings'))}

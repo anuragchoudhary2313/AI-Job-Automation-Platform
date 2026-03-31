@@ -78,17 +78,17 @@ export function MetricsRow({ loading, metrics }: { loading?: boolean; metrics?: 
     >
       {displayMetrics.map((metric) => (
         <motion.div key={metric.title} variants={item}>
-          <Card hoverable className="dark:hover:border-gray-700 h-full">
+          <Card hoverable className="h-full overflow-hidden border-gray-200/80 dark:border-gray-800 dark:hover:border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <CardTitle className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">
                 {metric.title}
               </CardTitle>
               <div className={cn("p-2 rounded-full", metric.color)}>
                 <metric.icon className="h-4 w-4" />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
+            <CardContent className="space-y-2">
+              <div className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
                 {metric.title === 'Response Rate' ? (
                   <>
                     <AnimatedCounter
@@ -100,7 +100,18 @@ export function MetricsRow({ loading, metrics }: { loading?: boolean; metrics?: 
                   <AnimatedCounter value={metric.value as number} />
                 )}
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                <div
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500',
+                    metric.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'
+                  )}
+                  style={{ width: `${Math.min(Math.abs(metric.change) * 4, 100)}%` }}
+                />
+              </div>
+
+              <p className="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
                 {metric.trend === 'up' ? (
                   <ArrowUpRight className="h-3 w-3 text-emerald-500 mr-1" />
                 ) : (
@@ -109,7 +120,7 @@ export function MetricsRow({ loading, metrics }: { loading?: boolean; metrics?: 
                 <span className={metric.trend === 'up' ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}>
                   {Math.abs(metric.change)}%
                 </span>
-                <span className="ml-1 opacity-70">from last month</span>
+                <span className="ml-1 opacity-70">vs previous cycle</span>
               </p>
             </CardContent>
           </Card>

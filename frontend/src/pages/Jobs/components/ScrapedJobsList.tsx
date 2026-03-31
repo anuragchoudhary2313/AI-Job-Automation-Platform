@@ -38,7 +38,7 @@ export function ScrapedJobsList({ onApply }: ScrapedJobsListProps) {
     queryKey: ['scraped-jobs', 7],
     queryFn: async () => {
       const response = await apiClient.get<ScrapedJob[]>('/jobs/scraped', {
-        params: { limit: 20, days: 7 }
+        params: { limit: 20, days: 7, compact: true }
       });
       return response.data;
     },

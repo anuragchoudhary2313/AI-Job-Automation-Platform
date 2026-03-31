@@ -5,6 +5,7 @@ Job repository for database operations using Beanie (MongoDB).
 from typing import Optional, List, Dict, Any
 from beanie import PydanticObjectId
 from beanie.operators import Or, RegEx
+from beanie.odm.queries.find import FindMany
 
 from app.repositories.base import BaseRepository
 from app.models.job import Job
@@ -20,6 +21,35 @@ class JobRepository(BaseRepository[Job]):
     def __init__(self) -> None:
         """Initialize job repository."""
         super().__init__(Job)
+
+    def _build_user_query(
+        self,
+        user_id: str,
+        status: Optional[str] = None,
+        search: Optional[str] = None,
+        sort: Optional[str] = None,
+    ) -> FindMany:
+        user_oid = PydanticObjectId(user_id)
+        query_obj = Job.find(Job.user_id == user_oid)
+
+        if status:
+            query_obj = query_obj.find(Job.status == status)
+
+        if search:
+            query_obj = query_obj.find(
+                Or(RegEx(Job.title, search, "i"), RegEx(Job.company, search, "i"))
+            )
+
+        sort_field = "-created_at"
+        if sort:
+            if sort == "oldest":
+                sort_field = "created_at"
+            elif sort == "title":
+                sort_field = "title"
+            elif sort == "company":
+                sort_field = "company"
+
+        return query_obj.sort(sort_field)
 
     async def get_by_url_and_user(self, job_url: str, user_id: str) -> Optional[Job]:
         """Check if a job with the same URL already exists for this user."""
@@ -41,39 +71,45 @@ class JobRepository(BaseRepository[Job]):
     ) -> List[Job]:
         """Get jobs for a specific user with optional filtering and sorting."""
         try:
-            user_oid = PydanticObjectId(user_id)
-            query_obj = Job.find(Job.user_id == user_oid)
+            query_obj = self._build_user_query(user_id, status=status, search=search, sort=sort)
+            return await query_obj.skip(skip).limit(limit).to_list()
+        except Exception as e:
+            logger.error(f"Error getting jobs for user {user_id}: {str(e)}")
+            raise DatabaseError("Failed to get jobs") from e
 
-            if status:
-                query_obj = query_obj.find(Job.status == status)
-
-            if search:
-                query_obj = query_obj.find(
-                    Or(RegEx(Job.title, search, "i"), RegEx(Job.company, search, "i"))
-                )
-
-            sort_field = "-created_at"
-            if sort:
-                if sort == "oldest":
-                    sort_field = "created_at"
-                elif sort == "title":
-                    sort_field = "title"
-                elif sort == "company":
-                    sort_field = "company"
-
-            return await query_obj.sort(sort_field).skip(skip).limit(limit).to_list()
+    async def get_by_user_with_total(
+        self,
+        user_id: str,
+        skip: int = 0,
+        limit: int = 100,
+        status: Optional[str] = None,
+        search: Optional[str] = None,
+        sort: Optional[str] = None,
+    ) -> tuple[List[Job], int]:
+        """Get paginated jobs plus total count for the same filter set."""
+        try:
+            query_obj = self._build_user_query(user_id, status=status, search=search, sort=sort)
+            total = await query_obj.count()
+            items = await query_obj.skip(skip).limit(limit).to_list()
+            return items, total
         except Exception as e:
             logger.error(f"Error getting jobs for user {user_id}: {str(e)}")
             raise DatabaseError("Failed to get jobs") from e
 
     async def get_stats_by_user(self, user_id: str) -> Dict[str, Any]:
         """Get job statistics for a user using server-side aggregation."""
+        empty_stats = {
+            "total": 0,
+            "by_status": {},
+            "applied": 0,
+            "interview": 0,
+            "offer": 0,
+            "rejected": 0,
+        }
         try:
-            # Convert string to PydanticObjectId for proper MongoDB comparison
-            from bson import ObjectId
-            user_oid = ObjectId(user_id)
+            # Compare by string value so this works whether user_id is stored as ObjectId or string.
             pipeline = [
-                {"$match": {"user_id": user_oid}},
+                {"$match": {"$expr": {"$eq": [{"$toString": "$user_id"}, str(user_id)]}}},
                 {
                     "$group": {
                         "_id": {"$ifNull": ["$status", "unknown"]},
@@ -86,8 +122,8 @@ class JobRepository(BaseRepository[Job]):
             by_status: Dict[str, int] = {}
             total = 0
             for row in results:
-                s = row["_id"]
-                c = row["count"]
+                s = str(row.get("_id") or "unknown")
+                c = int(row.get("count", 0))
                 by_status[s] = c
                 total += c
 
@@ -101,7 +137,7 @@ class JobRepository(BaseRepository[Job]):
             }
         except Exception as e:
             logger.exception(f"Error getting job stats for user {user_id}")
-            raise DatabaseError("Failed to get job statistics") from e
+            return empty_stats
 
     async def search_by_user(
         self, user_id: str, query: str, skip: int = 0, limit: int = 100

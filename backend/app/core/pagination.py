@@ -59,6 +59,31 @@ class PaginatedResponse(BaseModel, Generic[T]):
         )
 
 
+class OffsetPaginatedResponse(BaseModel, Generic[T]):
+    """Offset-based paginated response model for skip/limit endpoints."""
+    items: List[T]
+    total: int
+    skip: int
+    limit: int
+    has_more: bool
+
+
+def create_offset_paginated_response(
+    items: List[T],
+    total: int,
+    skip: int,
+    limit: int,
+) -> OffsetPaginatedResponse[T]:
+    """Build a standardized offset-based paginated envelope."""
+    return OffsetPaginatedResponse[T](
+        items=items,
+        total=total,
+        skip=skip,
+        limit=limit,
+        has_more=(skip + len(items)) < total,
+    )
+
+
 async def paginate(
     query: FindMany,
     pagination: PaginationParams

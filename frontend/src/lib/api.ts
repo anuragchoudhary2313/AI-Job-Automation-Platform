@@ -1,6 +1,10 @@
 import axios, { type AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { toast } from '../components/ui/Toast';
 
+type ApiRequestConfig = AxiosRequestConfig & {
+  _suppressGlobalErrorToast?: boolean;
+};
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 /**
@@ -48,7 +52,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as ApiRequestConfig & { _retry?: boolean };
 
     // Handle token expiration (401)
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -81,7 +85,7 @@ apiClient.interceptors.response.use(
     }
 
     // Handle 5xx and Network Errors globally
-    if (!error.response || error.response.status >= 500) {
+    if ((!error.response || error.response.status >= 500) && !originalRequest?._suppressGlobalErrorToast) {
       const message = getErrorMessage(error);
       toast.error(message);
     }

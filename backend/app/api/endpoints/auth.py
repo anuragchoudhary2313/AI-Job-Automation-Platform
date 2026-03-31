@@ -72,7 +72,12 @@ async def login(
 
         logger.info(f"User {user.id} logged in successfully")
 
-        return tokens
+        return Token(
+            access_token=tokens.access_token,
+            refresh_token=tokens.refresh_token,
+            token_type=tokens.token_type,
+            user=UserSchema.model_validate(user),
+        )
 
     except (AuthenticationError, ValidationError) as e:
         raise handle_exception(e)

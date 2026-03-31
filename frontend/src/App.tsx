@@ -15,7 +15,6 @@ const ResetPassword = lazy(() => import('./pages/Auth/ResetPassword'));
 const Jobs = lazy(() => import('./pages/Jobs'));
 const Resumes = lazy(() => import('./pages/Resumes'));
 const Settings = lazy(() => import('./pages/Settings'));
-const Logs = lazy(() => import('./pages/Logs'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Landing = lazy(() => import('./pages/Landing'));
 const DemoDashboard = lazy(() => import('./pages/DemoDashboard'));
@@ -51,7 +50,6 @@ function App() {
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/resumes" element={<Resumes />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/logs" element={<Logs />} />
             <Route path="/admin" element={<Admin />} />
           </Route>
 

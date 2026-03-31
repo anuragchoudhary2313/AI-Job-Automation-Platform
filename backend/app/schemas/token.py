@@ -3,6 +3,7 @@ Token schemas for authentication.
 """
 from pydantic import BaseModel
 from typing import Optional
+from app.schemas.user import User as UserSchema
 
 
 class Token(BaseModel):
@@ -10,6 +11,7 @@ class Token(BaseModel):
     access_token: str
     refresh_token: Optional[str] = None
     token_type: str = "bearer"
+    user: Optional[UserSchema] = None
 
 
 class TokenRefresh(BaseModel):

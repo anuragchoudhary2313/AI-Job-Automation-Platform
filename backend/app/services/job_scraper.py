@@ -1,5 +1,6 @@
 import logging
 import asyncio
+from app.core.cache import cache
 
 from app.models.job import ScrapedJob, JobStatus
 from app.automation.browser import BrowserManager
@@ -74,6 +75,7 @@ class JobScraperService:
                     await existing.save()
             
             logger.info(f"Scraping completed. Found {len(jobs_data)} jobs, {new_jobs_count} new.")
+            await cache.clear_pattern("jobs:scraped:*")
             await send_progress(f"Scraping complete! Found {len(jobs_data)} jobs.", type="success")
             return {"total": len(jobs_data), "new": new_jobs_count}
 
@@ -95,6 +97,7 @@ class JobScraperService:
                         new_job = ScrapedJob(**job_data)
                         await new_job.insert()
                         new_jobs_count += 1
+                await cache.clear_pattern("jobs:scraped:*")
                 return {"total": len(jobs_data), "new": new_jobs_count}
 
             logger.error(f"Scraping failed: {error_details}", exc_info=True)

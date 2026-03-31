@@ -119,13 +119,16 @@ async def add_security_headers(request, call_next):
     return response
 
 
-from app.core.middleware import LoggingMiddleware
+from app.core.middleware import LoggingMiddleware, RequestMetricsMiddleware, get_request_metrics_snapshot
 
 # Setup error handlers (must be done before other middleware)
 setup_error_handlers(app)
 
 # Logging Middleware
 app.add_middleware(LoggingMiddleware)
+
+# Lightweight metrics middleware (latency, throughput, error rate).
+app.add_middleware(RequestMetricsMiddleware)
 
 # CORS Middleware
 app.add_middleware(
@@ -195,3 +198,9 @@ async def health_check():
     }
     
     return health_status
+
+
+@app.get("/health/metrics")
+async def health_metrics():
+    """Lightweight in-process request metrics for operational visibility."""
+    return get_request_metrics_snapshot()

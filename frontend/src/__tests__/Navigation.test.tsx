@@ -20,7 +20,6 @@ describe('Navigation', () => {
     expect(screen.getByText(/dashboard/i)).toBeInTheDocument()
     expect(screen.getByText(/jobs/i)).toBeInTheDocument()
     expect(screen.getByText(/resumes/i)).toBeInTheDocument()
-    expect(screen.getByText(/logs/i)).toBeInTheDocument()
     expect(screen.getByText(/settings/i)).toBeInTheDocument()
   })
 

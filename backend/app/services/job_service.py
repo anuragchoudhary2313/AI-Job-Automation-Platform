@@ -7,6 +7,8 @@ from datetime import datetime
 
 from app.core.exceptions import AuthorizationError
 from app.core.logging import get_logger
+from app.core.cache import cache
+from app.core.pagination import create_offset_paginated_response
 from app.repositories.job import JobRepository
 from app.models.job import Job
 from app.models.user import User
@@ -18,9 +20,71 @@ logger = get_logger(__name__)
 class JobService:
     """Service for job operations."""
 
+    STATS_CACHE_TTL_SECONDS = 60
+
     def __init__(self, job_repo: JobRepository) -> None:
         """Initialize job service."""
         self.job_repo = job_repo
+
+    @staticmethod
+    def _stats_cache_key(user_id: str) -> str:
+        return f"jobs:stats:{user_id}"
+
+    @staticmethod
+    def _normalize_stats(raw_stats: Dict[str, Any]) -> Dict[str, Any]:
+        by_status = raw_stats.get("by_status") or {}
+
+        applied = int(by_status.get("applied", 0))
+        interviewing = int(by_status.get("interviewing", 0))
+        offered = int(by_status.get("offered", 0))
+        rejected = int(by_status.get("rejected", 0))
+        pending = int(by_status.get("pending", 0))
+        failed = int(by_status.get("failed", 0))
+        total = int(raw_stats.get("total", 0))
+
+        return {
+            "total": total,
+            "by_status": by_status,
+            "applied": applied,
+            "interview": interviewing,
+            "offer": offered,
+            "rejected": rejected,
+            "pending": pending,
+            "failed": failed,
+        }
+
+    @staticmethod
+    def build_dashboard_stats(stats: Dict[str, Any]) -> Dict[str, Any]:
+        total_jobs = int(stats.get("total", 0))
+        applied = int(stats.get("applied", 0))
+        interview = int(stats.get("interview", 0))
+        offer = int(stats.get("offer", 0))
+        rejected = int(stats.get("rejected", 0))
+        pending = int(stats.get("pending", 0))
+
+        shortlisted = interview + offer
+        success_rate = round((shortlisted / total_jobs) * 100, 1) if total_jobs > 0 else 0.0
+
+        distribution = [
+            {"name": "Pending", "value": pending},
+            {"name": "Applied", "value": applied},
+            {"name": "Interview", "value": interview},
+            {"name": "Offer", "value": offer},
+            {"name": "Rejected", "value": rejected},
+        ]
+
+        return {
+            "total_applied": total_jobs,
+            "emailed": applied,
+            "shortlisted": shortlisted,
+            "rejected": rejected,
+            "success_rate": success_rate,
+            "daily_activity": [],
+            "status_distribution": [d for d in distribution if d["value"] > 0],
+        }
+
+    async def _invalidate_stats_cache(self, user_id: str) -> None:
+        await cache.delete(self._stats_cache_key(user_id))
 
     async def get_job(self, job_id: str, user: User) -> Job:
         """Get job by ID with authorization check."""
@@ -53,8 +117,26 @@ class JobService:
             sort=sort,
         )
         logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
-        logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
         return jobs
+
+    async def get_jobs_paginated(
+        self,
+        user: User,
+        skip: int = 0,
+        limit: int = 100,
+        status: Optional[str] = None,
+        search: Optional[str] = None,
+        sort: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        items, total = await self.job_repo.get_by_user_with_total(
+            user_id=str(user.id),
+            skip=skip,
+            limit=limit,
+            status=status,
+            search=search,
+            sort=sort,
+        )
+        return create_offset_paginated_response(items, total, skip, limit).model_dump()
 
     async def create_job(self, job_data: JobCreate, user: User) -> tuple[Job, bool]:
         """Create a new job, rejecting duplicates by URL per user.
@@ -86,6 +168,7 @@ class JobService:
         )
 
         logger.info(f"Created job {job.id} for user {user.id}")
+        await self._invalidate_stats_cache(str(user.id))
         return job, True  # Return new job and True for created
 
     async def create_job_with_response(self, job_data: JobCreate, user: User) -> JobCreateResponse:
@@ -115,6 +198,7 @@ class JobService:
         updated_job = await self.job_repo.update(job_id, **update_data)
 
         logger.info(f"Updated job {job_id}")
+        await self._invalidate_stats_cache(str(user.id))
         return updated_job
 
     async def delete_job(self, job_id: str, user: User) -> bool:
@@ -126,6 +210,7 @@ class JobService:
         result = await self.job_repo.delete(job_id)
 
         logger.info(f"Deleted job {job_id}")
+        await self._invalidate_stats_cache(str(user.id))
         return result
 
     async def search_jobs(
@@ -140,7 +225,14 @@ class JobService:
 
     async def get_job_stats(self, user: User) -> Dict[str, Any]:
         """Get job statistics for current user."""
-        stats = await self.job_repo.get_stats_by_user(str(user.id))
+        cache_key = self._stats_cache_key(str(user.id))
+        cached_stats = await cache.get(cache_key)
+        if isinstance(cached_stats, dict):
+            return cached_stats
+
+        raw_stats = await self.job_repo.get_stats_by_user(str(user.id))
+        stats = self._normalize_stats(raw_stats)
+        await cache.set(cache_key, stats, expire=self.STATS_CACHE_TTL_SECONDS)
         logger.info(f"Retrieved job stats for user {user.id}")
         return stats
 
@@ -153,4 +245,5 @@ class JobService:
         job = await self.job_repo.update_status(job_id, status)
 
         logger.info(f"Updated job {job_id} status to {status}")
+        await self._invalidate_stats_cache(str(user.id))
         return job

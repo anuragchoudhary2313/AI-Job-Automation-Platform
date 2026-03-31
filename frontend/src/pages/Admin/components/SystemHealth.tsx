@@ -42,8 +42,8 @@ export function SystemHealth() {
   };
 
   return (
-    <Card className="dark:border-gray-800">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="border-gray-200/80 dark:border-gray-800">
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
         <div>
           <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">System Health</CardTitle>
           <p className="text-sm text-gray-500 dark:text-gray-400">Real-time infrastructure status.</p>
@@ -64,14 +64,15 @@ export function SystemHealth() {
             <div className="text-sm text-gray-500 text-center py-4">No health data available</div>
           )}
           {services.map((service) => (
-            <div key={service.name} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+            <div key={service.name} className="rounded-xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+              <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {service.status === 'Operational' && <CheckCircle2 className="h-5 w-5 text-emerald-500" />}
                 {service.status === 'Degraded' && <AlertTriangle className="h-5 w-5 text-yellow-500" />}
                 {service.status === 'Downtime' && <XCircle className="h-5 w-5 text-red-500" />}
                 <span className="font-medium text-gray-900 dark:text-gray-200">{service.name}</span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">{service.uptime}</span>
                 <Badge variant={
                   service.status === 'Operational' ? 'success' :
@@ -80,6 +81,7 @@ export function SystemHealth() {
                   {service.status}
                 </Badge>
               </div>
+            </div>
             </div>
           ))}
         </div>

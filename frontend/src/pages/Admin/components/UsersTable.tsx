@@ -188,14 +188,14 @@ export function UsersTable() {
   if (isLoading && users.length === 0) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="relative w-72">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 p-3 dark:border-gray-800 dark:bg-gray-950/70">
+          <div className="relative w-full md:w-72">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input placeholder="Search users..." className="pl-9" value="" disabled />
+            <Input placeholder="Search users..." className="h-10 rounded-lg pl-9" value="" disabled />
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" disabled>Export CSV</Button>
-            <Button variant="primary" disabled>Add User</Button>
+            <Button variant="outline" className="rounded-lg" disabled>Export CSV</Button>
+            <Button variant="primary" className="rounded-lg" disabled>Add User</Button>
           </div>
         </div>
         <LoadingTable columnCount={6} headers={['User', 'Role', 'Plan', 'Status', 'Joined', 'Actions']} />
@@ -205,21 +205,21 @@ export function UsersTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="relative w-72">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 p-3 dark:border-gray-800 dark:bg-gray-950/70">
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search users by name or email..."
-            className="pl-9"
+            className="h-10 rounded-lg pl-9"
             value={searchQuery}
             onChange={handleSearchChange}
           />
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportCSV} disabled={users.length === 0}>
+        <div className="flex w-full gap-2 md:w-auto">
+          <Button variant="outline" className="flex-1 rounded-lg md:flex-none" onClick={handleExportCSV} disabled={users.length === 0}>
             Export CSV
           </Button>
-          <Button variant="primary" onClick={handleAddUser}>Add User</Button>
+          <Button variant="primary" className="flex-1 rounded-lg md:flex-none" onClick={handleAddUser}>Add User</Button>
         </div>
       </div>
 
@@ -231,7 +231,7 @@ export function UsersTable() {
           action={{ label: "Add User", onClick: handleAddUser }}
         />
       ) : (
-        <div className="rounded-md border dark:border-gray-800 bg-white dark:bg-gray-950">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <Table className="overflow-visible">
             <TableHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
               <TableRow>

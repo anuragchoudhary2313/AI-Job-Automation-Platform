@@ -4,10 +4,10 @@ Resume service for resume-related business logic.
 
 from typing import List, Optional
 import os
+import re
 import shutil
 from datetime import datetime
 from fastapi import UploadFile, HTTPException, status, BackgroundTasks
-from werkzeug.utils import secure_filename
 
 from app.core.exceptions import AuthorizationError
 from app.core.logging import get_logger
@@ -22,6 +22,17 @@ logger = get_logger(__name__)
 
 # Absolute path to the root directory for uploaded resumes
 UPLOAD_ROOT = os.path.abspath("uploads")
+
+
+def secure_filename(filename: str) -> str:
+    """Return a filesystem-safe filename without requiring external deps."""
+    # Drop any path portion and null bytes first.
+    value = os.path.basename(filename).replace("\x00", "")
+    # Keep letters, numbers, dot, dash, underscore and spaces.
+    value = re.sub(r"[^A-Za-z0-9._\- ]+", "", value)
+    # Normalize whitespace and avoid hidden/empty filenames.
+    value = re.sub(r"\s+", "_", value).strip("._")
+    return value
 
 
 class ResumeService:

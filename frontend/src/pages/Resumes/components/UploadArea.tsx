@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, FileUp, ShieldCheck } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { Button } from '../../../components/ui/Button';
 
@@ -64,41 +64,52 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
   return (
     <div
       className={cn(
-        "relative rounded-xl border-2 border-dashed transition-all duration-200 p-8 flex flex-col items-center justify-center text-center min-h-[200px]",
-        dragging ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700",
+        "relative overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 min-h-[220px]",
+        dragging ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-600",
         uploading && "pointer-events-none opacity-80"
       )}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(59,130,246,0.12),transparent_30%),radial-gradient(circle_at_80%_90%,rgba(14,165,233,0.12),transparent_30%)]" />
       {uploading ? (
         <div className="w-full max-w-xs space-y-4">
-          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mx-auto animate-pulse">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 animate-pulse dark:bg-blue-900 dark:text-blue-300">
             <Upload className="h-6 w-6" />
           </div>
           <div>
-            <p className="font-medium text-gray-900 dark:text-gray-100">Uploading Resume...</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Please wait while we process your file.</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">Uploading resume...</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Please wait while we process your file.</p>
           </div>
-          <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
             {/* eslint-disable-next-line */}
             <style>{`[data-progress="${progress}"] { width: ${progress}%; }`}</style>
-            <div className="h-full bg-blue-500 transition-all duration-300 ease-out" data-progress={progress} />
+            <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300 ease-out" data-progress={progress} />
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto">
-            <Upload className="h-6 w-6 text-gray-400" />
+        <div className="relative space-y-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm dark:bg-gray-900 dark:text-blue-400">
+            <FileUp className="h-7 w-7" />
           </div>
           <div>
-            <p className="font-medium text-gray-900 dark:text-gray-100">Click to upload or drag and drop</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">PDF, DOCX up to 10MB</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">Drag and drop your resume here</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">PDF or DOCX, up to 10MB</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => document.getElementById('file-upload')?.click()} disabled={disabled}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-9 rounded-lg border-gray-300 bg-white/80 px-4 dark:border-gray-700 dark:bg-gray-900"
+            onClick={() => document.getElementById('file-upload')?.click()}
+            disabled={disabled}
+          >
             Select File
           </Button>
+          <p className="flex items-center justify-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Files are stored securely and can be deleted anytime.
+          </p>
           <input
             id="file-upload"
             type="file"

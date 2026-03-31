@@ -2,7 +2,7 @@
 Admin-only endpoints for monitoring and platform management.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Dict, Any, List
 
 from app.api import deps
@@ -10,6 +10,7 @@ from app.core.logging import get_logger
 from app.models.user import User
 from app.models.automation import AutomationRun
 from app.repositories.user import UserRepository
+from app.core.pagination import create_offset_paginated_response
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -61,15 +62,24 @@ async def get_system_health(
 
 @router.get("/users")
 async def list_all_users(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=200),
+    include_meta: bool = Query(False, description="Return pagination metadata envelope"),
     search: str = None,
     current_user: User = Depends(deps.require_admin),
     user_repo: UserRepository = Depends(deps.get_user_repository),
-) -> List[Dict[str, Any]]:
+) -> Any:
     """List all users in the system."""
     try:
         if search:
+            total = await User.find(
+                {
+                    "$or": [
+                        {"username": {"$regex": search, "$options": "i"}},
+                        {"email": {"$regex": search, "$options": "i"}},
+                    ]
+                }
+            ).count()
             users = (
                 await User.find(
                     {
@@ -84,9 +94,10 @@ async def list_all_users(
                 .to_list()
             )
         else:
+            total = await User.find_all().count()
             users = await user_repo.get_all(skip=skip, limit=limit)
 
-        return [
+        payload = [
             {
                 "id": str(u.id),
                 "name": u.full_name or u.username,
@@ -102,6 +113,9 @@ async def list_all_users(
             }
             for u in users
         ]
+        if include_meta:
+            return create_offset_paginated_response(payload, total, skip, limit)
+        return payload
     except Exception as e:
         logger.error(f"Error listing users: {e}")
         raise HTTPException(
