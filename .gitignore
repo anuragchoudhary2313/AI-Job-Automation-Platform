@@ -49,6 +49,8 @@ git_status*.txt
 htmlcov/
 .coverage
 .coverage.*
+coverage.xml
+report.xml
 
 # Project specific
 backend/venv/
@@ -56,3 +58,18 @@ backend/.env
 frontend/.env
 frontend/dist/
 frontend/node_modules/
+backend/logs/
+backend/error.json
+backend/pytest_output.txt
+backend/debug_tectonic.txt
+backend/debug_types_output.txt
+frontend/.lint-output.txt
+frontend/build*.log
+frontend/*error*.log
+frontend/*lint*.txt
+frontend/*results*.txt
+frontend/*report*.txt
+frontend/*fail*.txt
+frontend/clean-errors.txt
+frontend/lint-results.json
+frontend/tsc_log.txt
