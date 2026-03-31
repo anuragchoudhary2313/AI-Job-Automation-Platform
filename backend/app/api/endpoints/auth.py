@@ -16,7 +16,6 @@ from app.core.exceptions import (
 )
 from app.core.logging import get_logger
 from app.repositories.user import UserRepository
-from app.repositories.team import TeamRepository
 from app.services.auth_service import AuthService
 from app.models.user import User
 from app.schemas.token import Token
@@ -42,10 +41,9 @@ class RefreshTokenRequest(BaseModel):
 
 def get_auth_service(
     user_repo: UserRepository = Depends(deps.get_user_repository),
-    team_repo: TeamRepository = Depends(deps.get_team_repository),
 ) -> AuthService:
     """Dependency for auth service."""
-    return AuthService(user_repo, team_repo)
+    return AuthService(user_repo)
 
 
 @router.post("/login", response_model=Token)

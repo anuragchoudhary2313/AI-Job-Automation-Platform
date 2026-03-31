@@ -76,9 +76,7 @@ async def get_stats(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
-    """
-    Get job statistics for the current user's team.
-    """
+    """Get job statistics for the current user."""
     return await job_service.get_job_stats(current_user)
 
 
@@ -92,9 +90,7 @@ async def list_jobs(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
-    """
-    List jobs for the current user's team with optional filters.
-    """
+    """List jobs for the current user with optional filters."""
     return await job_service.get_jobs(current_user, skip, limit, status, search, sort)
 
 

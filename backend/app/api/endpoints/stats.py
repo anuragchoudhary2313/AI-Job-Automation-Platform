@@ -27,7 +27,7 @@ async def get_stats(
     current_user: User = Depends(deps.get_current_user),
     job_service: JobService = Depends(get_job_service)
 ) -> Dict[str, Any]:
-    """Fetch aggregated stats for the current user's team."""
+    """Fetch aggregated stats for the current user."""
     try:
         # Get job stats from service
         stats = await job_service.get_job_stats(current_user)
@@ -76,7 +76,7 @@ async def get_stats(
             "status_distribution": distribution
         }
         
-        logger.info(f"Retrieved stats for team {current_user.team_id}")
+        logger.info(f"Retrieved stats for user {current_user.id}")
         
         return response
         

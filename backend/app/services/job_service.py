@@ -26,21 +26,10 @@ class JobService:
         """Get job by ID with authorization check."""
         job = await self.job_repo.get_or_404(job_id)
 
-        # Check authorization — use str() comparison to handle mixed ObjectId/str types in MongoDB
-        user_team_str = str(user.team_id) if user.team_id is not None else None
-        job_team_str = str(job.team_id) if job.team_id is not None else None
-        logger.info(f"Authorization check - Job ID: {job_id}, Job team_id: {job_team_str}, User team_id: {user_team_str}")
-
-        # If user has no team_id, fall back to checking user_id ownership
-        if user_team_str is None:
-            if str(job.user_id) != str(user.id):
-                logger.info(f"Authorization failed - user has no team, and job user_id '{job.user_id}' != user id '{user.id}'")
-                raise AuthorizationError("You don't have access to this job")
-            return job
-
-        # Compare stringified team_ids (handles ObjectId vs str type mismatches in MongoDB)
-        if job_team_str != user_team_str:
-            logger.info(f"Authorization failed - Job team_id: '{job_team_str}' != User team_id: '{user_team_str}'")
+        if str(job.user_id) != str(user.id):
+            logger.info(
+                f"Authorization failed - job user_id '{job.user_id}' != user id '{user.id}'"
+            )
             raise AuthorizationError("You don't have access to this job")
 
         return job
@@ -54,52 +43,35 @@ class JobService:
         search: Optional[str] = None,
         sort: Optional[str] = None,
     ) -> List[Job]:
-        """Get jobs for user's team or user if no team."""
-        if user.team_id and str(user.team_id) != "None":
-            jobs = await self.job_repo.get_by_team(
-                team_id=str(user.team_id),
-                skip=skip,
-                limit=limit,
-                status=status,
-                search=search,
-                sort=sort,
-            )
-            logger.info(f"Retrieved {len(jobs)} jobs for team {user.team_id}")
-        else:
-            # We don't have get_by_user that takes search, status and sort yet in this block.
-            # I will ensure jobs falls back reasonably or I just use the standard get_by_user and do logic there!
-            # Since get_by_user only takes user_id, skip and limit. I will need to extend it or just use it as is for now if no status/sort applied.
-            # Actually I should probably just fetch jobs without complex filtering for personal users right now to guarantee it won't crash.
-            jobs = await self.job_repo.get_by_user(
-                user_id=str(user.id),
-                skip=skip,
-                limit=limit,
-            )
-            # Basic in-memory filtering for the user fallback
-            if status:
-                jobs = [j for j in jobs if j.status == status]
-            if search:
-                jobs = [j for j in jobs if search.lower() in j.title.lower() or search.lower() in j.company.lower()]
-                
-            logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
+        """Get jobs for current user with optional filters."""
+        jobs = await self.job_repo.get_by_user(
+            user_id=str(user.id),
+            skip=skip,
+            limit=limit,
+            status=status,
+            search=search,
+            sort=sort,
+        )
+
+        logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
 
         return jobs
 
     async def create_job(self, job_data: JobCreate, user: User) -> tuple[Job, bool]:
-        """Create a new job, rejecting duplicates by URL within the same team.
+        """Create a new job, rejecting duplicates by URL within the same user scope.
 
         Returns:
             tuple: (job, created) where created is True if newly created, False if already existed
         """
-        # Deduplication: if a job_url is provided, check if it already exists for this team
+        # Deduplication: if a job_url is provided, check if it already exists for this user
         if job_data.job_url:
-            existing = await self.job_repo.get_by_url_and_team(
+            existing = await self.job_repo.get_by_url_and_user(
                 job_url=job_data.job_url,
-                team_id=str(user.team_id),
+                user_id=str(user.id),
             )
             if existing:
                 logger.info(
-                    f"Duplicate job URL {job_data.job_url} for team {user.team_id}, returning existing"
+                    f"Duplicate job URL {job_data.job_url} for user {user.id}, returning existing"
                 )
                 return existing, False  # Return existing job and False for created
 
@@ -111,11 +83,10 @@ class JobService:
             job_url=job_data.job_url,
             salary_range=job_data.salary_range,
             status=job_data.status or "pending",
-            team_id=str(user.team_id),
             user_id=str(user.id),
         )
 
-        logger.info(f"Created job {job.id} for team {user.team_id}")
+        logger.info(f"Created job {job.id} for user {user.id}")
         return job, True  # Return new job and True for created
 
     async def create_job_with_response(self, job_data: JobCreate, user: User) -> JobCreateResponse:
@@ -162,28 +133,18 @@ class JobService:
         self, query: str, user: User, skip: int = 0, limit: int = 100
     ) -> List[Job]:
         """Search jobs by title or company."""
-        if user.team_id and str(user.team_id) != "None":
-            jobs = await self.job_repo.search(
-                team_id=str(user.team_id), query=query, skip=skip, limit=limit
-            )
-            logger.info(f"Found {len(jobs)} jobs matching '{query}' for team")
-        else:
-            jobs = await self.job_repo.search_by_user(
-                user_id=str(user.id), query=query, skip=skip, limit=limit
-            )
-            logger.info(f"Found {len(jobs)} jobs matching '{query}' for user")
-            
+        jobs = await self.job_repo.search_by_user(
+            user_id=str(user.id), query=query, skip=skip, limit=limit
+        )
+        logger.info(f"Found {len(jobs)} jobs matching '{query}' for user")
+
         return jobs
 
     async def get_job_stats(self, user: User) -> Dict[str, Any]:
-        """Get job statistics for user's team."""
-        if user.team_id and str(user.team_id) != "None":
-            stats = await self.job_repo.get_stats_by_team(str(user.team_id))
-            logger.info(f"Retrieved job stats for team {user.team_id}")
-        else:
-            stats = await self.job_repo.get_stats_by_user(str(user.id))
-            logger.info(f"Retrieved job stats for user {user.id}")
-            
+        """Get job statistics for current user."""
+        stats = await self.job_repo.get_stats_by_user(str(user.id))
+        logger.info(f"Retrieved job stats for user {user.id}")
+
         return stats
 
     async def update_job_status(self, job_id: str, status: str, user: User) -> Job:

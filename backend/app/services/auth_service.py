@@ -11,7 +11,6 @@ from app.core.config import settings
 from app.core.exceptions import AuthenticationError, ValidationError
 from app.core.logging import get_logger
 from app.repositories.user import UserRepository
-from app.repositories.team import TeamRepository
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.schemas.token import Token
@@ -22,10 +21,9 @@ logger = get_logger(__name__)
 class AuthService:
     """Service for authentication operations."""
 
-    def __init__(self, user_repo: UserRepository, team_repo: TeamRepository) -> None:
+    def __init__(self, user_repo: UserRepository) -> None:
         """Initialize auth service."""
         self.user_repo = user_repo
-        self.team_repo = team_repo
 
     async def authenticate_user(self, email: str, password: str) -> User:
         """Authenticate user with email/username and password."""
@@ -69,25 +67,12 @@ class AuthService:
                 f"Generated default username '{username}' for {user_data.email}"
             )
 
-        # Handle team creation/retrieval
-        team_id = None
-        team_name = user_data.team_name or "Default Team"
-
-        team = await self.team_repo.get_by_name(team_name)
-        if not team:
-            team = await self.team_repo.create(name=team_name)
-            logger.info(f"Created new team '{team_name}' for user registration")
-
-        # Convert ObjectId to string
-        team_id = str(team.id)
-
         # Create user
         user = await self.user_repo.create_user(
             email=user_data.email,
             username=username,
             password_hash=hashed_password,
             full_name=user_data.full_name,
-            team_id=team_id,
         )
 
         logger.info(f"User {user.id} registered successfully")

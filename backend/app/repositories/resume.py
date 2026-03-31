@@ -19,46 +19,6 @@ class ResumeRepository(BaseRepository[Resume]):
         """Initialize resume repository."""
         super().__init__(Resume)
 
-    async def get_by_team(
-        self, team_id: str, skip: int = 0, limit: int = 100
-    ) -> List[Resume]:
-        """Get resumes for a specific team via user membership."""
-        try:
-            from beanie import PydanticObjectId
-            from app.models.user import User
-            
-            # Guard against invalid team_id
-            if not team_id or team_id == "None":
-                logger.warning(f"Invalid team_id provided to get_by_team: {team_id}")
-                return []
-
-            # Ensure team_id is a PydanticObjectId if it's a string
-            team_id_obj = PydanticObjectId(team_id) if isinstance(team_id, str) else team_id
-            
-            users = await User.find(User.team_id == team_id_obj).to_list()
-            user_ids = [u.id for u in users]
-
-            logger.info(
-                f"Found {len(users)} users in team {team_id}, querying their resumes"
-            )
-
-            resumes = (
-                await Resume.find({"user_id": {"$in": user_ids + [str(uid) for uid in user_ids]}})
-                .sort("-created_at")
-                .skip(skip)
-                .limit(limit)
-                .to_list()
-            )
-
-            logger.info(f"Found {len(resumes)} resumes for team {team_id}")
-            return resumes
-
-        except Exception as e:
-            logger.error(
-                f"Error getting resumes for team {team_id}: {str(e)}", exc_info=True
-            )
-            raise DatabaseError("Failed to get resumes") from e
-
     async def get_by_user(
         self, user_id: str, skip: int = 0, limit: int = 100
     ) -> List[Resume]:

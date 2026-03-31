@@ -10,7 +10,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     full_name: str
-    team_name: Optional[str] = None
 
 class UserUpdate(BaseModel):
     password: Optional[str] = None
@@ -20,7 +19,6 @@ class UserUpdate(BaseModel):
 
 class UserInDBBase(UserBase):
     id: PydanticObjectId = Field(alias="_id")
-    team_id: Optional[PydanticObjectId] = None
     role: str = UserRole.USER
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)

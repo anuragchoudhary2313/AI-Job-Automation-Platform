@@ -2,7 +2,7 @@
 User repository for database operations using Beanie (MongoDB).
 """
 
-from typing import Optional, List
+from typing import Optional
 from app.repositories.base import BaseRepository
 from app.models.user import User
 from app.models.enums import UserRole
@@ -51,7 +51,6 @@ class UserRepository(BaseRepository[User]):
         username: str,
         password_hash: str,
         full_name: Optional[str] = None,
-        team_id: Optional[str] = None,
         role: UserRole = UserRole.USER,
     ) -> User:
         """Create a new user with validation."""
@@ -69,14 +68,5 @@ class UserRepository(BaseRepository[User]):
             username=username,
             password_hash=password_hash,
             full_name=full_name,
-            team_id=team_id,
             role=role,
         )
-
-    async def get_team_members(self, team_id: str) -> List[User]:
-        """Get all users in a team."""
-        try:
-            return await User.find(User.team_id == team_id).to_list()
-        except Exception as e:
-            logger.error(f"Error getting team members for team {team_id}: {str(e)}")
-            raise DatabaseError("Failed to get team members") from e

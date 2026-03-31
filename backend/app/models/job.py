@@ -19,7 +19,6 @@ class Job(Document):
     skills_required: List[str] = []
     
     # Relationships (ObjectIds as strings)
-    team_id: PydanticObjectId
     user_id: PydanticObjectId
     
     # Metadata
@@ -33,12 +32,11 @@ class Job(Document):
             "title",
             "company",
             "status",
-            "team_id",
             "user_id",
             "skills_required",
             # Compound index for common filter patterns
-            [("team_id", 1), ("status", 1)],
-            [("team_id", 1), ("created_at", -1)]
+            [("user_id", 1), ("status", 1)],
+            [("user_id", 1), ("created_at", -1)]
         ]
 
     model_config = ConfigDict(
@@ -49,7 +47,6 @@ class Job(Document):
                 "location": "Remote",
                 "description": "Building next-gen AI systems...",
                 "status": "pending",
-                "team_id": "60d5ecb8b392d40015f8c8d1",
                 "user_id": "60d5ecb8b392d40015f8c8d2"
             }
         }

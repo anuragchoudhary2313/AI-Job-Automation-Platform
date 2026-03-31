@@ -35,7 +35,6 @@ class JobUpdate(BaseModel):
 
 class Job(JobBase):
     id: PyObjectId
-    team_id: Optional[PyObjectId] = None
     applied_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None

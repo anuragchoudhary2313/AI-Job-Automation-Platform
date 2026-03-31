@@ -11,7 +11,6 @@ from app.schemas.token import TokenPayload
 from app.repositories.user import UserRepository
 from app.repositories.job import JobRepository
 from app.repositories.resume import ResumeRepository
-from app.repositories.team import TeamRepository
 from app.repositories.match import MatchRepository
 from app.repositories.log import AgentLogRepository, LogRepository
 from app.core.logging import get_logger
@@ -55,7 +54,7 @@ async def get_current_user(token: str = Depends(reusable_oauth2)) -> User:
         logger.info(f"User not found with ID: {token_data.sub}")
         raise HTTPException(status_code=404, detail="User not found")
 
-    logger.info(f"User found successfully: {user.username} (team_id: {user.team_id})")
+    logger.info(f"User found successfully: {user.username}")
     return user
 
 
@@ -77,17 +76,6 @@ async def require_admin(current_user: User = Depends(get_current_user)) -> User:
     return current_user
 
 
-def require_team_member(
-    current_user: User = Depends(get_current_user),
-) -> User:
-    """Require at least team member (USER) role."""
-    if current_user.role not in [UserRole.ADMIN, UserRole.USER]:
-        raise HTTPException(
-            status_code=403, detail="The user doesn't have enough privileges"
-        )
-    return current_user
-
-
 def get_user_repository() -> UserRepository:
     """Dependency for user repository."""
     return UserRepository()
@@ -101,11 +89,6 @@ def get_job_repository() -> JobRepository:
 def get_resume_repository() -> ResumeRepository:
     """Dependency for resume repository."""
     return ResumeRepository()
-
-
-def get_team_repository() -> TeamRepository:
-    """Dependency for team repository."""
-    return TeamRepository()
 
 
 def get_match_repository() -> MatchRepository:
