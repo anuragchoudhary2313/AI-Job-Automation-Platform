@@ -63,19 +63,19 @@ async def error_handling_middleware(request: Request, call_next):
                 }
             )
         else:
-            # In development, return detailed error
-            message = str(exc)
+            # In development, still avoid exposing internal details to the client.
+            # Full exception information (including traceback) is already logged via log_error.
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={
                     "error": "Internal server error",
-                    "message": message,
-                    "detail": message,
-                    "type": type(exc).__name__,
-                    "traceback": traceback.format_exc(),
+                    "code": "SERVER_ERROR",
+                    "message": "An unexpected error occurred while processing your request.",
+                    "tip": "Check the server logs for detailed error information.",
                     "request_id": request_id
                 }
             )
+
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
