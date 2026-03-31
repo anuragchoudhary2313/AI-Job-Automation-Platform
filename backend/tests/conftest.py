@@ -8,7 +8,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.main import app
 from app.core.config import settings
 from app.models.user import User
-from app.models.team import Team
 from app.models.enums import UserRole
 from app.core import security
 
@@ -39,7 +38,6 @@ async def init_test_db():
     from app.models.user import User
     from app.models.job import Job, ScrapedJob
     from app.models.resume import Resume
-    from app.models.team import Team
     from app.models.automation import AutomationRun
     from app.models.match import Match
     from app.models.log import AgentLog, Log
@@ -51,7 +49,6 @@ async def init_test_db():
             Job,
             ScrapedJob,
             Resume,
-            Team,
             AutomationRun,
             Match,
             AgentLog,
@@ -70,7 +67,6 @@ async def clean_db(init_test_db):
     from app.models.user import User
     from app.models.job import Job, ScrapedJob
     from app.models.resume import Resume
-    from app.models.team import Team
     from app.models.automation import AutomationRun
     from app.models.match import Match
     from app.models.log import AgentLog, Log
@@ -79,7 +75,6 @@ async def clean_db(init_test_db):
     await Job.find_all().delete()
     await ScrapedJob.find_all().delete()
     await Resume.find_all().delete()
-    await Team.find_all().delete()
     await AutomationRun.find_all().delete()
     await Match.find_all().delete()
     await AgentLog.find_all().delete()
@@ -94,35 +89,26 @@ async def client(init_test_db) -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture
-async def test_team(init_test_db):
-    """Create a test team."""
-    team = Team(name="Test Team")
-    await team.insert()
-    return team
-
-@pytest.fixture
-async def test_user(test_team):
+async def test_user(init_test_db):
     """Create a test user."""
     user = User(
         username="testuser",
         email="test@example.com",
         password_hash=security.get_password_hash("testpassword123"),
         role=UserRole.USER,
-        team_id=str(test_team.id),
         is_active=True
     )
     await user.insert()
     return user
 
 @pytest.fixture
-async def test_admin(test_team):
+async def test_admin(init_test_db):
     """Create a test admin user."""
     admin = User(
         username="admin",
         email="admin@example.com",
         password_hash=security.get_password_hash("adminpass123"),
         role=UserRole.ADMIN,
-        team_id=str(test_team.id),
         is_active=True
     )
     await admin.insert()

@@ -42,7 +42,11 @@ class JobRepository(BaseRepository[Job]):
         """Get jobs for a specific user with optional filtering and sorting."""
         try:
             user_oid = PydanticObjectId(user_id)
+<<<<<<< Updated upstream
             query_obj = Job.find(Job.user_id == user_oid)
+=======
+            query = Job.find(Job.user_id == user_oid)
+>>>>>>> Stashed changes
 
             if status:
                 query_obj = query_obj.find(Job.status == status)
@@ -61,7 +65,11 @@ class JobRepository(BaseRepository[Job]):
                 elif sort == "company":
                     sort_field = "company"
 
+<<<<<<< Updated upstream
             return await query_obj.sort(sort_field).skip(skip).limit(limit).to_list()
+=======
+            return await query.sort(sort_field).skip(skip).limit(limit).to_list()
+>>>>>>> Stashed changes
         except Exception as e:
             logger.error(f"Error getting jobs for user {user_id}: {str(e)}")
             raise DatabaseError("Failed to get jobs") from e

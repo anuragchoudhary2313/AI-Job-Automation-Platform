@@ -16,7 +16,6 @@ const Jobs = lazy(() => import('./pages/Jobs'));
 const Resumes = lazy(() => import('./pages/Resumes'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Logs = lazy(() => import('./pages/Logs'));
-const Team = lazy(() => import('./pages/Team'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Landing = lazy(() => import('./pages/Landing'));
 const DemoDashboard = lazy(() => import('./pages/DemoDashboard'));
@@ -53,7 +52,6 @@ function App() {
             <Route path="/resumes" element={<Resumes />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/logs" element={<Logs />} />
-            <Route path="/team" element={<Team />} />
             <Route path="/admin" element={<Admin />} />
           </Route>
 

@@ -5,7 +5,6 @@ $pages = @(
     "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/Jobs/index.tsx",
     "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/Settings/index.tsx",
     "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/Logs/index.tsx",
-    "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/Team/index.tsx",
     "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/Landing/index.tsx",
     "c:/Users/anura/ai-job-automation-saas/frontend/src/pages/DemoDashboard.tsx"
 )

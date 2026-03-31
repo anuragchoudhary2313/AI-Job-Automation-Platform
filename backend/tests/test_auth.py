@@ -20,8 +20,7 @@ class TestUserRegistration:
                 "username": "newuser",
                 "email": "newuser@example.com",
                 "password": "securepass123",
-                "full_name": "New User",
-                "team_name": "New Team"
+                "full_name": "New User"
             }
         )
         assert response.status_code == status.HTTP_201_CREATED
@@ -38,8 +37,7 @@ class TestUserRegistration:
                 "username": "another",
                 "email": test_user.email,
                 "password": "password123",
-                "full_name": "Another User",
-                "team_name": "Team"
+                "full_name": "Another User"
             }
         )
         assert response.status_code == status.HTTP_409_CONFLICT
@@ -53,8 +51,7 @@ class TestUserRegistration:
                 "username": "user",
                 "email": "invalid-email",
                 "password": "pass123",
-                "full_name": "User",
-                "team_name": "Team"
+                "full_name": "User"
             }
         )
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -67,8 +64,7 @@ class TestUserRegistration:
                 "username": "user",
                 "email": "user@example.com",
                 "password": "123",  # Too short
-                "full_name": "User",
-                "team_name": "Team"
+                "full_name": "User"
             }
         )
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

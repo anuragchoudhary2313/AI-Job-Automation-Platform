@@ -64,23 +64,20 @@ async def verify_email_configuration() -> int:
 
 async def _create_dummy_followup_data() -> str:
     """Create dummy records so follow-up checks have deterministic test input."""
-    from app.db.models import Job, JobStatus, Team
+    from app.db.models import Job, JobStatus
     from app.db.session import AsyncSessionLocal
 
     async with AsyncSessionLocal() as db:
-        team = Team(name="Test Team")
-        db.add(team)
-        await db.flush()
-
-        job = Job(
+        job_kwargs = {
             title="Old Application Developer",
             company="Ghost Corp",
             description="Testing followups",
             location="Remote",
             status=JobStatus.APPLIED,
             applied_at=datetime.now() - timedelta(days=4),
-            team_id=team.id,
-        )
+        }
+
+        job = Job(**job_kwargs)
         db.add(job)
         await db.commit()
         await db.refresh(job)
@@ -316,10 +313,10 @@ def verify_ai_endpoints(base_url: str) -> int:
             "resume-bullets",
             "/resume/bullets",
             {
-                "bullet": "Managed a team of 5 people.",
+                "bullet": "Led a group of 5 people.",
                 "job_description": (
                     "We are looking for a leader who can manage "
-                    "cross-functional teams and drive results."
+                    "cross-functional groups and drive results."
                 ),
             },
             lambda output, payload: bool(output) and output != payload["bullet"],

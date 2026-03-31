@@ -40,7 +40,6 @@ export interface RegisterRequest {
   username: string;
   password: string;
   full_name?: string;
-  team_id?: number;
 }
 
 export interface JobCreateRequest {

@@ -90,7 +90,7 @@ const FAQ = () => {
             Still have questions?
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Can't find the answer you're looking for? Our support team is here to help.
+            Can't find the answer you're looking for? Our support staff is here to help.
           </p>
           <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200">
             Contact Support

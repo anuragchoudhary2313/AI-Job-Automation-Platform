@@ -16,22 +16,7 @@ Comprehensive pytest test suite for the Job Automation SaaS backend.
 - Job filtering and search
 - Pagination
 - Status management
-- Team-scoped job access
-
-### Team Isolation (`test_teams.py`)
-- Multi-tenant data isolation
-- Cross-team access prevention
-- Team member management
-- Team settings and permissions
-- Admin vs Member privileges
-
-### Bot Engine (`test_bot.py`)
-- Job scheduler functionality
-- Email sending (SMTP mocked)
-- Resume generation (OpenAI mocked)
-- Web scraping (Selenium mocked)
-- GitHub API integration (mocked)
-- End-to-end automation flow
+- User-scoped job access
 
 ## Running Tests
 
@@ -49,8 +34,6 @@ pytest
 ```bash
 pytest tests/test_auth.py
 pytest tests/test_jobs.py
-pytest tests/test_teams.py
-pytest tests/test_bot.py
 ```
 
 ### Run with coverage
@@ -81,9 +64,7 @@ tests/
 ├── __init__.py
 ├── conftest.py          # Fixtures and mocks
 ├── test_auth.py         # Authentication tests
-├── test_jobs.py         # Job CRUD tests
-├── test_teams.py        # Team isolation tests
-└── test_bot.py          # Bot engine tests
+└── test_jobs.py         # Job CRUD tests
 ```
 
 ## Mocked Services
@@ -96,7 +77,7 @@ tests/
 ## Coverage Goals
 
 - **Target**: >80% code coverage
-- **Critical paths**: 100% coverage for auth and team isolation
+- **Critical paths**: 100% coverage for auth and job access control
 - **Integration tests**: Cover end-to-end flows
 
 ## CI/CD Integration

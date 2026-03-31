@@ -7,7 +7,6 @@ from app.core.config import settings
 from app.core.logging import get_logger
 
 from app.models.user import User
-from app.models.team import Team
 from app.models.resume import Resume
 from app.models.job import Job, ScrapedJob
 from app.models.match import Match
@@ -29,7 +28,6 @@ async def init_db():
         
         document_models = [
             User, 
-            Team, 
             Resume, 
             Job, 
             ScrapedJob,

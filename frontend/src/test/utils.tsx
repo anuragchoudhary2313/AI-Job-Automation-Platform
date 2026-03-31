@@ -31,8 +31,7 @@ export const mockUser = {
   id: 1,
   username: 'testuser',
   email: 'test@example.com',
-  role: 'member',
-  team_id: 1
+  role: 'member'
 }
 
 export const mockJob = {
@@ -43,7 +42,6 @@ export const mockJob = {
   status: 'pending',
   hr_email: 'hr@techcorp.com',
   match_score: 85.5,
-  team_id: 1,
   created_at: '2024-01-01T00:00:00Z'
 }
 

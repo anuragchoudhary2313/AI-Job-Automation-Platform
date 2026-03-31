@@ -20,7 +20,6 @@ export interface RegisterData {
   password: string;
   full_name: string;
   username?: string;
-  team_name?: string;
 }
 
 export const authService = {

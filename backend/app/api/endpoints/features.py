@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from app.core.config import settings
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -10,7 +9,6 @@ class FeatureFlagsResponse(BaseModel):
     email_automation: bool
     job_scraping: bool
     auto_apply: bool
-    teams: bool
     admin_panel: bool
 
 @router.get("/", response_model=FeatureFlagsResponse)
@@ -26,6 +24,5 @@ def get_features():
         "email_automation": features.is_enabled("email_automation"),
         "job_scraping": features.is_enabled("job_scraping"),
         "auto_apply": features.is_enabled("auto_apply"),
-        "teams": features.is_enabled("teams"),
         "admin_panel": features.is_enabled("admin_panel")
     }

@@ -12,7 +12,7 @@ def get_selenium_driver(headless: bool = True):
         chrome_options.add_argument("--headless")
     import os
     
-    # Check if running in Docker (or if binary exists)
+    # Prefer system Chromium/ChromeDriver if available.
     chrome_binary_path = "/usr/bin/chromium"
     chromedriver_path = "/usr/bin/chromedriver"
 

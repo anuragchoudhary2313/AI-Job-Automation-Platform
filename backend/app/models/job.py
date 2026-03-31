@@ -1,10 +1,8 @@
 from typing import Optional, List
 from datetime import datetime
-from beanie import Document, Indexed, Link, PydanticObjectId
+from beanie import Document, PydanticObjectId
 from pydantic import Field, ConfigDict
 from app.models.enums import JobStatus
-# from app.models.user import User
-# from app.models.team import Team
 
 class Job(Document):
     """Job model using Beanie (MongoDB)."""
@@ -18,7 +16,11 @@ class Job(Document):
     status: JobStatus = JobStatus.PENDING
     skills_required: List[str] = []
     
+<<<<<<< Updated upstream
     # Relationships (ObjectIds as strings)
+=======
+    # Ownership
+>>>>>>> Stashed changes
     user_id: PydanticObjectId
     
     # Metadata
@@ -34,7 +36,10 @@ class Job(Document):
             "status",
             "user_id",
             "skills_required",
+<<<<<<< Updated upstream
             # Compound index for common filter patterns
+=======
+>>>>>>> Stashed changes
             [("user_id", 1), ("status", 1)],
             [("user_id", 1), ("created_at", -1)]
         ]

@@ -40,7 +40,6 @@ class Settings(BaseSettings):
     FEATURE_EMAIL_AUTOMATION: bool = True
     FEATURE_JOB_SCRAPING: bool = True
     FEATURE_AUTO_APPLY: bool = True
-    FEATURE_TEAMS: bool = True
     FEATURE_ADMIN_PANEL: bool = True
     
     MAX_CONNECTIONS_COUNT: int = 10

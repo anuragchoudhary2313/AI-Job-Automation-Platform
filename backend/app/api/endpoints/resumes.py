@@ -40,7 +40,7 @@ async def upload_resume(
     current_user: User = Depends(deps.get_current_user),
     resume_service: ResumeService = Depends(get_resume_service),
 ) -> Any:
-    """Upload a resume file (PDF) for the team."""
+    """Upload a resume file (PDF) for the current user."""
     try:
         resume = await resume_service.save_resume_file(file, current_user, background_tasks)
 
@@ -169,17 +169,15 @@ async def list_resumes(
     current_user: User = Depends(deps.get_current_user),
     resume_service: ResumeService = Depends(get_resume_service),
 ) -> Any:
-    """List all resumes for the team."""
+    """List all resumes for the current user."""
     try:
-        logger.info(
-            f"List resumes request — user: {current_user.id}, team: {current_user.team_id}"
-        )
+        logger.info(f"List resumes request - user: {current_user.id}")
 
         resumes = await resume_service.get_resumes(
             user=current_user, skip=skip, limit=limit
         )
 
-        logger.info(f"Found {len(resumes)} resumes for team {current_user.team_id}")
+        logger.info(f"Found {len(resumes)} resumes for user {current_user.id}")
 
         # Convert Beanie models to dicts for Pydantic schema
         resume_list = []

@@ -7,7 +7,6 @@ interface FeatureFlags {
   email_automation: boolean;
   job_scraping: boolean;
   auto_apply: boolean;
-  teams: boolean;
   admin_panel: boolean;
 }
 
@@ -17,7 +16,6 @@ const defaultFeatures: FeatureFlags = {
   email_automation: false,
   job_scraping: false,
   auto_apply: false,
-  teams: false,
   admin_panel: false,
 };
 

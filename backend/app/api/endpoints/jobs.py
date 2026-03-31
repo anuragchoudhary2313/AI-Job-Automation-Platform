@@ -76,7 +76,13 @@ async def get_stats(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
+<<<<<<< Updated upstream
     """Get job statistics for the current user."""
+=======
+    """
+    Get job statistics for the current user.
+    """
+>>>>>>> Stashed changes
     return await job_service.get_job_stats(current_user)
 
 
@@ -90,7 +96,13 @@ async def list_jobs(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
+<<<<<<< Updated upstream
     """List jobs for the current user with optional filters."""
+=======
+    """
+    List jobs for the current user with optional filters.
+    """
+>>>>>>> Stashed changes
     return await job_service.get_jobs(current_user, skip, limit, status, search, sort)
 
 

@@ -13,7 +13,7 @@ from app.core.security import create_access_token
 class TestJobCreation:
     """Test job creation functionality."""
     
-    async def test_create_job_authenticated(self, client: AsyncClient, auth_headers, test_team):
+    async def test_create_job_authenticated(self, client: AsyncClient, auth_headers):
         """Test authenticated user can create a job."""
         response = await client.post(
             "/api/v1/jobs",
@@ -27,10 +27,9 @@ class TestJobCreation:
         )
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        assert data["title"] == "Senior Python Developer"
-        assert data["company"] == "Tech Corp"
-        assert data["status"] == JobStatus.PENDING
-        assert data["team_id"] == str(test_team.id) or data["team_id"] == test_team.id
+        assert data["job"]["title"] == "Senior Python Developer"
+        assert data["job"]["company"] == "Tech Corp"
+        assert data["job"]["status"] == JobStatus.PENDING
     
     async def test_create_job_unauthenticated(self, client: AsyncClient):
         """Test unauthenticated user cannot create a job."""
@@ -54,11 +53,11 @@ class TestJobCreation:
 class TestJobRetrieval:
     """Test job retrieval functionality."""
     
-    async def test_get_all_jobs(self, client: AsyncClient, auth_headers, test_team):
-        """Test retrieving all jobs for a team."""
+    async def test_get_all_jobs(self, client: AsyncClient, auth_headers, test_user):
+        """Test retrieving all jobs for a user."""
         # Create test jobs
         for i in range(3):
-            job = Job(title=f"Job {i}", company=f"Company {i}", description="Desc", team_id=str(test_team.id), user_id="some_id")
+            job = Job(title=f"Job {i}", company=f"Company {i}", description="Desc", user_id=str(test_user.id))
             await job.insert()
         
         response = await client.get("/api/v1/jobs", headers=auth_headers)
@@ -66,14 +65,13 @@ class TestJobRetrieval:
         data = response.json()
         assert len(data) >= 3
     
-    async def test_get_job_by_id(self, client: AsyncClient, auth_headers, test_team):
+    async def test_get_job_by_id(self, client: AsyncClient, auth_headers, test_user):
         """Test retrieving a specific job by ID."""
         job = Job(
             title="Specific Job",
             company="Specific Company",
             description="Test Description",
-            team_id=str(test_team.id),
-            user_id="some_id"
+            user_id=str(test_user.id)
         )
         await job.insert()
         
@@ -93,9 +91,9 @@ class TestJobRetrieval:
 class TestJobUpdate:
     """Test job update functionality."""
     
-    async def test_update_job(self, client: AsyncClient, auth_headers, test_team):
+    async def test_update_job(self, client: AsyncClient, auth_headers, test_user):
         """Test updating a job."""
-        job = Job(title="Old Title", company="Company", description="Desc", team_id=str(test_team.id), user_id="some_id")
+        job = Job(title="Old Title", company="Company", description="Desc", user_id=str(test_user.id))
         await job.insert()
         
         response = await client.put(
@@ -118,9 +116,9 @@ class TestJobUpdate:
 class TestJobDeletion:
     """Test job deletion functionality."""
     
-    async def test_delete_job(self, client: AsyncClient, auth_headers, test_team):
+    async def test_delete_job(self, client: AsyncClient, auth_headers, test_user):
         """Test deleting a job."""
-        job = Job(title="To Delete", company="Company", description="Desc", team_id=str(test_team.id), user_id="some_id")
+        job = Job(title="To Delete", company="Company", description="Desc", user_id=str(test_user.id))
         await job.insert()
         
         response = await client.delete(f"/api/v1/jobs/{job.id}", headers=auth_headers)

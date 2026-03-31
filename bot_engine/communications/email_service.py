@@ -58,7 +58,7 @@ class EmailService:
         # Generate AI personalized Intro
         # We reuse the cover letter generator or create a specific intro generator
         # For this example, we'll assume the intro is part of the cover letter generation or simple dynamic text
-        personalized_intro = f"Dear Hiring Team at {job_details.get('company', 'the company')},"
+        personalized_intro = f"Dear Hiring Manager at {job_details.get('company', 'the company')},"
         ai_intro_text = generate_cover_letter_gpt(f"Experience: {user_details.get('experience')}", f"Job: {job_details.get('title')} at {job_details.get('company')}")
         # Extract just the opening or use the whole short blurb
         short_intro = ai_intro_text.split('\n')[0] if ai_intro_text else personalized_intro # simplified for mock

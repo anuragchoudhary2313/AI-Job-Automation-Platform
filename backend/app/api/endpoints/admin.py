@@ -8,7 +8,6 @@ from typing import Dict, Any, List
 from app.api import deps
 from app.core.logging import get_logger
 from app.models.user import User
-from app.models.team import Team
 from app.models.automation import AutomationRun
 from app.repositories.user import UserRepository
 
@@ -23,13 +22,13 @@ async def get_admin_stats(
     """Get platform-wide statistics for the admin dashboard."""
     try:
         total_users = await User.find_all().count()
-        active_teams = await Team.find_all().count()
+        active_users = await User.find(User.is_active == True).count()
         bot_runs = await AutomationRun.find_all().count()
         alerts = 0
 
         return {
             "total_users": total_users,
-            "active_teams": active_teams,
+            "active_users": active_users,
             "bot_runs": bot_runs,
             "alerts": alerts,
         }
@@ -144,14 +143,11 @@ async def create_user_admin(
 
         role = UserRole.ADMIN if role_input == "Admin" else UserRole.USER
 
-        team_id = str(current_user.team_id) if current_user.team_id else None
-
         new_user = await user_repo.create_user(
             email=email,
             username=email.split("@")[0],
             password_hash=hashed_password,
             full_name=name,
-            team_id=team_id,
             role=role,
         )
 

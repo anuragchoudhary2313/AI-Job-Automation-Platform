@@ -38,14 +38,14 @@ class ResumeService:
                 detail="Only PDF files are allowed",
             )
 
-        # Create team directory
-        team_dir = os.path.join(UPLOAD_DIR, str(user.team_id))
-        os.makedirs(team_dir, exist_ok=True)
+        # Create per-user directory
+        user_dir = os.path.join(UPLOAD_DIR, str(user.id))
+        os.makedirs(user_dir, exist_ok=True)
 
         # Save file with timestamp
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         safe_filename = f"{timestamp}_{file.filename}"
-        file_path = os.path.join(team_dir, safe_filename)
+        file_path = os.path.join(user_dir, safe_filename)
 
         try:
             with open(file_path, "wb") as buffer:
@@ -141,34 +141,19 @@ class ResumeService:
         """Get resume by ID with authorization check."""
         resume = await self.resume_repo.get_or_404(resume_id)
 
-        # Check ownership first
-        if str(resume.user_id) == str(user.id):
-            return resume
+        if str(resume.user_id) != str(user.id):
+            raise AuthorizationError("You don't have access to this resume")
 
-        # Fall back to team membership check
-        from app.models.user import User as UserModel
-
-        resume_owner = await UserModel.get(resume.user_id)
-        if resume_owner and str(resume_owner.team_id) == str(user.team_id) and str(user.team_id) != "None":
-            return resume
-
-        raise AuthorizationError("You don't have access to this resume")
+        return resume
 
     async def get_resumes(
         self, user: User, skip: int = 0, limit: int = 100
     ) -> List[Resume]:
-        """Get resumes for user's team, or user only if no team."""
-        if user.team_id and str(user.team_id) != "None":
-            resumes = await self.resume_repo.get_by_team(
-                team_id=str(user.team_id), skip=skip, limit=limit
-            )
-            logger.info(f"Retrieved {len(resumes)} resumes for team {user.team_id}")
-        else:
-            resumes = await self.resume_repo.get_by_user(
-                user_id=str(user.id), skip=skip, limit=limit
-            )
-            logger.info(f"Retrieved {len(resumes)} resumes for user {user.id}")
-            
+        """Get resumes for current user only."""
+        resumes = await self.resume_repo.get_by_user(
+            user_id=str(user.id), skip=skip, limit=limit
+        )
+        logger.info(f"Retrieved {len(resumes)} resumes for user {user.id}")
         return resumes
 
     async def get_user_resumes(
@@ -211,16 +196,7 @@ class ResumeService:
         resume = await self.resume_repo.get_by_job(job_id)
 
         if resume:
-            # Authorization check
-            if str(resume.user_id) == str(user.id):
-                return resume
-
-            from app.models.user import User as UserModel
-
-            resume_owner = await UserModel.get(resume.user_id)
-            if resume_owner and str(resume_owner.team_id) == str(user.team_id) and str(user.team_id) != "None":
-                return resume
-
-            raise AuthorizationError("You don't have access to this resume")
+            if str(resume.user_id) != str(user.id):
+                raise AuthorizationError("You don't have access to this resume")
 
         return resume

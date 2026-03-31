@@ -1,4 +1,3 @@
-from typing import AsyncGenerator
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
@@ -75,7 +74,10 @@ async def require_admin(current_user: User = Depends(get_current_user)) -> User:
         )
     return current_user
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 def get_user_repository() -> UserRepository:
     """Dependency for user repository."""
     return UserRepository()

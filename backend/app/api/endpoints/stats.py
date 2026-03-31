@@ -37,7 +37,7 @@ async def get_stats(
         by_status = stats.get("by_status", {})
         
         # Map statuses to frontend expectations
-        # Note: keys in get_stats_by_team (job repo) must match these
+        # Note: keys in job repository aggregation output must match these
         applied = by_status.get("applied", 0)
         interview = by_status.get("interviewing", 0) # Repo returns 'interviewing'
         offer = by_status.get("offered", 0) # Repo returns 'offered'

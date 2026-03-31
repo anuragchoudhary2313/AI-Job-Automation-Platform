@@ -37,14 +37,14 @@ const plans = [
   {
     name: 'Enterprise',
     price: '199',
-    description: 'For teams and agencies',
+    description: 'For power users and agencies',
     icon: Sparkles,
     gradient: 'from-orange-500 to-red-500',
     features: [
       'Unlimited applications',
       'All premium features',
       'Dedicated support',
-      'Team collaboration',
+      'Shared workspace',
       'API access',
       'Custom integrations',
       'White-label option',

@@ -10,20 +10,11 @@ export interface User {
   username: string;
   full_name?: string;
   role: UserRole;
-  team_id?: string;
   created_at: string;
   updated_at: string;
 }
 
 export type UserRole = 'admin' | 'member' | 'viewer';
-
-export interface Team {
-  id: string;
-  name: string;
-  description?: string;
-  created_at: string;
-  updated_at: string;
-}
 
 export interface Job {
   id: string;
@@ -36,7 +27,6 @@ export interface Job {
   status: JobStatus;
   source?: string;
   match_score?: number;
-  team_id: string;
   user_id: string;
   created_at: string;
   updated_at: string;
@@ -61,7 +51,6 @@ export interface Log {
   level: LogLevel;
   message: string;
   source?: string;
-  team_id?: string;
   user_id?: string;
   created_at: string;
 }

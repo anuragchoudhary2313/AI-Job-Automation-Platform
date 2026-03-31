@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import {
-  LayoutDashboard, Briefcase, FileText, Settings, Shield, Terminal, Users,
+  LayoutDashboard, Briefcase, FileText, Settings, Shield, Terminal,
   ChevronLeft, LogOut
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -15,7 +15,6 @@ const navigation = [
   { name: 'Jobs', href: '/jobs', icon: Briefcase },
   { name: 'Resumes', href: '/resumes', icon: FileText },
   { name: 'Logs', href: '/logs', icon: Terminal },
-  { name: 'Team', href: '/team', icon: Users },
   { name: 'Admin', href: '/admin', icon: Shield },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -106,7 +105,6 @@ export function Sidebar() {
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-6 px-3 space-y-1">
         {navigation.filter(item => {
-          if (item.name === 'Team') return isEnabled('teams');
           if (item.name === 'Admin') return isEnabled('admin_panel');
           return true;
         }).map((item) => {

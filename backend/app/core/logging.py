@@ -37,8 +37,6 @@ class StructuredFormatter(logging.Formatter):
                 log_data["request_id"] = record.request_id
             if hasattr(record, "user_id"):
                 log_data["user_id"] = record.user_id
-            if hasattr(record, "team_id"):
-                log_data["team_id"] = record.team_id
             
             return json.dumps(log_data)
         else:
@@ -191,7 +189,7 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-def log_request(request_id: str, method: str, path: str, user_id: int = None, team_id: int = None):
+def log_request(request_id: str, method: str, path: str, user_id: int = None):
     """
     Log incoming HTTP request with tracking info.
     
@@ -200,13 +198,11 @@ def log_request(request_id: str, method: str, path: str, user_id: int = None, te
         method: HTTP method
         path: Request path
         user_id: User ID if authenticated
-        team_id: Team ID if applicable
     """
     logger = get_logger("app.requests")
     extra = {
         "request_id": request_id,
-        "user_id": user_id,
-        "team_id": team_id
+        "user_id": user_id
     }
     logger.info(f"{method} {path}", extra=extra)
 

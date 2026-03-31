@@ -43,7 +43,11 @@ class JobService:
         search: Optional[str] = None,
         sort: Optional[str] = None,
     ) -> List[Job]:
+<<<<<<< Updated upstream
         """Get jobs for current user with optional filters."""
+=======
+        """Get jobs for the current user with optional filters."""
+>>>>>>> Stashed changes
         jobs = await self.job_repo.get_by_user(
             user_id=str(user.id),
             skip=skip,
@@ -52,6 +56,7 @@ class JobService:
             search=search,
             sort=sort,
         )
+<<<<<<< Updated upstream
 
         logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
 
@@ -59,11 +64,22 @@ class JobService:
 
     async def create_job(self, job_data: JobCreate, user: User) -> tuple[Job, bool]:
         """Create a new job, rejecting duplicates by URL within the same user scope.
+=======
+        logger.info(f"Retrieved {len(jobs)} jobs for user {user.id}")
+        return jobs
+
+    async def create_job(self, job_data: JobCreate, user: User) -> tuple[Job, bool]:
+        """Create a new job, rejecting duplicates by URL per user.
+>>>>>>> Stashed changes
 
         Returns:
             tuple: (job, created) where created is True if newly created, False if already existed
         """
+<<<<<<< Updated upstream
         # Deduplication: if a job_url is provided, check if it already exists for this user
+=======
+        # Deduplication: if a job_url is provided, check if it already exists for this user.
+>>>>>>> Stashed changes
         if job_data.job_url:
             existing = await self.job_repo.get_by_url_and_user(
                 job_url=job_data.job_url,
@@ -137,14 +153,20 @@ class JobService:
             user_id=str(user.id), query=query, skip=skip, limit=limit
         )
         logger.info(f"Found {len(jobs)} jobs matching '{query}' for user")
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         return jobs
 
     async def get_job_stats(self, user: User) -> Dict[str, Any]:
         """Get job statistics for current user."""
         stats = await self.job_repo.get_stats_by_user(str(user.id))
         logger.info(f"Retrieved job stats for user {user.id}")
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         return stats
 
     async def update_job_status(self, job_id: str, status: str, user: User) -> Job:
