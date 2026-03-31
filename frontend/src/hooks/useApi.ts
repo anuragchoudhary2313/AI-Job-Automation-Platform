@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import apiClient, { getErrorMessage } from '@/lib/api';
-import { useToast } from '@/components/Toast';
+import { toast } from '@/components/ui/Toast';
 import type { AxiosRequestConfig } from 'axios';
 
 interface UseApiOptions<T = unknown> {
@@ -18,7 +18,6 @@ export function useApi<T = unknown>(options: UseApiOptions<T> = {}) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const toast = useToast();
 
   const execute = useCallback(
     async (config: AxiosRequestConfig) => {
@@ -55,7 +54,7 @@ export function useApi<T = unknown>(options: UseApiOptions<T> = {}) {
         setLoading(false);
       }
     },
-    [options, toast]
+    [options]
   );
 
   const reset = useCallback(() => {

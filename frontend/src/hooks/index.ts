@@ -12,4 +12,4 @@ export { useDebounce } from './useDebounce';
 export { useAsync } from './useAsync';
 export { useApi } from './useApi';
 export { usePerformance } from './usePerformance';
-export { default as useSocket } from './use-socket';
+export { useWebSocket } from './useWebSocket';

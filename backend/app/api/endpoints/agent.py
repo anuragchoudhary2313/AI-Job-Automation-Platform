@@ -5,7 +5,6 @@ import logging
 from app.api import deps
 from app.models.user import User
 from app.core.features import features
-from agents.job_agent import JobAutomationAgent
 from agents.orchestrator_agent import OrchestratorAgent
 from app.services.email_reader import email_reader_service
 

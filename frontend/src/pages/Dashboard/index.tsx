@@ -4,7 +4,7 @@ import { ActivityFeed } from './components/ActivityFeed';
 import { QuickActions } from './components/QuickActions';
 import { EmailAutomation } from './components/EmailAutomation';
 import { useWebSocket } from '../../hooks/useWebSocket';
-import { toast } from 'react-hot-toast';
+import { toast } from '@/components/ui/Toast';
 import { useQuery } from '@tanstack/react-query';
 import { jobService } from '../../services/job.service';
 import { Briefcase, TrendingUp, CheckCircle, Mail } from 'lucide-react';

@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
-// Custom Toast Implementation to replace 'sonner'
-// This avoids module resolution issues by being zero-dependency.
+// Custom toast implementation shared across the frontend.
+// This centralizes toast behavior behind one local API.
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+type ToastOptions = {
+  id?: string;
+  duration?: number;
+};
+
+type ToastInputOptions = ToastOptions | number;
+
+const normalizeToastOptions = (opts?: ToastInputOptions): ToastOptions => {
+  if (typeof opts === 'number') {
+    return { duration: opts };
+  }
+  return opts || {};
+};
 
 interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  duration?: number;
 }
 
 export const Toaster = () => {
@@ -18,9 +33,14 @@ export const Toaster = () => {
 
 // Global event emitter for toast calls outside of React components
 const toastListeners = new Set<(toast: Toast) => void>();
+const toastDismissListeners = new Set<(id?: string) => void>();
 
 const notifyListeners = (toast: Toast) => {
   toastListeners.forEach(l => l(toast));
+};
+
+const notifyDismissListeners = (id?: string) => {
+  toastDismissListeners.forEach(l => l(id));
 };
 
 const generateId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
@@ -39,13 +59,63 @@ const formatMessage = (msg: unknown): string => {
 };
 
 export const toast = {
-  success: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'success' }),
-  error: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'error' }),
-  warning: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'warning' }),
-  info: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
-  message: (msg: unknown) => notifyListeners({ id: generateId(), message: formatMessage(msg), type: 'info' }),
-  dismiss: () => { },
-  loading: () => { },
+  success: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    notifyListeners({
+      id: normalized.id || generateId(),
+      message: formatMessage(msg),
+      type: 'success',
+      duration: normalized.duration ?? 4000,
+    });
+  },
+  error: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    notifyListeners({
+      id: normalized.id || generateId(),
+      message: formatMessage(msg),
+      type: 'error',
+      duration: normalized.duration ?? 4000,
+    });
+  },
+  warning: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    notifyListeners({
+      id: normalized.id || generateId(),
+      message: formatMessage(msg),
+      type: 'warning',
+      duration: normalized.duration ?? 4000,
+    });
+  },
+  info: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    notifyListeners({
+      id: normalized.id || generateId(),
+      message: formatMessage(msg),
+      type: 'info',
+      duration: normalized.duration ?? 4000,
+    });
+  },
+  message: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    notifyListeners({
+      id: normalized.id || generateId(),
+      message: formatMessage(msg),
+      type: 'info',
+      duration: normalized.duration ?? 4000,
+    });
+  },
+  dismiss: (id?: string) => notifyDismissListeners(id),
+  loading: (msg: unknown, opts?: ToastInputOptions) => {
+    const normalized = normalizeToastOptions(opts);
+    const id = normalized.id || generateId();
+    notifyListeners({
+      id,
+      message: formatMessage(msg),
+      type: 'info',
+      duration: normalized.duration ?? 0,
+    });
+    return id;
+  },
   promise: () => { },
   custom: () => { },
 };
@@ -63,21 +133,44 @@ const ToastDisplay = () => {
 
   React.useEffect(() => {
     const handler = (newToast: Toast) => {
-      setToasts(prev => [...prev, newToast]);
+      setToasts((prev: Toast[]) => {
+        const existingIndex = prev.findIndex((t: Toast) => t.id === newToast.id);
+        if (existingIndex >= 0) {
+          const next = [...prev];
+          next[existingIndex] = newToast;
+          return next;
+        }
+        return [...prev, newToast];
+      });
       // Auto dismiss
-      setTimeout(() => {
-        setToasts(prev => prev.filter(t => t.id !== newToast.id));
-      }, 4000);
+      if ((newToast.duration ?? 4000) > 0) {
+        setTimeout(() => {
+          setToasts((prev: Toast[]) => prev.filter((t: Toast) => t.id !== newToast.id));
+        }, newToast.duration ?? 4000);
+      }
     };
+
+    const dismissHandler = (id?: string) => {
+      if (!id) {
+        setToasts([]);
+        return;
+      }
+      setToasts((prev: Toast[]) => prev.filter((t: Toast) => t.id !== id));
+    };
+
     toastListeners.add(handler);
-    return () => { toastListeners.delete(handler); };
+    toastDismissListeners.add(dismissHandler);
+    return () => {
+      toastListeners.delete(handler);
+      toastDismissListeners.delete(dismissHandler);
+    };
   }, []);
 
   if (toasts.length === 0) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
-      {toasts.map(t => (
+      {toasts.map((t: Toast) => (
         <div key={t.id} className={`
           p-4 rounded-md shadow-lg border text-sm font-medium flex items-center gap-2 min-w-[300px] animate-in slide-in-from-bottom-2
           ${t.type === 'error' ? 'bg-red-50 border-red-200 text-red-900' : ''}
@@ -87,7 +180,7 @@ const ToastDisplay = () => {
         `}>
           <span className="flex-1">{t.message}</span>
           <button
-            onClick={() => setToasts(prev => prev.filter(i => i.id !== t.id))}
+            onClick={() => setToasts((prev: Toast[]) => prev.filter((i: Toast) => i.id !== t.id))}
             className="text-gray-500 hover:text-gray-900"
             aria-label="Close notification"
           >

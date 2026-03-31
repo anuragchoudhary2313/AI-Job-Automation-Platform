@@ -2,15 +2,31 @@ import logging
 from typing import Dict, Any
 
 from app.services.job_scraper import job_scraper_service
+from app.services.ai_service import ai_service
 from app.notifications.telegram import telegram_service
 from app.core.config import settings
 from app.models.user import User
 
 from agents.decision_agent import DecisionAgent
-from agents.resume_agent import ResumeAgent
-from agents.email_agent import EmailAgent
 
 logger = logging.getLogger(__name__)
+
+
+class ResumeAgent:
+    """Generates a tailored resume for a given job."""
+
+    async def generate(self, job_description: str) -> str:
+        logger.info("ResumeAgent crafting tailored resume...")
+        return await ai_service.generate_resume_content(job_description)
+
+
+class EmailAgent:
+    """Handles emailing HR with tailored resumes."""
+
+    async def send_application(self, company_name: str, tailored_resume: str) -> Dict[str, str]:
+        logger.info(f"EmailAgent preparing transmission to {company_name}")
+        # Simulates integration with sender/email modules while keeping orchestration focused.
+        return {"status": "success", "company": company_name}
 
 class OrchestratorAgent:
     """The chief controller tying the multi-agent job application process together."""

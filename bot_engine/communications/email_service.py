@@ -6,7 +6,7 @@ from email.mime.application import MIMEApplication
 from typing import List, Optional
 from datetime import datetime, timedelta
 from app.db.models import Settings # Assuming we can access Settings via endpoints or direct DB later, for now just using pass-in values or fetching
-from bot_engine.ai.gpt import generate_cover_letter_gpt
+from bot_engine.ai import generate_cover_letter_gpt
 
 # Mock Database for daily limits (In production, replace with proper DB calls)
 DAILY_SENT_COUNT = 0
@@ -111,3 +111,42 @@ class EmailService:
     def schedule_follow_up(self, to_email: str, job_id: str, days: int = 3):
         print(f"Follow-up email scheduled for {to_email} (Job {job_id}) in {days} days.")
         # In a real app, this would add a DB record 'email_queue' with distinct types
+
+
+def send_hr_email_with_attachments(
+    to_email: str,
+    subject: str,
+    body: str,
+    attachment_paths: List[str] = None
+):
+    """Send an HR email with optional attachments (legacy helper API)."""
+    sender_email = "bot@example.com"  # Configurable via env vars
+    sender_password = "password"
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    if attachment_paths:
+        for path in attachment_paths:
+            try:
+                with open(path, "rb") as f:
+                    part = MIMEApplication(f.read(), Name=path)
+                part['Content-Disposition'] = f'attachment; filename="{path}"'
+                msg.attach(part)
+            except Exception as e:
+                print(f"Could not attach file {path}: {e}")
+
+    # Mock sending
+    print(f"Sending email to {to_email} with subject: {subject}")
+    # with smtplib.SMTP('smtp.gmail.com', 587) as server:
+    #     server.starttls()
+    #     server.login(sender_email, sender_password)
+    #     server.send_message(msg)
+
+
+def followup_email_after_days(email_id: str, days: int):
+    """Schedule a follow-up email (legacy helper API)."""
+    print(f"Scheduled follow-up for {email_id} in {days} days.")

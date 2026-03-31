@@ -1,1 +1,9 @@
-from .status import update_database_status
+def update_database_status(job_id: int, status: str, team_id: int):
+	"""
+	Update the job application status in the main backend database.
+	"""
+	print(f"Updating Job {job_id} status to {status} for Team {team_id}")
+	# DB connection logic here
+
+
+__all__ = ["update_database_status"]

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { toast } from '../ui/Toast';
 import { useWebSocket } from '../../hooks/useWebSocket';
 
@@ -24,14 +24,22 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notificationAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const playSound = useCallback(() => {
     try {
-      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
-      audio.volume = 0.5;
-      audio.play().catch(e => console.log("Audio play failed (user interaction needed first)", e));
+      if (!notificationAudioRef.current) {
+        notificationAudioRef.current = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        notificationAudioRef.current.volume = 0.5;
+        notificationAudioRef.current.preload = 'auto';
+      }
+
+      notificationAudioRef.current.currentTime = 0;
+      notificationAudioRef.current.play().catch(() => {
+        // Ignore autoplay failures until the user has interacted with the page.
+      });
     } catch (e) {
-      console.error("Audio error", e);
+      console.error('Audio error', e);
     }
   }, []);
 
@@ -84,12 +92,6 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           type: data.type || 'info',
         });
       }
-    },
-    onConnect: () => {
-      console.log("NotificationContext: WS Connected");
-    },
-    onDisconnect: () => {
-      console.log("NotificationContext: WS Disconnected");
     },
   });
 

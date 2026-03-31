@@ -9,7 +9,6 @@ import { Menu } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CommandMenu } from '../ui/CommandMenu';
 import { Breadcrumbs } from './Breadcrumbs';
-import { Toaster } from '../ui/Toast';
 import { useAuth } from '../../contexts/AuthContext';
 
 export function MainLayout() {
@@ -103,7 +102,6 @@ export function MainLayout() {
           </main>
 
         </div>
-        <Toaster />
       </div>
     </NotificationProvider>
   );
