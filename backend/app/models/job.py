@@ -16,11 +16,7 @@ class Job(Document):
     status: JobStatus = JobStatus.PENDING
     skills_required: List[str] = []
     
-<<<<<<< Updated upstream
-    # Relationships (ObjectIds as strings)
-=======
     # Ownership
->>>>>>> Stashed changes
     user_id: PydanticObjectId
     
     # Metadata
@@ -36,10 +32,6 @@ class Job(Document):
             "status",
             "user_id",
             "skills_required",
-<<<<<<< Updated upstream
-            # Compound index for common filter patterns
-=======
->>>>>>> Stashed changes
             [("user_id", 1), ("status", 1)],
             [("user_id", 1), ("created_at", -1)]
         ]

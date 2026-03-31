@@ -67,6 +67,11 @@ class JobScraperService:
                         f"<a href='{new_job.link}'>Apply Now</a>"
                     )
                     asyncio.create_task(telegram_service.send_alert(alert_msg))
+                else:
+                    # Refresh timestamp for recurring jobs so they remain visible
+                    # in the recent scraped-jobs portal window.
+                    existing.created_at = datetime.utcnow()
+                    await existing.save()
             
             logger.info(f"Scraping completed. Found {len(jobs_data)} jobs, {new_jobs_count} new.")
             await send_progress(f"Scraping complete! Found {len(jobs_data)} jobs.", type="success")

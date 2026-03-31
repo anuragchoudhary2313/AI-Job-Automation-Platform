@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Body
 from typing import List, Any, Optional
+from datetime import datetime, timedelta
 from app.api import deps
 from app.services.job_scraper import job_scraper_service
 from app.core.features import features
@@ -22,6 +23,8 @@ async def trigger_scrape(
     keyword: str,
     location: str,
     limit: int = 5,
+    experience: Optional[str] = None,
+    job_type: Optional[str] = None,
     background_tasks: BackgroundTasks = None,
     current_user: UserModel = Depends(deps.get_current_active_user),
 ):
@@ -31,10 +34,17 @@ async def trigger_scrape(
     # Enforce Feature Flag
     features.require("job_scraping")
 
+    # Experience is optional; enrich keyword query when provided.
+    scrape_keyword = keyword.strip()
+    if experience and experience.strip():
+        scrape_keyword = f"{scrape_keyword} {experience.strip()}"
+    if job_type and job_type.strip():
+        scrape_keyword = f"{scrape_keyword} {job_type.strip()}"
+
     if background_tasks:
         background_tasks.add_task(
             job_scraper_service.scrape_jobs,
-            keyword,
+            scrape_keyword,
             location,
             limit,
             str(current_user.id),
@@ -46,7 +56,7 @@ async def trigger_scrape(
         }
     else:
         # Fallback for synchronous if needed (though BackgroundTasks is usually present in FastAPI)
-        result = await job_scraper_service.scrape_jobs(keyword, location, limit)
+        result = await job_scraper_service.scrape_jobs(scrape_keyword, location, limit)
         return result
 
 
@@ -54,15 +64,19 @@ async def trigger_scrape(
 async def list_scraped_jobs(
     skip: int = 0,
     limit: int = 100,
+    days: int = 7,
     current_user: UserModel = Depends(deps.get_current_user),
 ):
     """
-    List global scraped jobs from the scraped_jobs collection.
+    List scraped jobs from the recent time window (defaults to 7 days).
     """
     from app.models.job import ScrapedJob
 
+    safe_days = min(max(days, 1), 30)
+    cutoff = datetime.utcnow() - timedelta(days=safe_days)
+
     jobs = (
-        await ScrapedJob.find_all()
+        await ScrapedJob.find(ScrapedJob.created_at >= cutoff)
         .sort("-created_at")
         .skip(skip)
         .limit(limit)
@@ -76,13 +90,7 @@ async def get_stats(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
-<<<<<<< Updated upstream
     """Get job statistics for the current user."""
-=======
-    """
-    Get job statistics for the current user.
-    """
->>>>>>> Stashed changes
     return await job_service.get_job_stats(current_user)
 
 
@@ -96,13 +104,7 @@ async def list_jobs(
     job_service: JobService = Depends(get_job_service),
     current_user: UserModel = Depends(deps.get_current_user),
 ):
-<<<<<<< Updated upstream
     """List jobs for the current user with optional filters."""
-=======
-    """
-    List jobs for the current user with optional filters.
-    """
->>>>>>> Stashed changes
     return await job_service.get_jobs(current_user, skip, limit, status, search, sort)
 
 

@@ -10,7 +10,12 @@ import { useWebSocket } from '../../../hooks/useWebSocket';
 
 
 
-export function JobScraper() {
+interface JobScraperProps {
+  onScrapeTriggered?: () => void;
+  onScrapeSuccess?: () => void;
+}
+
+export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperProps) {
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState('');
   const [isScrapingInProgress, setIsScrapingInProgress] = useState(false);
@@ -18,6 +23,8 @@ export function JobScraper() {
     keyword: '',
     location: '',
     limit: 10,
+    experience: '',
+    jobType: '',
   });
 
   // Listen to live scraping updates via WebSocket
@@ -42,7 +49,13 @@ export function JobScraper() {
 
   const scrapeMutation = useMutation({
     mutationFn: (data: typeof formData) =>
-      jobService.scrapeJobs(data.keyword, data.location, data.limit),
+      jobService.scrapeJobs(
+        data.keyword,
+        data.location,
+        data.limit,
+        data.experience,
+        data.jobType
+      ),
     onSuccess: (data: { message: string; jobs_found: number }) => {
       // Ideally the backend returns the jobs, but if it returns a task ID or generic message, we might need to change this.
       // The mock above expected { jobs: [], count: 0 }
@@ -52,13 +65,16 @@ export function JobScraper() {
       toast.success(`Scraping started! Found ${data.jobs_found ?? 0} potential jobs.`);
       // Invalidate jobs to show new ones if they are added to DB
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      onScrapeSuccess?.();
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));
     }
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const value = e.target.type === 'number' ? parseInt(e.target.value) : e.target.value;
     setFormData({
       ...formData,
@@ -76,6 +92,7 @@ export function JobScraper() {
 
     setProgress('Initiating scraping agent...');
     setIsScrapingInProgress(true);
+    onScrapeTriggered?.();
 
     // Simulate progress steps if we want purely UI feedback, otherwise better to rely on real status
     // For now, we just call the mutation
@@ -92,7 +109,7 @@ export function JobScraper() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleScrape} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Job Keyword *
@@ -136,6 +153,42 @@ export function JobScraper() {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="10"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Experience
+              </label>
+              <select
+                name="experience"
+                value={formData.experience}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Any</option>
+                <option value="entry level">Entry Level</option>
+                <option value="junior">Junior</option>
+                <option value="mid level">Mid Level</option>
+                <option value="senior">Senior</option>
+                <option value="lead">Lead</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Job Type
+              </label>
+              <select
+                name="jobType"
+                value={formData.jobType}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Any</option>
+                <option value="remote">Remote</option>
+                <option value="onsite">Onsite</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
             </div>
           </div>
 

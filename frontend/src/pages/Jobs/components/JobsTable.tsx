@@ -7,7 +7,7 @@ import {
 import { AnimatePresence } from 'framer-motion';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
-import { ExternalLink, Trash2, ChevronDown } from 'lucide-react';
+import { ExternalLink, Trash2, ChevronDown, Briefcase, CheckCircle2, Clock3, XCircle, Sparkles } from 'lucide-react';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { LoadingTable } from '../../../components/ui/LoadingTable';
 import { toast } from '../../../components/ui/Toast';
@@ -21,6 +21,39 @@ const STATUS_VARIANT: Record<Job['status'], string> = {
   offered: 'success',
   pending: 'default',
   failed: 'danger',
+};
+
+const STATUS_META: Record<Job['status'], { label: string; icon: typeof Clock3; tone: string }> = {
+  pending: {
+    label: 'Pending',
+    icon: Clock3,
+    tone: 'from-slate-500/15 to-slate-100 dark:from-slate-600/25 dark:to-slate-800/10',
+  },
+  applied: {
+    label: 'Applied',
+    icon: Briefcase,
+    tone: 'from-sky-500/15 to-sky-100 dark:from-sky-600/20 dark:to-sky-900/10',
+  },
+  interviewing: {
+    label: 'Interviewing',
+    icon: Sparkles,
+    tone: 'from-amber-500/20 to-amber-100 dark:from-amber-500/25 dark:to-amber-900/10',
+  },
+  offered: {
+    label: 'Offered',
+    icon: CheckCircle2,
+    tone: 'from-emerald-500/20 to-emerald-100 dark:from-emerald-500/25 dark:to-emerald-900/10',
+  },
+  rejected: {
+    label: 'Rejected',
+    icon: XCircle,
+    tone: 'from-rose-500/20 to-rose-100 dark:from-rose-500/25 dark:to-rose-900/10',
+  },
+  failed: {
+    label: 'Failed',
+    icon: XCircle,
+    tone: 'from-red-500/20 to-red-100 dark:from-red-500/25 dark:to-red-900/10',
+  },
 };
 
 function formatDate(dateStr?: string | null): string {
@@ -60,65 +93,57 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => {
-      console.log('Delete mutation function called with id:', id);
       return jobService.deleteJob(id);
     },
     onSuccess: () => {
-      console.log('Delete mutation succeeded');
       toast.success('Job removed');
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
-    onError: (error) => {
-      console.log('Delete mutation failed:', error);
+    onError: () => {
       toast.error('Failed to remove job');
     },
   });
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: Job['status'] }) => {
-      console.log('Status mutation function called with id:', id, 'status:', status);
       return jobService.updateJob(id, { status });
     },
     onSuccess: () => {
-      console.log('Status mutation succeeded');
       toast.success('Status updated');
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
-    onError: (error) => {
-      console.log('Status mutation failed:', error);
+    onError: () => {
       toast.error('Failed to update status');
     },
   });
 
   const handleStatusClick = (jobId: string, event: React.MouseEvent) => {
-    console.log('Status click handler called for job:', jobId);
     event.stopPropagation();
     setOpenStatusMenu(openStatusMenu === jobId ? null : jobId);
-    console.log('Open status menu set to:', openStatusMenu === jobId ? null : jobId);
   };
 
   const handleStatusChange = (jobId: string, status: Job['status']) => {
-    console.log('Status change handler called for job:', jobId, 'new status:', status);
     statusMutation.mutate({ id: jobId, status });
     setOpenStatusMenu(null);
   };
 
   const handleDelete = (jobId: string, event: React.MouseEvent) => {
-    console.log('Delete handler called for job:', jobId);
     event.stopPropagation();
     if (confirm('Remove this job from your list?')) {
-      console.log('User confirmed delete, calling mutation');
       deleteMutation.mutate(jobId);
-    } else {
-      console.log('User cancelled delete');
     }
   };
 
   const handleExternalLink = (url: string, event: React.MouseEvent) => {
-    console.log('External link handler called with URL:', url);
     event.stopPropagation();
     window.open(url, '_blank');
   };
+
+  const jobsData = jobs ?? [];
+  const countsByStatus = STATUS_OPTIONS.reduce((acc, current) => {
+    acc[current] = jobsData.filter((job) => job.status === current).length;
+    return acc;
+  }, {} as Record<Job['status'], number>);
 
   if (isLoading) {
     return <LoadingTable columnCount={5} headers={['Job Details', 'Status', 'Date Added', 'Platform', 'Actions']} />;
@@ -144,7 +169,30 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
   }
 
   return (
-    <div className="overflow-visible">
+    <section className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        {STATUS_OPTIONS.map((statusOption) => {
+          const meta = STATUS_META[statusOption];
+          const Icon = meta.icon;
+          const count = countsByStatus[statusOption];
+          return (
+            <article
+              key={statusOption}
+              className={`rounded-2xl border border-gray-200 bg-gradient-to-br ${meta.tone} px-4 py-3 shadow-sm dark:border-gray-800`}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                  {meta.label}
+                </p>
+                <Icon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              </div>
+              <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{count}</p>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="overflow-visible rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <Table>
         <TableHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
           <TableRow className="hover:bg-transparent dark:hover:bg-transparent">
@@ -206,12 +254,10 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                             type="button"
                             className="w-full px-3 py-2 text-left text-sm capitalize hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-md last:rounded-b-md transition-colors focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
                             onMouseDown={(e) => {
-                              console.log('Mouse down on option:', s);
                               e.preventDefault();
                               e.stopPropagation();
                             }}
                             onClick={(e) => {
-                              console.log('Dropdown option clicked:', s, 'for job:', job.id);
                               e.preventDefault();
                               e.stopPropagation();
                               handleStatusChange(job.id, s);
@@ -244,10 +290,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                         variant="ghost"
                         size="icon"
                         title="Open original listing"
-                        onClick={(e) => {
-                          console.log('External link button clicked for job:', job.id);
-                          handleExternalLink(job.job_url!, e);
-                        }}
+                        onClick={(e) => handleExternalLink(job.job_url!, e)}
                         className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
                         <ExternalLink className="h-4 w-4" />
@@ -258,10 +301,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                       variant="ghost"
                       size="icon"
                       title="Delete job"
-                      onClick={(e) => {
-                        console.log('Delete button clicked for job:', job.id);
-                        handleDelete(job.id, e);
-                      }}
+                      onClick={(e) => handleDelete(job.id, e)}
                       disabled={deleteMutation.isPending}
                       className="h-8 w-8 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 disabled:opacity-50"
                     >
@@ -277,9 +317,10 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
 
       <div className="flex items-center px-4 py-3 border-t dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-lg">
         <span className="text-sm text-gray-500 dark:text-gray-400">
-          {jobs.length} job{jobs.length !== 1 ? 's' : ''}
+          {jobsData.length} job{jobsData.length !== 1 ? 's' : ''}
         </span>
       </div>
-    </div>
+      </div>
+    </section>
   );
 }

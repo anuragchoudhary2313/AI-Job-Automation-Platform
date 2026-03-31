@@ -74,10 +74,6 @@ async def require_admin(current_user: User = Depends(get_current_user)) -> User:
         )
     return current_user
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 def get_user_repository() -> UserRepository:
     """Dependency for user repository."""
     return UserRepository()

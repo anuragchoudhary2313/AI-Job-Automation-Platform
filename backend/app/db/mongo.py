@@ -1,7 +1,7 @@
 """
 MongoDB connection and init using Beanie.
 """
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from beanie import init_beanie
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 async def init_db():
     """Initialize MongoDB connection and Beanie ODM."""
     try:
-        client = AsyncIOMotorClient(
+        client = AsyncMongoClient(
             settings.MONGODB_URI,
             serverSelectionTimeoutMS=20000,
             connectTimeoutMS=20000,

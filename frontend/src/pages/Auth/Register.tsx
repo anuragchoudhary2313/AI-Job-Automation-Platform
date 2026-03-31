@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -65,14 +66,20 @@ export function Register() {
 
   return (
     <AuthLayout title="Create Account" subtitle="Get started with automated job applications">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <motion.form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+      >
         <div className="space-y-4">
           <div className="relative">
-            <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+            <User className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
             <Input
               id="fullName"
               placeholder="Full Name"
-              className="pl-10"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
               autoFocus
               autoComplete="name"
               {...register('fullName')}
@@ -82,12 +89,12 @@ export function Register() {
           </div>
 
           <div className="relative">
-            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+            <Mail className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
             <Input
               id="email"
               type="email"
               placeholder="name@company.com"
-              className="pl-10"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
               autoComplete="email"
               {...register('email')}
               error={errors.email?.message}
@@ -97,12 +104,12 @@ export function Register() {
 
           <div className="space-y-2">
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+              <Lock className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="pl-10 pr-10"
+                className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 pr-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
                 autoComplete="new-password"
                 {...register('password')}
                 error={errors.password?.message}
@@ -111,7 +118,7 @@ export function Register() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-20 focus:outline-none"
+                className="absolute right-3 top-3 text-[#171717]/45 transition hover:text-[#171717] z-20 focus:outline-none"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -127,12 +134,12 @@ export function Register() {
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+            <Lock className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
             <Input
               id="confirmPassword"
               type={showPassword ? "text" : "password"}
               placeholder="Confirm Password"
-              className="pl-10"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
               autoComplete="new-password"
               {...register('confirmPassword')}
               error={errors.confirmPassword?.message}
@@ -141,13 +148,13 @@ export function Register() {
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          By clicking create account, you agree to our <a href="#" className="underline hover:text-gray-900 dark:hover:text-white">Terms of Service</a> and <a href="#" className="underline hover:text-gray-900 dark:hover:text-white">Privacy Policy</a>.
+        <div className="text-xs text-[#171717]/65">
+          By clicking create account, you agree to our <a href="#" className="underline underline-offset-2 hover:text-[#171717]">Terms of Service</a> and <a href="#" className="underline underline-offset-2 hover:text-[#171717]">Privacy Policy</a>.
         </div>
 
         <Button
           type="submit"
-          className="w-full"
+          className="h-11 w-full rounded-xl bg-[#171717] text-white hover:bg-black"
           size="lg"
           isLoading={loading}
           disabled={!isValid}
@@ -155,13 +162,13 @@ export function Register() {
           Create Account
         </Button>
 
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-6 text-center text-sm text-[#171717]/65">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 transition-colors">
+          <Link to="/login" className="font-semibold text-[#171717] underline-offset-4 transition hover:underline">
             Sign in
           </Link>
         </div>
-      </form>
+      </motion.form>
     </AuthLayout>
   );
 }

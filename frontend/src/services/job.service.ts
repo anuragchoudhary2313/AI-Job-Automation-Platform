@@ -54,9 +54,15 @@ export const jobService = {
     await apiClient.delete(`/jobs/${id}`);
   },
 
-  async scrapeJobs(keyword: string, location: string, limit: number = 5): Promise<{ message: string; jobs_found: number }> {
+  async scrapeJobs(
+    keyword: string,
+    location: string,
+    limit: number = 5,
+    experience?: string,
+    jobType?: string
+  ): Promise<{ message: string; jobs_found: number }> {
     const response = await apiClient.post('/jobs/scrape', null, {
-      params: { keyword, location, limit },
+      params: { keyword, location, limit, experience, job_type: jobType },
     });
     return response.data;
   },

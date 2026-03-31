@@ -1,9 +1,9 @@
 import pytest
 import asyncio
 from typing import AsyncGenerator
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from beanie import init_beanie
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 
 from app.main import app
 from app.core.config import settings
@@ -32,7 +32,7 @@ async def init_test_db():
     """Initialize test database."""
     # Use a unique database name for this test run to avoid collisions
     test_db_name = "test_db_" + settings.MONGODB_DB_NAME
-    client = AsyncIOMotorClient(settings.MONGODB_URI)
+    client = AsyncMongoClient(settings.MONGODB_URI)
     db = client[test_db_name]
     
     from app.models.user import User
@@ -59,7 +59,7 @@ async def init_test_db():
     yield db
     # We do NOT drop the database here as it causes NamespaceNotFound in rapid async tests
     # But we close the client
-    client.close()
+    await client.close()
 
 @pytest.fixture(autouse=True)
 async def clean_db(init_test_db):
@@ -84,7 +84,8 @@ async def clean_db(init_test_db):
 @pytest.fixture
 async def client(init_test_db) -> AsyncGenerator[AsyncClient, None]:
     """Async test client."""
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
 
