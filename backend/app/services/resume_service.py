@@ -7,6 +7,7 @@ import os
 import shutil
 from datetime import datetime
 from fastapi import UploadFile, HTTPException, status, BackgroundTasks
+from werkzeug.utils import secure_filename
 
 from app.core.exceptions import AuthorizationError
 from app.core.logging import get_logger
@@ -19,7 +20,8 @@ from pypdf import PdfReader
 
 logger = get_logger(__name__)
 
-UPLOAD_DIR = "uploads"
+# Absolute path to the root directory for uploaded resumes
+UPLOAD_ROOT = os.path.abspath("uploads")
 
 
 class ResumeService:
@@ -38,17 +40,40 @@ class ResumeService:
                 detail="Only PDF files are allowed",
             )
 
-        # Create per-user directory
-        user_dir = os.path.join(UPLOAD_DIR, str(user.id))
+        # Create per-user directory rooted under UPLOAD_ROOT
+        raw_user_id = str(user.id)
+        safe_user_dir = "".join(c for c in raw_user_id if c.isalnum() or c in ("-", "_"))
+        if not safe_user_dir:
+            logger.error(f"Invalid user id for directory name: {raw_user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid user identifier for file storage",
+            )
+        user_dir = os.path.join(UPLOAD_ROOT, safe_user_dir)
         os.makedirs(user_dir, exist_ok=True)
 
-        # Save file with timestamp
+        # Save file with timestamp and sanitized filename
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        safe_filename = f"{timestamp}_{file.filename}"
+        original_name = secure_filename(file.filename)
+        if not original_name:
+            logger.error("Secure filename sanitization resulted in empty name")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file name",
+            )
+        safe_filename = f"{timestamp}_{original_name}"
         file_path = os.path.join(user_dir, safe_filename)
+        # Normalize and ensure the path stays within the upload root
+        normalized_path = os.path.abspath(file_path)
+        if not normalized_path.startswith(UPLOAD_ROOT + os.sep):
+            logger.error(f"Attempted path traversal in upload path: {normalized_path}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file path",
+            )
 
         try:
-            with open(file_path, "wb") as buffer:
+            with open(normalized_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
         except Exception as e:
             logger.error(f"Failed to save file: {e}")
@@ -60,7 +85,7 @@ class ResumeService:
         # Extract text from PDF
         content = ""
         try:
-            reader = PdfReader(file_path)
+            reader = PdfReader(normalized_path)
             for page in reader.pages:
                 content += page.extract_text() + "\n"
         except Exception as e:
@@ -73,7 +98,7 @@ class ResumeService:
         resume = Resume(
             user_id=PydanticObjectId(user.id),  # Convert to ObjectId
             content=content,
-            file_path=file_path,
+            file_path=normalized_path,
             filename=file.filename,  # Store original filename
             parsed_data={"status": "processing"},
         )
