@@ -30,6 +30,12 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 
+class RegisterResponse(UserSchema):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
@@ -90,7 +96,7 @@ async def login(
 
 
 @router.post(
-    "/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED
+    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
 )
 async def register(
     user_data: UserCreate, auth_service: AuthService = Depends(get_auth_service)
@@ -98,10 +104,19 @@ async def register(
     """Register a new user."""
     try:
         user = await auth_service.register_user(user_data)
+        tokens = auth_service.create_tokens(str(user.id))
 
         logger.info(f"User {user.id} registered successfully")
 
-        return user
+        user_payload = UserSchema.model_validate(user).model_dump(mode="json")
+        user_payload.update(
+            {
+                "access_token": tokens.access_token,
+                "refresh_token": tokens.refresh_token,
+                "token_type": tokens.token_type,
+            }
+        )
+        return user_payload
 
     except (ConflictError, ValidationError) as e:
         raise handle_exception(e)

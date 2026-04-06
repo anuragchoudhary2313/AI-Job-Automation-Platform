@@ -83,7 +83,6 @@ export function UploadArea({ onUpload, disabled = false }: UploadAreaProps) {
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Please wait while we process your file.</p>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-            {/* eslint-disable-next-line */}
             <style>{`[data-progress="${progress}"] { width: ${progress}%; }`}</style>
             <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300 ease-out" data-progress={progress} />
           </div>

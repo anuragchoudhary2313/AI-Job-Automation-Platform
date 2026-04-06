@@ -9,6 +9,8 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { useResumes } from '../../hooks/useResumes';
 import { useFeatures } from '../../contexts/FeatureContext';
 
+const getResumeKey = (resume: { id?: string; _id?: string }, index: number) => resume.id || resume._id || `resume-${index}`;
+
 export default function Resumes() {
   const { isEnabled } = useFeatures();
   const { resumes, loading, uploadResume, deleteResume, downloadResume } = useResumes();
@@ -162,7 +164,7 @@ export default function Resumes() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {resumes.map((resume, index) => (
                   <ResumeCard
-                    key={resume.id || (resume as any)._id || `resume-${index}`}
+                    key={getResumeKey(resume, index)}
                     resume={resume}
                     onDelete={handleDelete}
                     onDownload={handleDownload}

@@ -1,11 +1,19 @@
 import { useState } from 'react';
-import { Lock, Key, Smartphone, Bell } from 'lucide-react';
+import { Lock, Key, Smartphone, Bell, RotateCcw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/Card';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
+import { useToast } from '../../../components/ui/Toast';
+import { resetUiHints } from '../../../utils/uiHints';
 
 export function SecuritySettings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { toast } = useToast();
+
+  const handleResetHints = () => {
+    resetUiHints();
+    toast.success('UI hints were reset. Helper badges will appear again.');
+  };
 
   return (
     <Card className="h-full border-gray-200/80 dark:border-gray-800">
@@ -62,6 +70,19 @@ export function SecuritySettings() {
 
         <div className="flex justify-end">
           <Button variant="primary" className="rounded-xl">Save Security Settings</Button>
+        </div>
+
+        <div className="space-y-2 rounded-xl border border-gray-100 bg-gray-50/70 p-4 dark:border-gray-800 dark:bg-gray-900/50">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">Interface Hints</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Reset helper tips and onboarding badges that were previously dismissed.
+          </p>
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" className="rounded-lg" onClick={handleResetHints}>
+              <RotateCcw className="mr-2 h-3.5 w-3.5" />
+              Reset Hints
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

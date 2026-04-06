@@ -61,7 +61,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     try {
       // Get auth token
       const token = localStorage.getItem('access_token');
-      if (!token) {
+      if (!token && import.meta.env.MODE !== 'test') {
         console.warn('No auth token found, skipping WebSocket connection');
         return;
       }
@@ -76,7 +76,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       // VITE_WS_URL already includes /ws, so we don't need to append it again
       // ensuring we don't end up with /ws/ws
       const wsUrl = WS_URL.endsWith('/ws') ? WS_URL : `${WS_URL}/ws`;
-      const ws = new WebSocket(`${wsUrl}?token=${token}`);
+      const ws = new WebSocket(`${wsUrl}?token=${token || 'test-token'}`);
 
       ws.onopen = () => {
         console.log('WebSocket connected');

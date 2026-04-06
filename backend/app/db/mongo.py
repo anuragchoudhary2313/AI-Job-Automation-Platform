@@ -13,6 +13,8 @@ from app.models.match import Match
 from app.models.automation import AutomationRun
 from app.models.log import AgentLog, Log
 from app.models.job_application import JobApplication
+from app.models.automation_event import AutomationEvent
+from app.models.automation_dead_letter import AutomationDeadLetter
 
 logger = get_logger(__name__)
 
@@ -35,7 +37,9 @@ async def init_db():
             AutomationRun, 
             AgentLog,
             Log,
-            JobApplication
+            JobApplication,
+            AutomationEvent,
+            AutomationDeadLetter,
         ]
         
         await init_beanie(database=database, document_models=document_models)

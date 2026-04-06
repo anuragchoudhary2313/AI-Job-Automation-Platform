@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react'
 import { render, type RenderOptions } from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ThemeProvider } from '../contexts/user-theme'
 import { vi } from 'vitest'
 
 // Mock providers wrapper
@@ -9,10 +11,20 @@ interface AllProvidersProps {
 }
 
 const AllProviders = ({ children }: AllProvidersProps) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  })
+
   return (
-    <BrowserRouter>
-      {children}
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>{children}</MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 

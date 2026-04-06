@@ -5,7 +5,6 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from typing import List, Optional
 from datetime import datetime, timedelta
-from app.db.models import Settings # Assuming we can access Settings via endpoints or direct DB later, for now just using pass-in values or fetching
 from bot_engine.ai import generate_cover_letter_gpt
 
 # Mock Database for daily limits (In production, replace with proper DB calls)

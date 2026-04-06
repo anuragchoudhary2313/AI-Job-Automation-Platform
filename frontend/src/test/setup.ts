@@ -5,3 +5,5 @@ import { vi } from 'vitest'
 // @ts-expect-error - vitest globals
 global.vi = vi
 
+vi.spyOn(Storage.prototype, 'setItem')
+

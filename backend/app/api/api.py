@@ -1,10 +1,10 @@
 from fastapi import APIRouter
-from app.api.endpoints import auth, websockets, scheduler, logs, stats, resumes, jobs, ai, email, telegram, users, bot_runner, admin, agent
+from app.api.endpoints import auth, websockets, scheduler, logs, stats, resumes, jobs, ai, email, emails, email_automation, telegram, users, bot_runner, admin, agent
 
 api_router = APIRouter()
 api_router.include_router(agent.router, prefix="/agent", tags=["agent"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
-api_router.include_router(scheduler.router, prefix="/schedule", tags=["schedule"])
+api_router.include_router(scheduler.router, prefix="/scheduler", tags=["scheduler"])
 api_router.include_router(logs.router, prefix="/logs", tags=["logs"])
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(resumes.router, prefix="/resumes", tags=["resumes"])
@@ -12,6 +12,8 @@ api_router.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
 api_router.include_router(websockets.router, tags=["websockets"])
 api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(email.router, prefix="/email", tags=["email"])
+api_router.include_router(emails.router, prefix="/emails", tags=["emails"])
+api_router.include_router(email_automation.router, prefix="/email-automation", tags=["email-automation"])
 api_router.include_router(telegram.router, prefix="/telegram", tags=["telegram"])
 from app.api.endpoints import features
 api_router.include_router(features.router, prefix="/features", tags=["features"])

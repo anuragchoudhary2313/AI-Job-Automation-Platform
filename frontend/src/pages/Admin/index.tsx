@@ -1,6 +1,7 @@
 import { AdminStats } from './components/AdminStats';
 import { SystemHealth } from './components/SystemHealth';
 import { UsersTable } from './components/UsersTable';
+import { DeadLettersAdmin } from './components/DeadLettersAdmin';
 import { ShieldCheck, Users, Activity, ArrowRight } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
@@ -65,6 +66,11 @@ export default function Admin() {
         <div>
           <SystemHealth />
         </div>
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Dead-Letter Operations</h2>
+        <DeadLettersAdmin />
       </div>
     </div>
   );

@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --surface: 255 255 255;
+    --surface-muted: 248 250 252;
+    --text-primary: 15 23 42;
+    --text-secondary: 71 85 105;
+    --status-success: 16 185 129;
+    --status-warning: 245 158 11;
+    --status-danger: 239 68 68;
+    --status-info: 14 165 233;
+    --radius-base: 12px;
+  }
+
+  .dark {
+    --surface: 15 23 42;
+    --surface-muted: 17 24 39;
+    --text-primary: 241 245 249;
+    --text-secondary: 148 163 184;
+  }
+}
+
 @layer utilities {
   @keyframes fade-in {
     from {

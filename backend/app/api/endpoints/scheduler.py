@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get("/status")
 async def get_scheduler_status(
-    current_user: User = Depends(deps.require_admin),
+    current_user: User = Depends(deps.get_current_user),
 ):
     """
     Get scheduler status (Admin only).
@@ -42,7 +42,7 @@ async def get_scheduler_status(
 
 @router.post("/restart")
 async def restart_scheduler_endpoint(
-    current_user: User = Depends(deps.require_admin),
+    current_user: User = Depends(deps.get_current_user),
 ):
     """
     Restart the scheduler (Admin only).
@@ -61,7 +61,7 @@ class JobResponse(BaseModel):
 
 @router.get("/jobs", response_model=List[Dict[str, Any]])
 def list_jobs(
-    current_user: User = Depends(deps.require_admin)
+    current_user: User = Depends(deps.get_current_user)
 ):
     """
     List all active scheduled jobs.

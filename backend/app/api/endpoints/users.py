@@ -17,6 +17,14 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 
+@router.get("/me", response_model=UserSchema)
+async def read_current_user(
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """Return the authenticated user's profile."""
+    return current_user
+
+
 @router.get("/admin/users", response_model=Union[List[UserSchema], OffsetPaginatedResponse[UserSchema]])
 async def read_users(
     skip: int = Query(0, ge=0),

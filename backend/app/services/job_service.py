@@ -4,15 +4,22 @@ Job service for job-related business logic.
 
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+import asyncio
+import os
 
 from app.core.exceptions import AuthorizationError
 from app.core.logging import get_logger
 from app.core.cache import cache
 from app.core.pagination import create_offset_paginated_response
+from app.core.features import features
 from app.repositories.job import JobRepository
+from app.repositories.resume import ResumeRepository
 from app.models.job import Job
 from app.models.user import User
+from app.models.enums import JobStatus
 from app.schemas.job import JobCreate, JobUpdate, JobCreateResponse
+from app.services.email_scraper import email_scraper
+from app.email.sender import email_sender
 
 logger = get_logger(__name__)
 
@@ -22,9 +29,101 @@ class JobService:
 
     STATS_CACHE_TTL_SECONDS = 60
 
-    def __init__(self, job_repo: JobRepository) -> None:
+    def __init__(self, job_repo: JobRepository, resume_repo: Optional[ResumeRepository] = None) -> None:
         """Initialize job service."""
         self.job_repo = job_repo
+        self.resume_repo = resume_repo or ResumeRepository()
+
+    @staticmethod
+    def _status_value(status: Any) -> str:
+        if isinstance(status, JobStatus):
+            return status.value
+        if hasattr(status, "value"):
+            return str(status.value)
+        return str(status or "").lower()
+
+    async def _auto_email_after_apply(self, job: Job, user: User) -> None:
+        """Attempt to auto-email HR/recruiter when a job is marked as applied.
+
+        This must never break the primary update flow.
+        """
+        if not features.is_enabled("email_automation"):
+            return
+
+        try:
+            recipient_email = (job.hr_email or "").strip()
+
+            if not recipient_email:
+                hr_result = await email_scraper.scrape_hr_emails(company=job.company, domain=None)
+                emails = hr_result.get("emails") or []
+                if emails:
+                    recipient_email = emails[0]
+                    try:
+                        await self.job_repo.update(job.id, hr_email=recipient_email, updated_at=datetime.utcnow())
+                    except Exception:
+                        logger.warning(f"Could not persist scraped HR email for job {job.id}")
+
+            if not recipient_email:
+                logger.info(f"Auto-email skipped for job {job.id}: no HR/recruiter email found")
+                return
+
+            candidate_name = (user.full_name or user.username or "Candidate").strip() or "Candidate"
+            skills = "Software development, problem solving, collaboration"
+            portfolio_link = ""
+            attachments: List[str] = []
+
+            try:
+                resumes = await self.resume_repo.get_by_user(str(user.id), skip=0, limit=1)
+                if resumes:
+                    latest_resume = resumes[0]
+                    parsed_data = latest_resume.parsed_data or {}
+                    parsed_skills = parsed_data.get("skills")
+                    if isinstance(parsed_skills, list) and parsed_skills:
+                        skills = ", ".join(str(s) for s in parsed_skills[:10])
+
+                    personal_info = parsed_data.get("personal_info") or {}
+                    links = personal_info.get("links")
+                    if isinstance(links, list) and links:
+                        portfolio_link = str(links[0])
+
+                    if latest_resume.file_path and os.path.exists(latest_resume.file_path):
+                        attachments.append(latest_resume.file_path)
+            except Exception:
+                logger.warning(f"Could not enrich auto-email from resume for user {user.id}")
+
+            context = {
+                "company_name": job.company,
+                "job_role": job.title,
+                "candidate_name": candidate_name,
+                "skills": skills,
+                "portfolio_link": portfolio_link or "N/A",
+            }
+
+            try:
+                html_body = email_sender.render_template("hr_initial_email.html", context)
+            except Exception:
+                html_body = (
+                    f"<p>Dear Hiring Team at <strong>{job.company}</strong>,</p>"
+                    f"<p>I am interested in the <strong>{job.title}</strong> role.</p>"
+                    f"<p>Candidate: <strong>{candidate_name}</strong></p>"
+                    f"<p>Skills: {skills}</p>"
+                    f"<p>Portfolio: {portfolio_link or 'N/A'}</p>"
+                    "<p>Thank you for your time and consideration.</p>"
+                )
+
+            sent = await email_sender.send_email(
+                to_email=recipient_email,
+                subject=f"Application for {job.title} - {candidate_name}",
+                html_body=html_body,
+                attachments=attachments or None,
+            )
+
+            if sent:
+                logger.info(f"Auto-email sent for applied job {job.id} to {recipient_email}")
+            else:
+                logger.warning(f"Auto-email not sent for job {job.id}; sender returned False")
+        except Exception as e:
+            logger.error(f"Auto-email failed for applied job {job.id}: {e}")
 
     @staticmethod
     def _stats_cache_key(user_id: str) -> str:
@@ -190,12 +289,20 @@ class JobService:
         """Update a job."""
         # Check authorization
         job = await self.get_job(job_id, user)
+        previous_status = self._status_value(job.status)
 
         # Update job
         update_data = job_data.dict(exclude_unset=True)
+        next_status = self._status_value(update_data.get("status", job.status))
+        if previous_status != JobStatus.APPLIED.value and next_status == JobStatus.APPLIED.value:
+            update_data.setdefault("applied_at", datetime.utcnow())
         update_data["updated_at"] = datetime.utcnow()
 
         updated_job = await self.job_repo.update(job_id, **update_data)
+
+        if previous_status != JobStatus.APPLIED.value and next_status == JobStatus.APPLIED.value:
+            # Fire-and-forget: email flow should never block or fail the status update.
+            asyncio.create_task(self._auto_email_after_apply(updated_job, user))
 
         logger.info(f"Updated job {job_id}")
         await self._invalidate_stats_cache(str(user.id))

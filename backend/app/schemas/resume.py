@@ -11,7 +11,7 @@ class ResumeCreate(ResumeBase):
     pass
 
 class Resume(BaseModel):
-    id: str = Field(alias="_id")
+    id: str
     user_id: str
     content: Optional[str] = None
     file_path: Optional[str] = None

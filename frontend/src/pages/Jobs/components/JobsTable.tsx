@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { jobService, type Job, type JobFilters } from '../../../services/job.service';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -7,10 +8,12 @@ import {
 import { AnimatePresence } from 'framer-motion';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
-import { ExternalLink, Trash2, ChevronDown, Briefcase, CheckCircle2, Clock3, XCircle, Sparkles } from 'lucide-react';
+import { ExternalLink, Trash2, ChevronDown, Briefcase, CheckCircle2, Clock3, XCircle, Sparkles, Mail, Zap } from 'lucide-react';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { LoadingTable } from '../../../components/ui/LoadingTable';
 import { toast } from '../../../components/ui/Toast';
+import { setColdMailContext } from '../../../utils/coldMailContext';
+import apiClient, { apiClientLongTimeout } from '../../../lib/api';
 
 const STATUS_OPTIONS: Job['status'][] = ['pending', 'applied', 'interviewing', 'offered', 'rejected', 'failed'];
 
@@ -62,8 +65,10 @@ function formatDate(dateStr?: string | null): string {
 }
 
 export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onStartScan?: () => void }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [openStatusMenu, setOpenStatusMenu] = useState<string | null>(null);
+  const [cachedEmails, setCachedEmails] = useState<Record<string, { cached: boolean; email_count: number }>>({});
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -90,6 +95,33 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
     queryKey: ['jobs', filters],
     queryFn: () => jobService.getJobs(filters),
   });
+
+  // Check cache status for all visible companies
+  useEffect(() => {
+    if (!jobs || jobs.length === 0) return;
+
+    const checkCacheStatus = async () => {
+      const uniqueCompanies = Array.from(new Set(jobs.map(j => j.company)));
+      const cacheStatus: Record<string, { cached: boolean; email_count: number }> = {};
+
+      for (const company of uniqueCompanies) {
+        try {
+          const response = await apiClient.get(`/emails/check-cached/${encodeURIComponent(company)}`);
+          cacheStatus[company] = {
+            cached: response.data.cached,
+            email_count: response.data.email_count || 0
+          };
+        } catch {
+          // Silently fail - doesn't affect functionality
+          cacheStatus[company] = { cached: false, email_count: 0 };
+        }
+      }
+
+      setCachedEmails(cacheStatus);
+    };
+
+    checkCacheStatus();
+  }, [jobs]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => {
@@ -139,6 +171,51 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
     window.open(url, '_blank');
   };
 
+  const handleUseForColdMail = async (job: Job, event: React.MouseEvent) => {
+    event.stopPropagation();
+    
+    const toastId = toast.loading('Finding HR email...');
+    
+    try {
+      // Call backend to scrape HR emails (use long timeout for scraping operations)
+      const response = await apiClientLongTimeout.post('/emails/scrape-hr', {
+        company: job.company,
+        domain: undefined, // Let backend guess from company name
+      });
+      
+      const hrEmails = response.data.emails || [];
+      const recipientEmail = hrEmails[0] || '';
+      
+      setColdMailContext({
+        company_name: job.company,
+        job_role: job.title,
+        recipient_email: recipientEmail,
+        source: 'jobs_table_with_scraper',
+      });
+      
+      toast.dismiss(toastId);
+      if (hrEmails.length > 0) {
+        toast.success(`Found ${hrEmails.length} HR email${hrEmails.length !== 1 ? 's' : ''}! Prefilled.`);
+      } else {
+        toast.info('Could not find HR email - you can enter it manually.');
+      }
+      
+      navigate('/email-campaigns');
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.warning('Could not scrape HR email - you can enter it manually.');
+      
+      // Fallback: still go to cold mail with company/role only
+      setColdMailContext({
+        company_name: job.company,
+        job_role: job.title,
+        source: 'jobs_table_fallback',
+      });
+      
+      navigate('/email-campaigns');
+    }
+  };
+
   const jobsData = jobs ?? [];
   const countsByStatus = STATUS_OPTIONS.reduce((acc, current) => {
     acc[current] = jobsData.filter((job) => job.status === current).length;
@@ -178,7 +255,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
           return (
             <article
               key={statusOption}
-              className={`rounded-2xl border border-gray-200 bg-gradient-to-br ${meta.tone} px-4 py-3 shadow-sm dark:border-gray-800`}
+              className={`rounded-2xl border border-gray-200/80 bg-gradient-to-br ${meta.tone} px-4 py-3 shadow-sm dark:border-gray-800`}
             >
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
@@ -192,9 +269,9 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
         })}
       </div>
 
-      <div className="overflow-visible rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
+      <div className="overflow-visible rounded-3xl border border-gray-200/80 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <Table>
-        <TableHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
+        <TableHeader className="border-b bg-gradient-to-r from-gray-50 to-slate-50 dark:border-gray-800 dark:from-gray-900 dark:to-gray-900">
           <TableRow className="hover:bg-transparent dark:hover:bg-transparent">
             <TableHead className="w-[35%]">Job Details</TableHead>
             <TableHead>Status</TableHead>
@@ -213,7 +290,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="group relative hover:bg-gray-50 dark:hover:bg-gray-900/50"
+                className="group relative hover:bg-cyan-50/30 dark:hover:bg-cyan-900/10"
               >
                 {/* Job Details */}
                 <TableCell>
@@ -284,6 +361,26 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                 {/* Actions */}
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-1 opacity-100 transition-opacity md:opacity-100 md:group-hover:opacity-100">
+                    <div className="relative">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        title="Use in cold HR mail"
+                        onClick={(e) => handleUseForColdMail(job, e)}
+                        className="h-8 w-8 rounded-lg hover:bg-cyan-50 hover:text-cyan-700 dark:hover:bg-cyan-900/20"
+                      >
+                        <Mail className="h-4 w-4" />
+                      </Button>
+                      {cachedEmails[job.company]?.cached && (
+                        <div
+                          className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-cyan-500 dark:bg-cyan-400 flex items-center justify-center"
+                          title={`${cachedEmails[job.company].email_count} HR email(s) cached`}
+                        >
+                          <Zap className="h-2.5 w-2.5 text-white" />
+                        </div>
+                      )}
+                    </div>
                     {job.job_url && (
                       <Button
                         type="button"
@@ -291,7 +388,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                         size="icon"
                         title="Open original listing"
                         onClick={(e) => handleExternalLink(job.job_url!, e)}
-                        className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
@@ -303,7 +400,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
                       title="Delete job"
                       onClick={(e) => handleDelete(job.id, e)}
                       disabled={deleteMutation.isPending}
-                      className="h-8 w-8 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 disabled:opacity-50"
+                      className="h-8 w-8 rounded-lg hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 disabled:opacity-50"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
@@ -315,7 +412,7 @@ export function JobsTable({ filters, onStartScan }: { filters: JobFilters; onSta
         </TableBody>
       </Table>
 
-      <div className="flex items-center px-4 py-3 border-t dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-lg">
+      <div className="flex items-center px-4 py-3 border-t dark:border-gray-800 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900 dark:to-gray-900 rounded-b-3xl">
         <span className="text-sm text-gray-500 dark:text-gray-400">
           {jobsData.length} job{jobsData.length !== 1 ? 's' : ''}
         </span>

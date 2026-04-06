@@ -6,12 +6,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../test/utils'
 import userEvent from '@testing-library/user-event'
 import { Sidebar } from '../components/layout/Sidebar'
-import { BrowserRouter } from 'react-router-dom'
+
+const featureFlags = vi.hoisted(() => ({ adminPanelEnabled: false }))
+
+vi.mock('../contexts/FeatureContext', () => ({
+  useFeatures: () => ({
+    isEnabled: (feature: string) => feature === 'admin_panel' ? featureFlags.adminPanelEnabled : false,
+  }),
+}))
 
 describe('Navigation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
+    featureFlags.adminPanelEnabled = false
   })
 
   it('renders all navigation items', () => {
@@ -24,11 +32,7 @@ describe('Navigation', () => {
   })
 
   it('highlights active navigation item', () => {
-    render(
-      <BrowserRouter>
-        <Sidebar />
-      </BrowserRouter>
-    )
+    render(<Sidebar />)
 
     const dashboardLink = screen.getByText(/dashboard/i).closest('a')
     expect(dashboardLink).toHaveClass(/active|bg-blue/)
@@ -112,11 +116,7 @@ describe('Navigation', () => {
   })
 
   it('shows admin menu for admin users', () => {
-    // Mock admin user
-    const mockUser = { role: 'admin' }
-    vi.mock('../hooks/useAuth', () => ({
-      useAuth: () => ({ user: mockUser })
-    }))
+    featureFlags.adminPanelEnabled = true
 
     render(<Sidebar />)
 
@@ -124,11 +124,7 @@ describe('Navigation', () => {
   })
 
   it('hides admin menu for regular users', () => {
-    // Mock regular user
-    const mockUser = { role: 'member' }
-    vi.mock('../hooks/useAuth', () => ({
-      useAuth: () => ({ user: mockUser })
-    }))
+    featureFlags.adminPanelEnabled = false
 
     render(<Sidebar />)
 

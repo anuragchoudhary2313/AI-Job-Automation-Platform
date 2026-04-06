@@ -32,6 +32,11 @@ class ResumeGenerationRequest(BaseModel):
     resume_text: Optional[str] = None
 
 
+class LatexAtsScoreRequest(BaseModel):
+    job_description: str
+    latex_code: str
+
+
 @router.post("/resume/generate", response_model=str)
 async def generate_resume_content(
     request: ResumeGenerationRequest,
@@ -76,6 +81,19 @@ async def generate_latex_resume(
         return await ai_service.generate_latex_resume(request.job_description, request.resume_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail="AI LaTeX generation failed")
+
+
+@router.post("/resume/ats-score")
+async def score_latex_resume(
+    request: LatexAtsScoreRequest,
+    current_user: User = Depends(deps.get_current_user),
+):
+    """Score a generated LaTeX resume for ATS-fit and section quality."""
+    features.require("ai_resume")
+    try:
+        return ai_service.score_latex_resume(request.job_description, request.latex_code)
+    except Exception:
+        raise HTTPException(status_code=500, detail="ATS scoring failed")
 
 
 @router.post("/cover-letter/generate-structured", response_model=CoverLetter)

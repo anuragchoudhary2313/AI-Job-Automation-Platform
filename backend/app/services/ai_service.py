@@ -1,6 +1,7 @@
 import logging
 import json
-from typing import Optional, Any
+import re
+from typing import Optional, Any, Dict, List
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from app.core.ai import ai_client
 from app.core.config import settings
@@ -28,7 +29,13 @@ class AIService:
         # Validate and parse JSON
         return json.loads(response_text)
 
-    async def generate_text(self, prompt: str, model: str = None, json_mode: bool = False) -> str:
+    async def generate_text(
+        self,
+        prompt: str,
+        model: str = None,
+        json_mode: bool = False,
+        temperature: float = 0.7,
+    ) -> str:
         """
         Generates text using Groq (via OpenAI SDK) asynchronously.
         """
@@ -43,7 +50,7 @@ class AIService:
             kwargs = {
                 "model": model_to_use,
                 "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.7,
+                "temperature": temperature,
             }
             
             if json_mode:
@@ -112,7 +119,7 @@ class AIService:
         return await self.generate_text(prompt, model=settings.AI_MODEL_FAST)
 
     async def generate_latex_resume(self, job_description: str, resume_text: str = None) -> str:
-        """Generates a Jake's Resume LaTeX resume tailored to the job description."""
+        """Generate a one-page ATS-optimized LaTeX resume tailored to a job description."""
         client = ai_client.get_async_client()
         if not client:
             return self._mock_latex_response()
@@ -120,11 +127,39 @@ class AIService:
         template_format = self._mock_latex_response()
         
         prompt = f"""
-        You are an expert LaTeX resume writer. Format the user's resume perfectly using the provided LaTeX template structure. 
-        Optimize the content beautifully to match the full extent of this job description:
-        
+        You are an expert ATS resume strategist and LaTeX resume writer.
+        Your goal: produce a HIGH-MATCH, one-page resume in clean ATS-safe LaTeX.
+
+        TARGET OUTCOME (best effort):
+        - ATS alignment target: 90+ match quality for this JD using exact role keywords, tools, and domain terms.
+        - Final resume must be exactly ONE PAGE when compiled.
+        - The page should look complete and content-rich; avoid large blank areas.
+
+        ATS AND CONTENT RULES (strict):
+        1. Mirror the job title and seniority intent in the summary and experience phrasing.
+        2. Include at least 15 relevant JD keywords naturally across Summary, Skills, Experience, and Projects.
+        3. Prioritize hard skills from JD (frameworks, cloud, databases, languages, tooling) before soft skills.
+        4. Every experience/project bullet must start with a strong action verb and include impact/metric when possible.
+        5. Avoid vague claims; be specific and scannable.
+        6. Keep ATS-safe formatting only: plain section titles, standard bullets, no tables for body content, no icons in bullets.
+        7. Never fabricate impossible credentials. If details are missing, generalize safely without fake company claims.
+
+        ONE-PAGE DENSITY RULES (strict):
+        1. Include enough meaningful content to visually fill one page without overflow to page 2.
+        2. Use concise, high-density bullets (typically 1 line; max 2 lines).
+        3. Keep 4-6 bullets for latest/relevant role, 2-4 for other roles, and 2-4 per key project.
+        4. Ensure sections are balanced so there is no large unused white space near the bottom.
+        5. If content is short, strengthen Summary, Skills detail, and project impact bullets to fill the page responsibly.
+
+        LATEX RULES (strict):
+        1. Output valid raw LaTeX only.
+        2. Start with \\documentclass and end with \\end{{document}}.
+        3. Ensure it compiles with Tectonic (XeTeX).
+        4. Do NOT use \\input{{glyphtounicode}} or \\pdfgentounicode=1.
+        5. Do NOT wrap output in markdown fences.
+
         Job Description:
-        {job_description[:2000]}...
+        {job_description[:2500]}...
         """
         
         if resume_text:
@@ -139,31 +174,211 @@ class AIService:
             prompt += "\n\n(No current resume provided. Generate realistic placeholder content optimized for the job.)"
             
         prompt += f"""
-        
-        TEMPLATE STRUCTURE TO USE:
+
+        TEMPLATE STRUCTURE TO FOLLOW EXACTLY:
         =============================
         {template_format}
         =============================
-        
-        Output ONLY the valid raw LaTeX code string, starting from \\documentclass and ending with \\end{{document}}.
-        Ensure that it compiles cleanly with Tectonic (XeTeX). Do NOT use \\input{{glyphtounicode}} or \\pdfgentounicode=1.
-        Do NOT wrap output with ```latex or anything else.
-        Produce a professional 1-page template using the placeholders and structural commands shown in the TEMPLATE STRUCTURE. Don't add any introductory or concluding remarks.
+
+        IMPORTANT FINAL CHECKS BEFORE OUTPUT:
+        - Keep it on one page.
+        - Ensure dense but readable content that covers the page.
+        - Ensure keyword alignment with the JD.
+        - Return only the final LaTeX.
         """
-        response_text = await self.generate_text(prompt, model=settings.AI_MODEL_SMART)
+        response_text = await self.generate_text(
+            prompt,
+            model=settings.AI_MODEL_SMART,
+            temperature=0.35,
+        )
         
         if response_text.startswith("[MOCK AI RESPONSE]"):
             return self._mock_latex_response()
             
-        response_text = response_text.strip()
-        if response_text.startswith("```latex"):
-            response_text = response_text.replace("```latex\n", "", 1)
-        if response_text.startswith("```"):
-            response_text = response_text.replace("```\n", "", 1)
-        if response_text.endswith("```"):
-            response_text = response_text[:-3]
-            
-        return response_text.strip()
+        primary_latex = self._clean_latex_output(response_text)
+
+        if self._needs_latex_density_pass(primary_latex):
+            densify_prompt = f"""
+            You are revising an existing LaTeX resume that is under-detailed or leaves visible blank space.
+            Improve it to be a complete one-page ATS-friendly resume.
+
+            STRICT REQUIREMENTS:
+            1. Keep exactly one page after compile.
+            2. Fill the page with meaningful detail; avoid visible blank space at bottom.
+            3. Expand weak sections with specific, relevant bullets (action + impact).
+            4. Ensure robust content in Skills, Experience, and Projects.
+            5. Use JD keywords naturally and repeatedly where appropriate.
+            6. Keep ATS-safe formatting and valid LaTeX.
+            7. Do not invent impossible claims.
+
+            JOB DESCRIPTION:
+            {job_description[:2500]}...
+
+            CURRENT RESUME DETAILS (if provided):
+            {(resume_text or 'No original resume provided')[:4000]}...
+
+            CURRENT LATEX TO IMPROVE:
+            {primary_latex}
+
+            Return only the improved full LaTeX (from \\documentclass to \\end{{document}}).
+            """
+
+            revised_text = await self.generate_text(
+                densify_prompt,
+                model=settings.AI_MODEL_SMART,
+                temperature=0.3,
+            )
+            revised_latex = self._clean_latex_output(revised_text)
+
+            # Keep the denser candidate when the revision is valid and meaningfully fuller.
+            primary_words = self._latex_content_word_count(primary_latex)
+            revised_words = self._latex_content_word_count(revised_latex)
+            if revised_latex and revised_latex.startswith("\\documentclass") and revised_words >= int(primary_words * 0.95):
+                return revised_latex
+
+        return primary_latex
+
+    def _clean_latex_output(self, output: str) -> str:
+        text = (output or "").strip()
+        if text.startswith("```latex"):
+            text = text.replace("```latex\n", "", 1)
+        if text.startswith("```"):
+            text = text.replace("```\n", "", 1)
+        if text.endswith("```"):
+            text = text[:-3]
+        return text.strip()
+
+    def _latex_to_plain_text(self, latex: str) -> str:
+        if not latex:
+            return ""
+        plain = latex
+        plain = re.sub(r"%.*", " ", plain)
+        plain = re.sub(r"\\[a-zA-Z]+\*?(\[[^\]]*\])?", " ", plain)
+        plain = re.sub(r"[{}$&_#^~]", " ", plain)
+        plain = re.sub(r"\s+", " ", plain)
+        return plain.strip().lower()
+
+    def _latex_content_word_count(self, latex: str) -> int:
+        if not latex:
+            return 0
+        # Strip LaTeX commands and braces, then estimate real content density.
+        plain = re.sub(r"\\[a-zA-Z]+\*?(\[[^\]]*\])?(\{[^{}]*\})?", " ", latex)
+        plain = re.sub(r"[{}$&_#^~]", " ", plain)
+        words = [w for w in re.split(r"\s+", plain) if w and len(w) > 1]
+        return len(words)
+
+    def _needs_latex_density_pass(self, latex: str) -> bool:
+        if not latex:
+            return True
+
+        words = self._latex_content_word_count(latex)
+        bullets = len(re.findall(r"\\resumeItem\{", latex)) + len(re.findall(r"\\item\b", latex))
+
+        has_skills = bool(re.search(r"\\section\{\s*(Technical\s+Skills|Skills)\s*\}", latex, re.IGNORECASE))
+        has_experience = bool(re.search(r"\\section\{\s*Experience\s*\}", latex, re.IGNORECASE))
+        has_projects = bool(re.search(r"\\section\{\s*Projects\s*\}", latex, re.IGNORECASE))
+
+        missing_core_section = not (has_skills and has_experience and has_projects)
+        too_sparse = words < 360 or bullets < 10
+
+        return missing_core_section or too_sparse
+
+    def score_latex_resume(self, job_description: str, latex_code: str) -> Dict[str, Any]:
+        """Compute a deterministic ATS-style quality score for a generated LaTeX resume."""
+        plain_resume = self._latex_to_plain_text(latex_code)
+        plain_jd = (job_description or "").lower()
+
+        section_checks = {
+            "skills": bool(re.search(r"\\section\{\s*(technical\s+skills|skills)\s*\}", latex_code, re.IGNORECASE)),
+            "experience": bool(re.search(r"\\section\{\s*experience\s*\}", latex_code, re.IGNORECASE)),
+            "projects": bool(re.search(r"\\section\{\s*projects\s*\}", latex_code, re.IGNORECASE)),
+            "education": bool(re.search(r"\\section\{\s*education\s*\}", latex_code, re.IGNORECASE)),
+            "summary_or_objective": bool(
+                re.search(r"\\section\{\s*(summary|objective|professional\s+summary)\s*\}", latex_code, re.IGNORECASE)
+            ),
+        }
+
+        keyword_stopwords = {
+            "with", "from", "that", "this", "have", "will", "your", "their", "they", "them", "role",
+            "team", "years", "year", "work", "using", "strong", "ability", "skills", "experience",
+            "requirements", "preferred", "knowledge", "development", "engineer", "software", "and", "the",
+            "for", "you", "our", "are", "all", "can", "job", "position", "responsibilities",
+        }
+
+        jd_tokens = re.findall(r"[a-zA-Z][a-zA-Z0-9+.#-]{2,}", plain_jd)
+        filtered_tokens = [token for token in jd_tokens if token not in keyword_stopwords]
+
+        token_freq: Dict[str, int] = {}
+        for token in filtered_tokens:
+            token_freq[token] = token_freq.get(token, 0) + 1
+
+        ranked_keywords = sorted(token_freq.keys(), key=lambda t: (-token_freq[t], t))[:40]
+        matched_keywords = [kw for kw in ranked_keywords if re.search(rf"\b{re.escape(kw)}\b", plain_resume)]
+
+        keywords_total = len(ranked_keywords)
+        keywords_matched = len(matched_keywords)
+        keyword_match_pct = round((keywords_matched / keywords_total) * 100, 1) if keywords_total else 0.0
+
+        words = self._latex_content_word_count(latex_code)
+        bullets = len(re.findall(r"\\resumeItem\{", latex_code)) + len(re.findall(r"\\item\b", latex_code))
+
+        section_count = len([ok for ok in section_checks.values() if ok])
+        section_score = (section_count / max(1, len(section_checks))) * 100
+
+        if words < 340:
+            density_score = 45
+        elif words < 420:
+            density_score = 70
+        elif words <= 720:
+            density_score = 100
+        elif words <= 800:
+            density_score = 80
+        else:
+            density_score = 60
+
+        if bullets < 9:
+            bullet_score = 50
+        elif bullets < 12:
+            bullet_score = 72
+        elif bullets <= 24:
+            bullet_score = 100
+        else:
+            bullet_score = 78
+
+        weighted_score = (
+            keyword_match_pct * 0.45
+            + section_score * 0.25
+            + density_score * 0.15
+            + bullet_score * 0.15
+        )
+        ats_score = int(max(0, min(100, round(weighted_score))))
+
+        recommendations: List[str] = []
+        if keyword_match_pct < 70:
+            recommendations.append("Increase exact JD keyword coverage in Summary, Skills, and Experience bullets.")
+        if not section_checks["skills"]:
+            recommendations.append("Add a dedicated Technical Skills section with role-relevant tools and stacks.")
+        if not section_checks["experience"]:
+            recommendations.append("Add an Experience section with impact-focused bullets.")
+        if not section_checks["projects"]:
+            recommendations.append("Add Projects with measurable outcomes and technologies used.")
+        if words < 420:
+            recommendations.append("Resume is sparse for one page; expand bullets with specific impact and metrics.")
+        if bullets < 12:
+            recommendations.append("Increase high-value bullet points to improve ATS scan depth and detail.")
+
+        return {
+            "ats_score": ats_score,
+            "keyword_match_pct": keyword_match_pct,
+            "keywords_total": keywords_total,
+            "keywords_matched": keywords_matched,
+            "matched_keywords": matched_keywords[:20],
+            "word_count": words,
+            "bullet_count": bullets,
+            "section_checks": section_checks,
+            "recommendations": recommendations,
+            "passes_auto_gate": ats_score >= 78 and section_checks["skills"] and section_checks["experience"] and section_checks["projects"],
+        }
 
     async def generate_resume_bullets(self, bullet: str, job_description: str) -> str:
         prompt = f"""
@@ -426,7 +641,7 @@ class AIService:
 \addtolength{\textheight}{1.0in}
 
 \urlstyle{same}
-\raggedbottom
+\flushbottom
 \raggedright
 \setlength{\tabcolsep}{0in}
 

@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     
     # Security Settings
-    SECRET_KEY: str
+    SECRET_KEY: str = "development-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # 30 minutes
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # 7 days
@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     # Database - MongoDB
     MONGODB_URI: str = "mongodb://localhost:27017"
     MONGODB_DB_NAME: str = "job_automation"
+    REDIS_URL: str = "redis://localhost:6379/0"
 
     # Feature Flags
     JOB_SCRAPING_ENABLED: bool = True
@@ -41,6 +42,17 @@ class Settings(BaseSettings):
     FEATURE_JOB_SCRAPING: bool = True
     FEATURE_AUTO_APPLY: bool = True
     FEATURE_ADMIN_PANEL: bool = True
+
+    # Auto-apply policy controls
+    AUTO_APPLY_DAILY_CAP: int = 20
+    AUTO_APPLY_BLOCKED_COMPANIES: List[str] = []
+    AUTO_APPLY_DEDUP_HOURS: int = 72
+
+    # Dead-letter replay policy controls
+    DEAD_LETTER_REPLAY_MAX_RETRIES: int = 5
+    DEAD_LETTER_REPLAY_WINDOW_MINUTES: int = 60
+    DEAD_LETTER_REPLAY_BACKOFF_BASE_SECONDS: int = 30
+    DEAD_LETTER_REPLAY_BACKOFF_MAX_SECONDS: int = 1800
     
     MAX_CONNECTIONS_COUNT: int = 10
     MIN_CONNECTIONS_COUNT: int = 10

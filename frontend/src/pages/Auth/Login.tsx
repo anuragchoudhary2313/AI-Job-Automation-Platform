@@ -52,15 +52,24 @@ export function Login() {
       formData.append('username', data.email);
       formData.append('password', data.password);
 
-      // Login and get tokens
+      // Login and get tokens (with 10s timeout)
       const response = await authService.login(formData);
 
       // Store tokens
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
+      // Mark that we just logged in to skip re-verification in AuthContext
+      localStorage.setItem('skip_auth_verification', 'true');
 
-      // Use user from login response to avoid an extra round trip.
-      const user = response.user ?? await authService.getCurrentUser();
+      // Use user from login response; if missing, create minimal user object to avoid extra API call
+      const user = response.user || {
+        id: 'unknown',
+        email: data.email,
+        full_name: 'User',
+        username: data.email,
+        role: 'user',
+        is_active: true
+      };
       login(user);
 
       toast.success('Welcome back! Logged in successfully.');

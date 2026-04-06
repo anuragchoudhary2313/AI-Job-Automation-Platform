@@ -19,8 +19,25 @@ export function ActivityFeed({ loading }: { loading?: boolean }) {
 
   const { isConnected } = useWebSocket({
     onActivity: (newActivity) => {
-      // Add new activity to the top
-      setActivities((prev) => [newActivity, ...prev].slice(0, 10)); // Keep only last 10
+      // Drop repeated socket messages that can occur on reconnect/multi-tab fanout.
+      setActivities((prev) => {
+        const duplicateWindowMs = 8000;
+        const isDuplicate = prev.some((item) => {
+          const sameKind = item.type === newActivity.type;
+          const sameTitle = item.title.trim().toLowerCase() === newActivity.title.trim().toLowerCase();
+          const sameDescription =
+            item.description.trim().toLowerCase() === newActivity.description.trim().toLowerCase();
+          const nearInTime = Math.abs(item.timestamp - newActivity.timestamp) <= duplicateWindowMs;
+
+          return sameKind && sameTitle && sameDescription && nearInTime;
+        });
+
+        if (isDuplicate) {
+          return prev;
+        }
+
+        return [newActivity, ...prev].slice(0, 10);
+      });
       setShowNewBadge(true);
       setTimeout(() => setShowNewBadge(false), 3000);
     },

@@ -2,19 +2,18 @@ import { MetricsRow, type MetricData } from './components/MetricsRow';
 import { ChartsSection } from './components/ChartsSection';
 import { ActivityFeed } from './components/ActivityFeed';
 import { QuickActions } from './components/QuickActions';
-import { EmailAutomation } from './components/EmailAutomation';
+import { AutomationTimeline } from './components/AutomationTimeline';
+import { AutomationDeadLetters } from './components/AutomationDeadLetters';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { toast } from '@/components/ui/Toast';
 import { useQuery } from '@tanstack/react-query';
 import { jobService } from '../../services/job.service';
 import { Briefcase, TrendingUp, CheckCircle, Mail, ArrowRight, Sparkles, Activity as ActivityIcon } from 'lucide-react';
-import { useFeatures } from '../../contexts/FeatureContext';
 import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { isEnabled } = useFeatures();
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['jobStats'],
     queryFn: () => jobService.getStats()
@@ -106,15 +105,14 @@ export default function Dashboard() {
       <MetricsRow loading={loading} metrics={metrics.length ? metrics : undefined} />
       <ChartsSection loading={loading} />
 
-      {/* Email Automation Section */}
-      {isEnabled('email_automation') && <EmailAutomation />}
-
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-6">
           <ActivityFeed loading={loading} />
+          <AutomationTimeline />
         </div>
         <div className="space-y-6">
           <QuickActions loading={loading} />
+          <AutomationDeadLetters />
         </div>
       </div>
     </div>

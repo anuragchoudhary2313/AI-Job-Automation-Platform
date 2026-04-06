@@ -5,6 +5,8 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import type { Resume } from '../../../types/models';
 import { formatDistanceToNow } from 'date-fns';
 
+const getResumeId = (resume: Resume & { _id?: string }) => resume.id || resume._id || '';
+
 interface ResumeCardProps {
   resume: Resume;
   onDelete?: (id: string) => void;
@@ -64,7 +66,7 @@ export function ResumeCard({ resume, onDelete, onDownload }: ResumeCardProps) {
               variant="outline"
               className="h-9 flex-1 rounded-lg border-gray-200 text-xs dark:border-gray-700"
               title="Download"
-              onClick={() => onDownload(resume.id || (resume as any)._id, fileName)}
+              onClick={() => onDownload(getResumeId(resume), fileName)}
             >
               <Download className="mr-1.5 h-3.5 w-3.5" />
               Download
@@ -76,7 +78,7 @@ export function ResumeCard({ resume, onDelete, onDownload }: ResumeCardProps) {
               variant="ghost"
               className="h-9 rounded-lg px-3 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20"
               title="Delete"
-              onClick={() => onDelete(resume.id || (resume as any)._id)}
+              onClick={() => onDelete(getResumeId(resume))}
             >
               <Trash2 className="h-4 w-4" />
             </Button>

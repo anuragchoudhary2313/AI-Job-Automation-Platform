@@ -133,7 +133,8 @@ app.add_middleware(RequestMetricsMiddleware)
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS if not settings.is_production else settings.ALLOWED_HOSTS,
+    # CORS must be configured with full origins (scheme + host), not bare hostnames.
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],

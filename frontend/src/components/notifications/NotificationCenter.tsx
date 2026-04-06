@@ -35,7 +35,7 @@ export function NotificationCenter() {
       <Button
         variant="ghost"
         size="icon"
-        className="relative text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+        className="relative h-9 w-9 rounded-xl border border-gray-200/90 bg-white/90 text-gray-500 shadow-sm transition-all hover:border-cyan-200 hover:bg-cyan-50/80 hover:text-cyan-700 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:border-cyan-900/60 dark:hover:bg-cyan-900/20 dark:hover:text-cyan-300"
         onClick={() => setIsOpen(!isOpen)}
       >
         <Bell className="h-5 w-5" />

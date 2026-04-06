@@ -73,3 +73,12 @@ frontend/*fail*.txt
 frontend/clean-errors.txt
 frontend/lint-results.json
 frontend/tsc_log.txt
+
+# Local agent/tooling artifacts not required for deployment
+smoke.out
+.agent/skills/
+docs/superpowers/
+code-review-graph/
+superpowers/
+AGENTS.md
+code-review-graph-integration.md

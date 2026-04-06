@@ -3,9 +3,11 @@ from typing import Dict, Any
 
 from app.services.job_scraper import job_scraper_service
 from app.services.ai_service import ai_service
+from app.services.automation_policy_service import automation_policy_service
 from app.notifications.telegram import telegram_service
 from app.core.config import settings
 from app.models.user import User
+from app.models.automation_event import AutomationEvent
 
 from agents.decision_agent import DecisionAgent
 
@@ -18,6 +20,11 @@ class ResumeAgent:
     async def generate(self, job_description: str) -> str:
         logger.info("ResumeAgent crafting tailored resume...")
         return await ai_service.generate_resume_content(job_description)
+
+    async def assess_ats(self, job_description: str, resume_text: str = "") -> Dict[str, Any]:
+        """Generate ATS assessment metadata used as an auto-apply gate."""
+        latex = await ai_service.generate_latex_resume(job_description, resume_text or None)
+        return ai_service.score_latex_resume(job_description, latex)
 
 
 class EmailAgent:
@@ -36,8 +43,39 @@ class OrchestratorAgent:
         self.decision_agent = DecisionAgent()
         self.resume_agent = ResumeAgent()
         self.email_agent = EmailAgent()
+        self.ats_auto_apply_min_score = 78
 
-    async def run_pipeline(self, keyword: str, location: str, limit: int = 5) -> Dict[str, Any]:
+    async def _log_event(
+        self,
+        *,
+        stage: str,
+        action: str,
+        company: str | None = None,
+        role: str | None = None,
+        reason: str | None = None,
+        ats_score: int | None = None,
+        passes_gate: bool | None = None,
+        override_used: bool = False,
+        metadata: Dict[str, Any] | None = None,
+    ) -> None:
+        try:
+            await AutomationEvent(
+                user_id=str(self.user.id),
+                source="orchestrator_agent",
+                stage=stage,
+                company=company,
+                role=role,
+                action=action,
+                reason=reason,
+                ats_score=ats_score,
+                passes_gate=passes_gate,
+                override_used=override_used,
+                metadata=metadata or {},
+            ).insert()
+        except Exception as e:
+            logger.warning(f"Failed to persist orchestrator automation event: {e}")
+
+    async def run_pipeline(self, keyword: str, location: str, limit: int = 5, ats_override: bool = False) -> Dict[str, Any]:
         """Executes Scrape -> Decide -> Resume -> Email -> Notify"""
         logger.info(f"OrchestratorAgent starting multi-agent flow for {keyword} in {location}")
         
@@ -112,17 +150,95 @@ class OrchestratorAgent:
 
             if decision in ["skip", "maybe"]:
                 logger.info(f"Orchestrator skipping {job_mock['company']}: {decision_result.get('reason')}")
+                await self._log_event(
+                    stage="decision",
+                    action="skip",
+                    company=job_mock.get("company"),
+                    role=job_mock.get("title"),
+                    reason=decision_result.get("reason"),
+                    metadata={"decision": decision, "confidence": score},
+                )
                 skipped_count += 1
                 if job_app:
                     job_app.status = "skipped"
                     await job_app.save()
                 continue
+
+            policy_allowed, policy_reason, policy_meta = await automation_policy_service.evaluate(
+                user_id=str(self.user.id),
+                company=job_mock.get("company", ""),
+                role=job_mock.get("title", ""),
+            )
+            if not policy_allowed:
+                logger.info(f"Orchestrator policy-gate skip for {job_mock['company']}: {policy_reason}")
+                await self._log_event(
+                    stage="policy_gate",
+                    action="skip",
+                    company=job_mock.get("company"),
+                    role=job_mock.get("title"),
+                    reason=policy_reason,
+                    metadata=policy_meta,
+                )
+                skipped_count += 1
+                if job_app:
+                    job_app.status = "skipped"
+                    await job_app.save()
+                continue
+
+            # ATS quality gate before auto-apply/email.
+            ats_result = await self.resume_agent.assess_ats(job_mock["description"], resume_text=keyword)
+            ats_score = int(ats_result.get("ats_score", 0))
+            if (not ats_override) and (not bool(ats_result.get("passes_auto_gate")) or ats_score < self.ats_auto_apply_min_score):
+                logger.info(
+                    f"Orchestrator ATS-gate skip for {job_mock['company']}: "
+                    f"score={ats_score}, pass={ats_result.get('passes_auto_gate')}"
+                )
+                await self._log_event(
+                    stage="ats_gate",
+                    action="skip",
+                    company=job_mock.get("company"),
+                    role=job_mock.get("title"),
+                    reason="ATS gate failed",
+                    ats_score=ats_score,
+                    passes_gate=bool(ats_result.get("passes_auto_gate")),
+                    override_used=ats_override,
+                    metadata={"threshold": self.ats_auto_apply_min_score},
+                )
+                skipped_count += 1
+                if job_app:
+                    job_app.status = "skipped"
+                    await job_app.save()
+                continue
+
+            if ats_override and (not bool(ats_result.get("passes_auto_gate")) or ats_score < self.ats_auto_apply_min_score):
+                await self._log_event(
+                    stage="ats_gate",
+                    action="override",
+                    company=job_mock.get("company"),
+                    role=job_mock.get("title"),
+                    reason="ATS gate bypassed by override",
+                    ats_score=ats_score,
+                    passes_gate=bool(ats_result.get("passes_auto_gate")),
+                    override_used=True,
+                    metadata={"threshold": self.ats_auto_apply_min_score},
+                )
                 
             # Resume Agent step
             resume = await self.resume_agent.generate(job_mock["description"])
             
             # Email Agent step
             await self.email_agent.send_application(job_mock["company"], resume)
+
+            await self._log_event(
+                stage="apply",
+                action="applied",
+                company=job_mock.get("company"),
+                role=job_mock.get("title"),
+                reason="Application workflow completed",
+                ats_score=ats_score,
+                passes_gate=bool(ats_result.get("passes_auto_gate")),
+                override_used=ats_override,
+            )
             
             if job_app:
                 job_app.status = "applied"

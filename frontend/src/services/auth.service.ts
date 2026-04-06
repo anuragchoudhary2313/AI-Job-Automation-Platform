@@ -26,20 +26,20 @@ export interface RegisterData {
 export const authService = {
   async login(formData: FormData | URLSearchParams): Promise<LoginResponse> {
     const config = formData instanceof URLSearchParams
-      ? { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-      : {};
+      ? { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, timeout: 10000 }
+      : { timeout: 10000 };
 
     const response = await apiClient.post<LoginResponse>('/auth/login', formData, config);
     return response.data;
   },
 
   async register(data: RegisterData): Promise<User> {
-    const response = await apiClient.post<User>('/auth/register', data);
+    const response = await apiClient.post<User>('/auth/register', data, { timeout: 10000 });
     return response.data;
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<User>('/auth/me');
+    const response = await apiClient.get<User>('/auth/me', { timeout: 5000 });
     return response.data;
   },
 

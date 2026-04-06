@@ -23,7 +23,7 @@ def get_job_service(
     return JobService(job_repo)
 
 
-@router.post("/scrape")
+@router.api_route("/scrape", methods=["GET", "POST"])
 async def trigger_scrape(
     keyword: str,
     location: str,
@@ -161,7 +161,7 @@ async def get_stats(
     return await job_service.get_job_stats(current_user)
 
 
-@router.get("/", response_model=Union[List[JobSchema], OffsetPaginatedResponse[JobSchema]])
+@router.get("", response_model=Union[List[JobSchema], OffsetPaginatedResponse[JobSchema]])
 async def list_jobs(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=200),
@@ -190,7 +190,7 @@ async def read_job(
     return await job_service.get_job(job_id, current_user)
 
 
-@router.post("/", response_model=JobCreateResponse)
+@router.post("", response_model=JobCreateResponse)
 async def create_job(
     job_in: JobCreate = Body(...),
     job_service: JobService = Depends(get_job_service),

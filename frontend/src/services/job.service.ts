@@ -1,4 +1,4 @@
-import apiClient from '../lib/api';
+import apiClient, { apiClientLongTimeout } from '../lib/api';
 
 export interface Job {
   id: string;
@@ -61,7 +61,8 @@ export const jobService = {
     experience?: string,
     jobType?: string
   ): Promise<{ message: string; jobs_found: number }> {
-    const response = await apiClient.post('/jobs/scrape', null, {
+    // Use long timeout for scraping operations
+    const response = await apiClientLongTimeout.post('/jobs/scrape', null, {
       params: { keyword, location, limit, experience, job_type: jobType },
     });
     return response.data;

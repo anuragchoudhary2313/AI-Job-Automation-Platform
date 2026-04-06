@@ -13,7 +13,7 @@ PyObjectId = Annotated[str, BeforeValidator(stringify_object_id)]
 class JobBase(BaseModel):
     title: str = Field(..., min_length=2, max_length=100, description="The job title")
     company: str = Field(..., min_length=2, max_length=100, description="The company name")
-    description: str = Field(..., min_length=10, description="Detailed job description")
+    description: str = Field(..., min_length=1, description="Detailed job description")
     location: Optional[str] = Field(None, max_length=100)
     salary_range: Optional[str] = Field(None, max_length=50)
     job_url: Optional[str] = Field(None, pattern=r"^https?://", description="Valid HTTP URL")

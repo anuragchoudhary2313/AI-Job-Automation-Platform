@@ -50,7 +50,7 @@ export function Register() {
     try {
       setLoading(true);
 
-      // Register user
+      // Register user (with 10s timeout)
       const registeredUser = await authService.register({
         email: data.email,
         password: data.password,
@@ -65,6 +65,8 @@ export function Register() {
       const loginResponse = await authService.login(formData);
       localStorage.setItem('access_token', loginResponse.access_token);
       localStorage.setItem('refresh_token', loginResponse.refresh_token);
+      // Mark that we just logged in to skip re-verification in AuthContext
+      localStorage.setItem('skip_auth_verification', 'true');
 
       const user = loginResponse.user ?? registeredUser;
       login(user);

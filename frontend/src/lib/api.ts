@@ -19,6 +19,70 @@ const apiClient: AxiosInstance = axios.create({
 });
 
 /**
+ * Create a high-timeout API client for long-running operations
+ */
+export const apiClientLongTimeout: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 120000, // 2 minutes for scraping/background tasks
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add same interceptors to long-timeout client
+apiClientLongTimeout.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    const csrfToken = getCookie('csrf_token');
+    if (csrfToken) {
+      config.headers['X-CSRF-Token'] = csrfToken;
+    }
+    if (config.data instanceof FormData && config.headers) {
+      delete config.headers['Content-Type'];
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+apiClientLongTimeout.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as ApiRequestConfig & { _retry?: boolean };
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (refreshToken) {
+          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+            refresh_token: refreshToken,
+          });
+          const { access_token } = response.data;
+          localStorage.setItem('access_token', access_token);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${access_token}`;
+          }
+          return apiClientLongTimeout(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    if ((!error.response || error.response.status >= 500) && !originalRequest?._suppressGlobalErrorToast) {
+      const message = getErrorMessage(error);
+      toast.error(message);
+    }
+    return Promise.reject(error);
+  }
+);
+
+/**
  * Request interceptor to add auth token
  */
 apiClient.interceptors.request.use(

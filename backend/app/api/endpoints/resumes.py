@@ -35,7 +35,7 @@ def get_resume_service(
 
 
 @router.post(
-    "/upload", response_model=ResumeSchema, status_code=status.HTTP_201_CREATED
+    "/upload", response_model=ResumeSchema, status_code=status.HTTP_200_OK
 )
 async def upload_resume(
     background_tasks: BackgroundTasks,
@@ -48,7 +48,7 @@ async def upload_resume(
         resume = await resume_service.save_resume_file(file, current_user, background_tasks)
 
         # Convert Beanie model to dict for Pydantic schema
-        resume_dict = resume.dict(by_alias=False)
+        resume_dict = resume.model_dump(by_alias=False)
         resume_dict["id"] = str(resume.id)
         resume_dict["user_id"] = str(resume.user_id)
         if resume.job_id:
@@ -294,7 +294,7 @@ async def download_resume(
         )
 
 
-@router.delete("/{resume_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{resume_id}", status_code=status.HTTP_200_OK)
 async def delete_resume(
     resume_id: str,
     current_user: User = Depends(deps.get_current_user),
@@ -303,7 +303,7 @@ async def delete_resume(
     """Delete a resume."""
     try:
         await resume_service.delete_resume(resume_id, current_user)
-        return None
+        return {"message": "Resume deleted"}
 
     except Exception as e:
         logger.error(f"Error deleting resume {resume_id}: {str(e)}", exc_info=True)

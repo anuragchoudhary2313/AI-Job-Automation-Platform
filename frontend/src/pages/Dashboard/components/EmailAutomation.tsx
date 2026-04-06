@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Mail, Send, TestTube } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { toast } from '../../../components/ui/Toast';
 import apiClient, { getErrorMessage } from '../../../lib/api';
+import { getProfileFullName, getStoredProfile } from '../../../utils/profile';
+import { clearColdMailContext, getColdMailContext } from '../../../utils/coldMailContext';
 
 export function EmailAutomation() {
   const [sending, setSending] = useState(false);
@@ -17,6 +19,25 @@ export function EmailAutomation() {
     portfolio_link: '',
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    const profile = getStoredProfile();
+    const coldMailContext = getColdMailContext();
+
+    setFormData((prev) => ({
+      ...prev,
+      recipient_email: coldMailContext?.recipient_email || prev.recipient_email,
+      company_name: coldMailContext?.company_name || profile?.company_name || prev.company_name,
+      job_role: coldMailContext?.job_role || prev.job_role,
+      candidate_name: getProfileFullName(profile) || prev.candidate_name,
+      skills: profile?.skills || prev.skills,
+      portfolio_link: profile?.portfolio_url || prev.portfolio_link,
+    }));
+
+    if (coldMailContext) {
+      clearColdMailContext();
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({

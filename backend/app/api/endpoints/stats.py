@@ -5,6 +5,8 @@ Refactored stats endpoints using service layer.
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Dict, Any
 
+from app.models.resume import Resume
+
 from app.api import deps
 from app.core.logging import get_logger
 from app.services.job_service import JobService
@@ -31,6 +33,8 @@ async def get_stats(
     try:
         stats = await job_service.get_job_stats(current_user)
         response = job_service.build_dashboard_stats(stats)
+        response["total_applications"] = response.get("total_applied", 0)
+        response["total_resumes"] = await Resume.find({"user_id": {"$in": [current_user.id, str(current_user.id)]}}).count()
         
         logger.info(f"Retrieved stats for user {current_user.id}")
         
