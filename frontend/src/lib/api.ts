@@ -5,7 +5,11 @@ type ApiRequestConfig = AxiosRequestConfig & {
   _suppressGlobalErrorToast?: boolean;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const DEFAULT_API_BASE_URL = import.meta.env.PROD
+  ? 'https://ai-job-automation-platform.onrender.com/api/v1'
+  : 'http://localhost:8000/api/v1';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_API_BASE_URL;
 
 /**
  * Axios instance with interceptors for error handling

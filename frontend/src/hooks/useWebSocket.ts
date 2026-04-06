@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+const DEFAULT_WS_URL = import.meta.env.PROD
+  ? 'wss://ai-job-automation-platform.onrender.com/ws'
+  : 'ws://localhost:8000';
+
+const WS_URL = import.meta.env.VITE_WS_URL || DEFAULT_WS_URL;
 
 export interface WebSocketMessage {
   type: 'notification' | 'activity' | 'status' | 'error' | 'ping' | 'pong';
