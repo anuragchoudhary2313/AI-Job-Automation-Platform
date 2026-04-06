@@ -1,8 +1,9 @@
 """
 Application configuration with security settings.
 """
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict, NoDecode
+from pydantic import field_validator
+from typing import Annotated, Any, List, Optional
 
 
 class Settings(BaseSettings):
@@ -20,14 +21,14 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # 7 days
     
     # CORS Settings
-    BACKEND_CORS_ORIGINS: List[str] = [
+    BACKEND_CORS_ORIGINS: Annotated[List[str], NoDecode] = [
         "http://localhost:3000",
         "http://localhost:5173",
         "http://localhost:8080",
     ]
     
     # Production CORS (override in .env)
-    ALLOWED_HOSTS: List[str] = ["*"]
+    ALLOWED_HOSTS: Annotated[List[str], NoDecode] = ["*"]
     
     # Database - MongoDB
     MONGODB_URI: str = "mongodb://localhost:27017"
@@ -106,6 +107,26 @@ class Settings(BaseSettings):
     CSRF_SECRET_KEY: Optional[str] = None
     
     ENVIRONMENT: str = "development"
+
+    @field_validator("BACKEND_CORS_ORIGINS", "ALLOWED_HOSTS", mode="before")
+    @classmethod
+    def parse_list_settings(cls, value: Any) -> Any:
+        """Allow list env vars as JSON arrays or comma-separated strings."""
+        if isinstance(value, str):
+            trimmed = value.strip()
+            if not trimmed:
+                return []
+
+            # Handle JSON array strings and comma-separated fallbacks.
+            if trimmed.startswith("["):
+                import json
+
+                return json.loads(trimmed)
+
+            # Fallback: accept comma-separated hosts/origins.
+            return [item.strip() for item in trimmed.split(",") if item.strip()]
+
+        return value
 
     
     @property
