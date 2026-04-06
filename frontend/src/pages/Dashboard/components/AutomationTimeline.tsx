@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Clock3 } from 'lucide-react';
 import apiClient from '@/lib/api';
@@ -109,7 +109,7 @@ export function AutomationTimeline() {
             <select
               className="h-9 rounded-lg border border-gray-300 bg-white px-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
               value={actionFilter}
-              onChange={(e) => {
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 setLimit(20);
                 setActionFilter(e.target.value as typeof actionFilter);
               }}
@@ -125,7 +125,7 @@ export function AutomationTimeline() {
           <select
             className="h-9 rounded-lg border border-gray-300 bg-white px-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
             value={sourceFilter}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               setLimit(20);
               setSourceFilter(e.target.value as typeof sourceFilter);
             }}
@@ -138,7 +138,7 @@ export function AutomationTimeline() {
           <select
             className="h-9 rounded-lg border border-gray-300 bg-white px-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
             value={stageFilter}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               setLimit(20);
               setStageFilter(e.target.value as typeof stageFilter);
             }}
