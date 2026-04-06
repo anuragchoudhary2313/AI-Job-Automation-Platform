@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "npm install --verbose --no-audit --no-fund",
-  "buildCommand": "npm --prefix frontend run build",
+  "installCommand": "cd frontend && npm install --verbose --no-audit --no-fund",
+  "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
