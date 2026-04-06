@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "npm install --verbose --no-audit --no-fund",
+  "installCommand": "bash -lc 'npm install --verbose --no-audit --no-fund > /tmp/npm-install.log 2>&1 || { cat /tmp/npm-install.log; exit 1; }'",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [

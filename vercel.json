@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "cd frontend && npm install --verbose --no-audit --no-fund",
-  "buildCommand": "cd frontend && npm run build",
+  "installCommand": "bash -lc 'cd frontend && npm install --verbose --no-audit --no-fund > /tmp/npm-install.log 2>&1 || { cat /tmp/npm-install.log; exit 1; }'",
+  "buildCommand": "bash -lc 'cd frontend && npm run build'",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
