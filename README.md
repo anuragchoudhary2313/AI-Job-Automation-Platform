@@ -106,6 +106,16 @@ Deployment target for this repository:
 - Frontend: Vercel
 - Backend: Render
 
+Live deployments:
+
+- Frontend: https://ai-job-automation-platform-ebon.vercel.app
+- Backend: https://ai-job-automation-platform.onrender.com
+
+Quick links:
+
+- Backend health: https://ai-job-automation-platform.onrender.com/health
+- Backend docs: https://ai-job-automation-platform.onrender.com/docs (available when DEBUG=true)
+
 Deployment guide:
 
 - `DEPLOYMENT.md`
