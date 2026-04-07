@@ -21,8 +21,7 @@ coverage/
 
 # IDEs
 .idea/
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 *.swp
 *.swo
 
@@ -77,6 +76,8 @@ frontend/tsc_log.txt
 # Local agent/tooling artifacts not required for deployment
 smoke.out
 .agent/skills/
+.github/workflows/
+ai-skills-module/
 docs/superpowers/
 code-review-graph/
 superpowers/
