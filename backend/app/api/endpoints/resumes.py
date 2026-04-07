@@ -112,10 +112,10 @@ async def compile_latex(
         file_id = str(uuid.uuid4())
         tex_path = os.path.join(temp_dir, f"{file_id}.tex")
         pdf_path = os.path.join(temp_dir, f"{file_id}.pdf")
-        
+
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(latex)
-            
+
         tectonic_exe = shutil.which("tectonic.exe") or shutil.which("tectonic")
         if not tectonic_exe:
             local_windows_binary = os.path.join(os.getcwd(), "tectonic.exe")
@@ -130,21 +130,33 @@ async def compile_latex(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="LaTeX compiler is not installed on the server. Please try again later.",
             )
-            
+
         process = subprocess.run(
             [tectonic_exe, tex_path],
             capture_output=True,
             text=True,
             cwd=temp_dir,
         )
-        
+
         if process.returncode != 0:
-            logger.error(f"Tectonic compilation failed: {process.stderr}\n{process.stdout}")
-            raise HTTPException(status_code=400, detail="LaTeX compilation failed. Check your syntax.")
-            
+            logger.error(
+                "Tectonic compilation failed. STDERR:\n%s\nSTDOUT:\n%s",
+                process.stderr,
+                process.stdout,
+            )
+            # Surface a concise but informative message back to the client.
+            error_output = (process.stderr or "") + "\n" + (process.stdout or "")
+            error_output = error_output.strip()
+            message = "LaTeX compilation failed. Check your syntax."
+            if error_output:
+                # Limit size to keep the response manageable.
+                snippet = error_output[:2000]
+                message = f"LaTeX compilation failed:\n{snippet}"
+            raise HTTPException(status_code=400, detail=message)
+
         if not os.path.exists(pdf_path):
             raise HTTPException(status_code=500, detail="Compiled PDF not found.")
-            
+
         return FileResponse(
             pdf_path,
             filename="resume.pdf",
@@ -156,7 +168,7 @@ async def compile_latex(
         logger.error(f"Error compiling LaTeX: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while compiling LaTeX",
+            detail=f"Internal LaTeX compilation error: {str(e)}",
         )
 
 @router.post("/save-generated", response_model=ResumeSchema, status_code=status.HTTP_201_CREATED)
