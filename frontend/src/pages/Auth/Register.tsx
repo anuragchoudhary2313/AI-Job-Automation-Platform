@@ -92,11 +92,11 @@ export function Register() {
       >
         <div className="space-y-4">
           <div className="relative">
-            <User className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
+            <User className="pointer-events-none absolute left-3 top-3 z-10 h-5 w-5 text-[#171717]/40 dark:text-white/60" />
             <Input
               id="fullName"
               placeholder="Full Name"
-              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717] dark:border-white/25 dark:bg-[#0f172a] dark:text-white dark:placeholder:text-white/55"
               autoFocus
               autoComplete="name"
               {...register('fullName')}
@@ -106,12 +106,12 @@ export function Register() {
           </div>
 
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
+            <Mail className="pointer-events-none absolute left-3 top-3 z-10 h-5 w-5 text-[#171717]/40 dark:text-white/60" />
             <Input
               id="email"
               type="email"
               placeholder="name@company.com"
-              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717] dark:border-white/25 dark:bg-[#0f172a] dark:text-white dark:placeholder:text-white/55"
               autoComplete="email"
               {...register('email')}
               error={errors.email?.message}
@@ -121,12 +121,12 @@ export function Register() {
 
           <div className="space-y-2">
             <div className="relative">
-              <Lock className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
+              <Lock className="pointer-events-none absolute left-3 top-3 z-10 h-5 w-5 text-[#171717]/40 dark:text-white/60" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 pr-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
+                className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 pr-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717] dark:border-white/25 dark:bg-[#0f172a] dark:text-white dark:placeholder:text-white/55"
                 autoComplete="new-password"
                 {...register('password')}
                 error={errors.password?.message}
@@ -135,7 +135,7 @@ export function Register() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-[#171717]/45 transition hover:text-[#171717] z-20 focus:outline-none"
+                className="absolute right-3 top-3 z-20 text-[#171717]/45 transition hover:text-[#171717] focus:outline-none dark:text-white/70 dark:hover:text-white"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -151,12 +151,12 @@ export function Register() {
           </div>
 
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-[#171717]/40 z-10" />
+            <Lock className="pointer-events-none absolute left-3 top-3 z-10 h-5 w-5 text-[#171717]/40 dark:text-white/60" />
             <Input
               id="confirmPassword"
               type={showPassword ? "text" : "password"}
               placeholder="Confirm Password"
-              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717]"
+              className="h-11 rounded-xl border-[#171717]/15 bg-white/90 pl-10 text-[#171717] placeholder:text-[#171717]/45 focus-visible:ring-[#171717] dark:border-white/25 dark:bg-[#0f172a] dark:text-white dark:placeholder:text-white/55"
               autoComplete="new-password"
               {...register('confirmPassword')}
               error={errors.confirmPassword?.message}
