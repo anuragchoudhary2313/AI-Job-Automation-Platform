@@ -11,6 +11,7 @@ import subprocess
 import uuid
 import hashlib
 import json
+import shutil
 
 from app.api import deps
 from app.core.exceptions import NotFoundError, AuthorizationError, handle_exception
@@ -115,11 +116,27 @@ async def compile_latex(
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(latex)
             
-        tectonic_exe = os.path.join(os.getcwd(), "tectonic.exe")
-        if not os.path.exists(tectonic_exe):
-            tectonic_exe = "tectonic"
+        tectonic_exe = shutil.which("tectonic.exe") or shutil.which("tectonic")
+        if not tectonic_exe:
+            local_windows_binary = os.path.join(os.getcwd(), "tectonic.exe")
+            local_unix_binary = os.path.join(os.getcwd(), "tectonic")
+            if os.path.exists(local_windows_binary):
+                tectonic_exe = local_windows_binary
+            elif os.path.exists(local_unix_binary):
+                tectonic_exe = local_unix_binary
+
+        if not tectonic_exe:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="LaTeX compiler is not installed on the server. Please try again later.",
+            )
             
-        process = subprocess.run([tectonic_exe, tex_path], capture_output=True, text=True)
+        process = subprocess.run(
+            [tectonic_exe, tex_path],
+            capture_output=True,
+            text=True,
+            cwd=temp_dir,
+        )
         
         if process.returncode != 0:
             logger.error(f"Tectonic compilation failed: {process.stderr}\n{process.stdout}")
