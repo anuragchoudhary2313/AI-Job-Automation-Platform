@@ -192,7 +192,28 @@ export function ResumeGenerator() {
       toast.success('PDF compiled successfully!');
     } catch (error: unknown) {
       console.error('Compilation Error:', error);
-      toast.error('Failed to compile LaTeX to PDF. Check syntax.');
+      let message = 'Failed to compile LaTeX to PDF. Check syntax.';
+
+      const maybeError = error as {
+        response?: { data?: Blob | { detail?: string } | string };
+      };
+
+      if (maybeError?.response?.data instanceof Blob) {
+        try {
+          const text = await maybeError.response.data.text();
+          const parsed = JSON.parse(text) as { detail?: string };
+          if (parsed?.detail) {
+            message = parsed.detail;
+          }
+        } catch {
+          // Keep fallback message for non-JSON blob payloads.
+        }
+      } else if (typeof maybeError?.response?.data === 'object' && maybeError?.response?.data && 'detail' in maybeError.response.data) {
+        const detail = (maybeError.response.data as { detail?: string }).detail;
+        if (detail) message = detail;
+      }
+
+      toast.error(message);
     } finally {
       setCompiling(false);
     }
