@@ -1,11 +1,10 @@
+import base64
 import logging
-import aiosmtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from typing import List, Optional
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 import os
+from typing import List, Optional
+
+import httpx
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.core.config import settings
 
@@ -15,99 +14,107 @@ logger = logging.getLogger(__name__)
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 env = Environment(
     loader=FileSystemLoader(template_dir),
-    autoescape=select_autoescape(['html', 'xml'])
+    autoescape=select_autoescape(["html", "xml"]),
 )
+
 
 class EmailSender:
     def __init__(self):
         self.enabled = settings.EMAIL_ENABLED
-        self.host = settings.EMAIL_HOST
-        self.port = settings.EMAIL_PORT
-        self.use_ssl = settings.EMAIL_USE_SSL
-        self.user = settings.EMAIL_USER
-        self.password = settings.EMAIL_PASSWORD
-        self.from_name = settings.EMAIL_FROM_NAME
-        
+        self.api_key = settings.RESEND_API_KEY
+        self.base_url = settings.RESEND_BASE_URL.rstrip("/")
+        self.from_email = settings.RESEND_FROM_EMAIL or settings.EMAILS_FROM_EMAIL
+        self.user = self.from_email
+
     async def send_email(
-        self, 
-        to_email: str, 
-        subject: str, 
-        html_body: str, 
-        attachments: Optional[List[str]] = None
+        self,
+        to_email: str,
+        subject: str,
+        html_body: str,
+        attachments: Optional[List[str]] = None,
     ) -> bool:
-        """
-        Sends an email asynchronously using aiosmtplib.
-        """
+        """Send an email using the Resend HTTP API."""
         if not self.enabled:
             logger.warning("Email sending is disabled in configuration.")
             return False
 
-        if not self.user or not self.password:
-            logger.error("Email credentials are not configured.")
+        if settings.EMAIL_DEV_MODE:
+            logger.info(
+                "[EMAIL_DEV_MODE] Simulated email to %s with subject %s",
+                to_email,
+                subject,
+            )
+            return True
+
+        if not self.api_key:
+            logger.error("Resend API key is not configured.")
             return False
 
-        message = MIMEMultipart()
-        message["From"] = f"{self.from_name} <{self.user}>"
-        message["To"] = to_email
-        message["Subject"] = subject
+        if not self.from_email:
+            logger.error("Resend from email is not configured.")
+            return False
 
-        # Attach HTML body
-        message.attach(MIMEText(html_body, "html"))
+        payload = {
+            "from": self.from_email,
+            "to": [to_email],
+            "subject": subject,
+            "html": html_body,
+        }
 
-        # Process attachments
         if attachments:
+            payload["attachments"] = []
             for file_path in attachments:
-                if os.path.exists(file_path):
-                    try:
-                        with open(file_path, "rb") as f:
-                            file_data = f.read()
-                            file_name = os.path.basename(file_path)
-                            part = MIMEApplication(file_data, Name=file_name)
-                            part['Content-Disposition'] = f'attachment; filename="{file_name}"'
-                            message.attach(part)
-                    except Exception as e:
-                        logger.error(f"Failed to attach file {file_path}: {e}")
-                else:
-                    logger.warning(f"Attachment not found: {file_path}")
+                if not os.path.exists(file_path):
+                    logger.warning("Attachment not found: %s", file_path)
+                    continue
+
+                try:
+                    with open(file_path, "rb") as file_handle:
+                        payload["attachments"].append(
+                            {
+                                "filename": os.path.basename(file_path),
+                                "content": base64.b64encode(file_handle.read()).decode("utf-8"),
+                            }
+                        )
+                except Exception as exc:
+                    logger.error("Failed to attach file %s: %s", file_path, exc)
+
+            if not payload["attachments"]:
+                payload.pop("attachments", None)
+
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
 
         try:
-            if self.use_ssl:
-                # Implicit SSL (usually port 465)
-                await aiosmtplib.send(
-                    message,
-                    hostname=self.host,
-                    port=self.port,
-                    use_tls=True,
-                    username=self.user,
-                    password=self.password,
-                )
-            else:
-                # STARTTLS (usually port 587)
-                await aiosmtplib.send(
-                    message,
-                    hostname=self.host,
-                    port=self.port,
-                    start_tls=True,
-                    username=self.user,
-                    password=self.password,
-                )
-            
-            logger.info(f"Email sent successfully to {to_email}")
-            return True
-        except Exception as e:
-            logger.error(f"Failed to send email to {to_email}: {e}")
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(f"{self.base_url}/emails", json=payload, headers=headers)
+
+            if 200 <= response.status_code < 300:
+                logger.info("Email sent successfully to %s", to_email)
+                return True
+
+            logger.error(
+                "Resend email failed to %s: status=%s body=%s",
+                to_email,
+                response.status_code,
+                response.text,
+            )
+            return False
+        except Exception as exc:
+            logger.error("Failed to send email to %s: %s", to_email, exc, exc_info=True)
             return False
 
     def render_template(self, template_name: str, context: dict) -> str:
-        """
-        Renders a Jinja2 template with the provided context.
-        """
+        """Render a Jinja2 template with the provided context."""
         try:
             template = env.get_template(template_name)
             return template.render(**context)
-        except Exception as e:
-            logger.error(f"Failed to render template {template_name}: {e}")
-            raise e
+        except Exception as exc:
+            logger.error("Failed to render template %s: %s", template_name, exc)
+            raise
+
 
 # Global instance
 email_sender = EmailSender()

@@ -17,10 +17,10 @@ def _validate_email_config() -> Optional[str]:
         return "Email automation is disabled on the server."
     if settings.EMAIL_DEV_MODE:
         return None
-    if not settings.SMTP_HOST:
-        return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
-    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        return "SMTP credentials are not configured. Set SMTP_USER and SMTP_PASSWORD in deployment environment variables."
+    if not settings.RESEND_API_KEY:
+        return "Resend API key is not configured. Set RESEND_API_KEY in deployment environment variables."
+    if not (settings.RESEND_FROM_EMAIL or settings.EMAILS_FROM_EMAIL):
+        return "Sender email is not configured. Set RESEND_FROM_EMAIL in deployment environment variables."
     return None
 
 

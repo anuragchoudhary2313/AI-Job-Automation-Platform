@@ -35,15 +35,7 @@ services:
         value: "true"
       - key: EMAIL_DEV_MODE
         value: "false"
-      - key: SMTP_HOST
+      - key: RESEND_API_KEY
         sync: false
-      - key: SMTP_PORT
-        value: "587"
-      - key: SMTP_USER
+      - key: RESEND_FROM_EMAIL
         sync: false
-      - key: SMTP_PASSWORD
-        sync: false
-      - key: EMAILS_FROM_EMAIL
-        sync: false
-      - key: EMAIL_USE_SSL
-        value: "false"

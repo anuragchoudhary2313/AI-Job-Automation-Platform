@@ -74,12 +74,17 @@ class Settings(BaseSettings):
     EMAIL_ENABLED: bool = True
     EMAIL_DEV_MODE: bool = False
     
-    # Email Settings
+    # Email Settings (Resend HTTP API)
+    RESEND_API_KEY: Optional[str] = None
+    RESEND_FROM_EMAIL: Optional[str] = None
+    RESEND_BASE_URL: str = "https://api.resend.com"
+    EMAILS_FROM_EMAIL: Optional[str] = None
+
+    # Legacy SMTP settings kept for compatibility with old deployments.
     SMTP_HOST: Optional[str] = None
     SMTP_PORT: int = 587
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[str] = None
     
     # Legacy Email Aliases (for sender.py)
     @property
@@ -92,8 +97,8 @@ class Settings(BaseSettings):
     def EMAIL_PASSWORD(self): return self.SMTP_PASSWORD
     @property
     def EMAIL_FROM_NAME(self): return self.PROJECT_NAME
-    # STARTTLS (port 587) is the most common provider default.
-    # Set EMAIL_USE_SSL=true only for implicit TLS providers (typically port 465).
+    @property
+    def EMAIL_FROM_EMAIL(self): return self.RESEND_FROM_EMAIL or self.EMAILS_FROM_EMAIL
     EMAIL_USE_SSL: bool = False
     
     # Scheduler

@@ -20,10 +20,10 @@ def _validate_email_config() -> Optional[str]:
         return "Email automation is disabled on the server."
     if settings.EMAIL_DEV_MODE:
         return None
-    if not settings.SMTP_HOST:
-        return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
-    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        return "SMTP credentials are not configured. Set SMTP_USER and SMTP_PASSWORD in deployment environment variables."
+    if not settings.RESEND_API_KEY:
+        return "Resend API key is not configured. Set RESEND_API_KEY in deployment environment variables."
+    if not (settings.RESEND_FROM_EMAIL or settings.EMAILS_FROM_EMAIL):
+        return "Sender email is not configured. Set RESEND_FROM_EMAIL in deployment environment variables."
     return None
 
 # Pydantic Schemas
@@ -100,7 +100,7 @@ async def send_hr_email(
         if not success:
             raise HTTPException(
                 status_code=502,
-                detail="Email delivery failed. Please verify SMTP host, credentials, and provider security settings.",
+                detail="Email delivery failed. Please verify Resend API key and sender email configuration.",
             )
 
         alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {recipient_email}"
@@ -177,7 +177,7 @@ async def test_email_sending():
     if not success:
         raise HTTPException(
             status_code=502,
-            detail="Test email failed to send. Check SMTP settings and provider security requirements.",
+            detail="Test email failed to send. Check Resend API key and sender email configuration.",
         )
 
     return {"message": f"Test email sent to {email_sender.user}"}

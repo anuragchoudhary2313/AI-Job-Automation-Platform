@@ -1,15 +1,10 @@
 """
 Email service with retry logic and fault tolerance.
 """
-import smtplib
-import logging
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
-from typing import List, Optional
 import asyncio
-import os
+import html as html_lib
+import logging
+from typing import List, Optional
 
 from app.core.config import settings
 from app.core.retry import retry_with_backoff, CircuitBreaker
@@ -20,26 +15,29 @@ logger = logging.getLogger(__name__)
 # Circuit breaker for email service
 email_circuit_breaker = CircuitBreaker(
     failure_threshold=5,
-    recovery_timeout=300,  # 5 minutes
-    expected_exception=smtplib.SMTPException
+    recovery_timeout=300,
+    expected_exception=Exception,
 )
 
 
+def _normalize_body(body: str, html: bool) -> str:
+    if html:
+        return body
+    escaped = html_lib.escape(body).replace("\n", "<br>")
+    return f"<pre>{escaped}</pre>"
+
+
 class EmailService:
-    """Email service with retry logic and fault tolerance."""
-    
+    """Email service backed by the Resend HTTP API."""
+
     def __init__(self):
-        self.smtp_host = settings.SMTP_HOST
-        self.smtp_port = settings.SMTP_PORT
-        self.smtp_user = settings.SMTP_USER
-        self.smtp_password = settings.SMTP_PASSWORD
-        self.from_email = settings.EMAILS_FROM_EMAIL or settings.SMTP_USER
-    
+        self.from_email = settings.RESEND_FROM_EMAIL or settings.EMAILS_FROM_EMAIL
+
     @retry_with_backoff(
         max_retries=3,
         initial_delay=2.0,
         max_delay=30.0,
-        exceptions=(smtplib.SMTPException, ConnectionError, TimeoutError)
+        exceptions=(ConnectionError, TimeoutError),
     )
     def send_email(
         self,
@@ -47,103 +45,66 @@ class EmailService:
         subject: str,
         body: str,
         attachments: Optional[List[str]] = None,
-        html: bool = False
+        html: bool = False,
     ) -> bool:
-        """
-        Send email with retry logic.
-        
-        Args:
-            to_email: Recipient email address
-            subject: Email subject
-            body: Email body (plain text or HTML)
-            attachments: List of file paths to attach
-            html: Whether body is HTML
-            
-        Returns:
-            True if email sent successfully
-            
-        Raises:
-            smtplib.SMTPException: If email fails after retries
-        """
+        """Send email through the Resend-backed sender."""
         try:
-            logger.info(f"Sending email to {to_email}: {subject}")
-            
-            # Use circuit breaker
+            logger.info("Sending email to %s: %s", to_email, subject)
+            message_body = _normalize_body(body, html)
             return email_circuit_breaker.call(
                 self._send_email_internal,
                 to_email,
                 subject,
-                body,
+                message_body,
                 attachments,
-                html
             )
-            
-        except Exception as e:
-            logger.error(f"Failed to send email to {to_email}: {e}", exc_info=True)
+        except Exception as exc:
+            logger.error("Failed to send email to %s: %s", to_email, exc, exc_info=True)
             raise
-    
+
     def _send_email_internal(
         self,
         to_email: str,
         subject: str,
-        body: str,
+        html_body: str,
         attachments: Optional[List[str]],
-        html: bool
     ) -> bool:
-        """Internal email sending logic."""
-        # Create message
-        msg = MIMEMultipart()
-        msg['From'] = self.from_email
-        msg['To'] = to_email
-        msg['Subject'] = subject
-        
-        # Attach body
-        mime_type = 'html' if html else 'plain'
-        msg.attach(MIMEText(body, mime_type))
-        
-        # Attach files
-        if attachments:
-            for file_path in attachments:
-                try:
-                    with open(file_path, 'rb') as f:
-                        part = MIMEBase('application', 'octet-stream')
-                        part.set_payload(f.read())
-                        encoders.encode_base64(part)
-                        part.add_header(
-                            'Content-Disposition',
-                            f'attachment; filename={file_path.split("/")[-1]}'
-                        )
-                        msg.attach(part)
-                except Exception as e:
-                    logger.error(f"Failed to attach file {file_path}: {e}")
-        
-        # Send email
-        if self.smtp_port == 465:
-            with smtplib.SMTP_SSL(self.smtp_host, self.smtp_port, timeout=30) as server:
-                server.login(self.smtp_user, self.smtp_password)
-                server.send_message(msg)
-        else:
-            with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
-                server.starttls()
-                server.login(self.smtp_user, self.smtp_password)
-                server.send_message(msg)
-        
-        logger.info(f"Email sent successfully to {to_email}")
-        return True
-    
+        """Internal email sending logic using the shared email sender."""
+        try:
+            # Reuse the shared async sender from a blocking context safely.
+            return asyncio.run(
+                email_sender.send_email(
+                    to_email=to_email,
+                    subject=subject,
+                    html_body=html_body,
+                    attachments=attachments,
+                )
+            )
+        except RuntimeError:
+            # Fallback for environments with a running loop.
+            loop = asyncio.new_event_loop()
+            try:
+                return loop.run_until_complete(
+                    email_sender.send_email(
+                        to_email=to_email,
+                        subject=subject,
+                        html_body=html_body,
+                        attachments=attachments,
+                    )
+                )
+            finally:
+                loop.close()
+
     async def send_email_async(
         self,
         to_email: str,
         subject: str,
         body: str,
         attachments: Optional[List[str]] = None,
-        html: bool = False
+        html: bool = False,
     ) -> bool:
-        """
-        Async wrapper for send_email.
-        Runs email sending in thread pool to avoid blocking.
-        """
-        loop = asyncio.get_event_loop()
+        """Async wrapper for send_email."""
+        loop = asyncio.get_running_loop()
         return await loop.run_in_executor(
             None,
             self.send_email,
@@ -151,7 +112,7 @@ class EmailService:
             subject,
             body,
             attachments,
-            html
+            html,
         )
 
     async def send_hr_email(
@@ -185,15 +146,14 @@ class EmailService:
 
         attachments: List[str] = []
         if resume_filename:
-            resume_path = os.path.join("uploads", resume_filename)
-            if os.path.exists(resume_path):
-                attachments.append(resume_path)
+            resume_path = f"uploads/{resume_filename}"
+            attachments.append(resume_path)
 
         return await email_sender.send_email(
             to_email=recipient_email,
             subject=f"Application for {job_role} - {candidate_name}",
             html_body=html_content,
-            attachments=attachments,
+            attachments=attachments or None,
         )
 
 
