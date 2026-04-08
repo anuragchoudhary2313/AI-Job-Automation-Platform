@@ -12,7 +12,7 @@ def _find_binary(root: str, binary_name: str) -> str | None:
             return os.path.join(current_root, binary_name)
     return None
 
-def install_tectonic() -> str:
+def install_tectonic(target_dir: str | None = None) -> str:
     system = platform.system().lower()
     
     version = "0.15.0"
@@ -52,7 +52,9 @@ def install_tectonic() -> str:
         if not binary_path:
             raise RuntimeError("Extraction failed or binary not found")
 
-        target_path = os.path.join(os.getcwd(), binary_name)
+        resolved_target_dir = target_dir or os.getcwd()
+        os.makedirs(resolved_target_dir, exist_ok=True)
+        target_path = os.path.join(resolved_target_dir, binary_name)
         shutil.copy2(binary_path, target_path)
         print(f"Successfully installed compiled binary: {target_path}")
             

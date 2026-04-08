@@ -14,6 +14,7 @@ import json
 import shutil
 import platform
 import threading
+import time
 
 from app.api import deps
 from app.core.exceptions import NotFoundError, AuthorizationError, handle_exception
@@ -29,7 +30,9 @@ logger = get_logger(__name__)
 
 UPLOAD_DIR = "uploads"
 _TECTONIC_BOOTSTRAP_LOCK = threading.Lock()
-_TECTONIC_BOOTSTRAP_ATTEMPTED = False
+_TECTONIC_BOOTSTRAP_LAST_ATTEMPT = 0.0
+_TECTONIC_BOOTSTRAP_LAST_ERROR = ""
+_TECTONIC_BOOTSTRAP_COOLDOWN_SECONDS = int(os.getenv("TECTONIC_BOOTSTRAP_COOLDOWN_SECONDS", "300"))
 
 
 def get_resume_service(
@@ -143,6 +146,10 @@ async def compile_latex(
                 if candidate and _is_runnable_binary(candidate):
                     return candidate
 
+            env_candidate = os.getenv("TECTONIC_BIN_PATH", "").strip()
+            if env_candidate and _is_runnable_binary(env_candidate):
+                return env_candidate
+
             backend_root = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
             )
@@ -150,29 +157,46 @@ async def compile_latex(
                 candidate = os.path.join(backend_root, binary_name)
                 if _is_runnable_binary(candidate):
                     return candidate
+
+            temp_binary = os.path.join(tempfile.gettempdir(), "tectonic")
+            if _is_runnable_binary(temp_binary):
+                return temp_binary
             return None
 
         tectonic_exe = _resolve_tectonic()
 
         if not tectonic_exe and not is_windows:
-            global _TECTONIC_BOOTSTRAP_ATTEMPTED
+            global _TECTONIC_BOOTSTRAP_LAST_ATTEMPT, _TECTONIC_BOOTSTRAP_LAST_ERROR
             with _TECTONIC_BOOTSTRAP_LOCK:
-                if not _TECTONIC_BOOTSTRAP_ATTEMPTED:
-                    _TECTONIC_BOOTSTRAP_ATTEMPTED = True
+                now = time.time()
+                should_attempt = (
+                    _TECTONIC_BOOTSTRAP_LAST_ATTEMPT == 0.0
+                    or now - _TECTONIC_BOOTSTRAP_LAST_ATTEMPT >= _TECTONIC_BOOTSTRAP_COOLDOWN_SECONDS
+                )
+                if should_attempt:
+                    _TECTONIC_BOOTSTRAP_LAST_ATTEMPT = now
                     try:
                         from install_tectonic import install_tectonic
 
-                        install_tectonic()
+                        install_tectonic(target_dir=tempfile.gettempdir())
+                        _TECTONIC_BOOTSTRAP_LAST_ERROR = ""
                         logger.info("Tectonic bootstrap completed")
                     except Exception as exc:
+                        _TECTONIC_BOOTSTRAP_LAST_ERROR = str(exc)
                         logger.warning("Tectonic bootstrap failed: %s", exc)
 
             tectonic_exe = _resolve_tectonic()
 
         if not tectonic_exe:
+            detail = "LaTeX compiler is unavailable on the server. Please retry in a few moments."
+            if _TECTONIC_BOOTSTRAP_LAST_ERROR:
+                detail = (
+                    "LaTeX compiler is unavailable on the server. "
+                    f"Bootstrap failed recently: {_TECTONIC_BOOTSTRAP_LAST_ERROR[:300]}"
+                )
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="LaTeX compiler is unavailable on the server. Please retry in a few moments.",
+                detail=detail,
             )
 
         process = subprocess.run(
