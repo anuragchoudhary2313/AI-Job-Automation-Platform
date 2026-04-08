@@ -1,4 +1,6 @@
 import asyncio
+import subprocess
+import sys
 from playwright.async_api import async_playwright, Browser, BrowserContext, Page
 from app.core.config import settings
 import logging
@@ -15,6 +17,9 @@ class BrowserManager:
         """
         Launches Playwright browser and returns a page.
         """
+        return await self._launch_with_retry(allow_install_retry=True)
+
+    async def _launch_with_retry(self, allow_install_retry: bool) -> Page:
         try:
             self.playwright = await async_playwright().start()
             
@@ -52,6 +57,22 @@ class BrowserManager:
             return page
             
         except Exception as e:
+            error_text = str(e)
+            if allow_install_retry and "Executable doesn't exist" in error_text:
+                logger.warning("Playwright browser executable missing. Installing Chromium and retrying launch once...")
+                await self.close()
+                try:
+                    subprocess.run(
+                        [sys.executable, "-m", "playwright", "install", "chromium"],
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                    )
+                    return await self._launch_with_retry(allow_install_retry=False)
+                except Exception as install_error:
+                    logger.error(f"Failed to install Playwright Chromium at runtime: {install_error}")
+
             logger.error(f"Failed to launch browser: {e}")
             await self.close()
             raise e
