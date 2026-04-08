@@ -1,29 +1,94 @@
 # AI Job Automation Platform
 
-AI Job Automation Platform is a full-stack SaaS project for managing resumes, job discovery, AI-assisted matching/content, and application automation workflows.
+A production-style full-stack SaaS platform for job discovery, resume intelligence, and automation workflows.
 
-## Monorepo Structure
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+![Backend](https://img.shields.io/badge/Backend-FastAPI-009688)
+![Frontend](https://img.shields.io/badge/Frontend-React%2018-61DAFB)
+![Database](https://img.shields.io/badge/Database-MongoDB-47A248)
+![Automation](https://img.shields.io/badge/Automation-Playwright%20%2B%20Selenium-6E40C9)
 
-- `backend/` - FastAPI backend (MongoDB + Beanie + Redis + scheduler)
-- `frontend/` - React + TypeScript + Vite frontend
-- `bot_engine/` - automation engine modules
-- `scripts/` - repository-level test and utility scripts
+## Product Snapshot
 
-## Project Context Docs
+AI Job Automation Platform combines a modern job-search workspace with asynchronous automation pipelines.
+It helps users discover jobs, optimize resumes, and orchestrate application-related actions through an API-first architecture.
 
-These deep technical docs are intended for contributors and AI agents working on this repository:
+### What Makes It Different
 
-- `project_context/01-system-overview.md`
-- `project_context/02-architecture_overview.md`
-- `project_context/03-backend-internals.md`
-- `project_context/04-database_schema.md`
-- `project_context/05-automation-engine.md`
-- `project_context/06-frontend_architecture.md`
-- `project_context/07-backend_api_routes.md`
-- `project_context/08-frontend-internals.md`
-- `project_context/09-bot_engine_and_scrapers.md`
-- `project_context/10-workflows.md`
-- `project_context/11-devops_and_deployment.md`
+- Purpose-built for async operations: websockets, background tasks, retries, and dead-letter monitoring.
+- Bridges product UX and automation internals in one monorepo.
+- Uses service-oriented boundaries that are clear enough for both humans and AI agents to extend safely.
+
+### Capability Map
+
+| Domain              | What Users Get                                      | How It Is Implemented                                                 |
+| ------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+| Resume Intelligence | Resume upload, parsing, and generation workflows    | AI-backed services, PDF/text extraction, compile/processing endpoints |
+| Job Discovery       | Search, scrape, and pipeline management             | Scraper services, queue-like background execution, status persistence |
+| Automation Control  | Multi-step orchestration and operational visibility | Agents, scheduler jobs, dead-letter replay, admin telemetry           |
+| Live Feedback       | Real-time progress and activity streams             | Authenticated websocket channel and frontend subscriptions            |
+
+## Live URLs
+
+- Frontend: https://ai-job-automation-platform-ebon.vercel.app
+- Backend: https://ai-job-automation-platform.onrender.com
+- Backend health: https://ai-job-automation-platform.onrender.com/health
+- Backend docs (when `DEBUG=true`): https://ai-job-automation-platform.onrender.com/docs
+
+## Why This Project
+
+- Combines traditional CRUD SaaS patterns with asynchronous automation pipelines.
+- Uses AI-assisted resume and matching flows while keeping deterministic service boundaries.
+- Includes operational concepts (dead letters, retries, scheduler jobs, websocket telemetry).
+- Organized as a monorepo with frontend, backend, and automation runtime domains.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+		subgraph UI[Frontend]
+			A[React App]
+			B[React Query + Axios]
+			C[WebSocket Client]
+		end
+
+		subgraph API[Backend]
+			D[FastAPI Routes]
+			E[Service Layer]
+			F[Scheduler + Background Tasks]
+			G[Socket Manager]
+		end
+
+		subgraph AUTO[Automation]
+			H[Playwright Scrapers]
+			I[Bot Engine Modules]
+		end
+
+		subgraph DATA[Data]
+			J[(MongoDB)]
+			K[(Redis)]
+		end
+
+		A --> B --> D
+		A --> C --> G
+		D --> E
+		E --> H
+		E -. fallback .-> I
+		E --> J
+		E --> K
+		F --> E
+```
+
+## Monorepo Layout
+
+```text
+.
+|- backend/      FastAPI API, services, models, scheduler
+|- frontend/     React + TypeScript + Vite app
+|- bot_engine/   Automation and scraper modules
+|- scripts/      Repo-level test/review utilities
+`- project_context/  Deep architecture and implementation docs
+```
 
 ## Core Stack
 
@@ -47,13 +112,13 @@ These deep technical docs are intended for contributors and AI agents working on
 ## Features (Current Scope)
 
 - Authentication and user profile management
-- Resume upload and resume generation flows
-- Job scraping/listing and dashboard insights
+- Resume upload and resume generation workflows
+- Job scraping and pipeline tracking
 - Email and automation endpoints/services
-- WebSocket activity updates
-- Admin and dead-letter monitoring pages
+- WebSocket-based activity updates
+- Admin and dead-letter monitoring flows
 
-## Local Development
+## Quick Start
 
 ## Prerequisites
 
@@ -62,7 +127,7 @@ These deep technical docs are intended for contributors and AI agents working on
 - MongoDB
 - Redis
 
-## 1) Backend Setup
+## 1) Backend
 
 ```bash
 cd backend
@@ -71,20 +136,12 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 copy .env.example .env
-```
-
-Run backend:
-
-```bash
-# from backend/
 python -m uvicorn app.main:app --reload
 ```
 
-API health check:
+Backend runs at `http://127.0.0.1:8000`.
 
-- http://127.0.0.1:8000/health
-
-## 2) Frontend Setup
+## 2) Frontend
 
 ```bash
 cd frontend
@@ -93,11 +150,59 @@ copy .env.example .env
 npm run dev
 ```
 
-Frontend default dev URL:
+Frontend runs at `http://localhost:5173`.
 
-- http://localhost:5173
+## Project Context Docs
 
-## Environment Variables
+The `project_context/` folder is the repository playbook for contributors and AI agents.
+
+### Recommended Reading Order
+
+1. `project_context/01-system-overview.md`
+2. `project_context/02-architecture_overview.md`
+3. `project_context/10-workflows.md`
+
+### Full Index (Expandable)
+
+<details>
+<summary>Open full project_context index</summary>
+
+<br />
+
+| Doc                                             | Primary Use                                            |
+| ----------------------------------------------- | ------------------------------------------------------ |
+| `project_context/01-system-overview.md`         | Cross-system boundaries and subsystem selection        |
+| `project_context/02-architecture_overview.md`   | Runtime domains, stack map, and system split           |
+| `project_context/03-backend-internals.md`       | Backend service patterns and guardrails                |
+| `project_context/04-database_schema.md`         | Model relationships and collection schemas             |
+| `project_context/05-automation-engine.md`       | Scraper architecture, anti-bot strategy, retry/replay  |
+| `project_context/06-frontend_architecture.md`   | Provider tree, routes, and frontend architecture       |
+| `project_context/07-backend_api_routes.md`      | Endpoint surface and router map                        |
+| `project_context/08-frontend-internals.md`      | Hooks, contexts, service integrations, state ownership |
+| `project_context/09-bot_engine_and_scrapers.md` | Bot engine module-level implementation details         |
+| `project_context/10-workflows.md`               | End-to-end async flows and failure isolation           |
+| `project_context/11-devops_and_deployment.md`   | Deploy topology and runtime operations                 |
+
+</details>
+
+### Task-Based Paths
+
+- New API feature: `01 -> 03 -> 04 -> 07`
+- Scraping/automation debugging: `01 -> 05 -> 09 -> 10`
+- Frontend feature implementation: `01 -> 06 -> 08 -> 10`
+- Deployment/runtime investigation: `01 -> 11`
+
+## Roadmap
+
+This roadmap tracks major product and engineering themes, not strict release dates.
+
+- [ ] Expand provider integrations for job ingestion beyond current scraping paths
+- [ ] Add richer ATS/resume evaluation reports with explainability views in UI
+- [ ] Improve automation observability with deeper per-step tracing and replay controls
+- [ ] Harden production readiness with stronger health diagnostics and failure simulation tests
+- [ ] Add richer contributor/dev onboarding automation (one-command local bootstrap)
+
+## Environment Configuration
 
 Use these templates as starting points:
 
@@ -107,62 +212,58 @@ Use these templates as starting points:
 
 ## Testing
 
-Run full repo tests with coverage (PowerShell):
+Run full repository tests with coverage:
 
 ```powershell
 .\scripts\test-all.ps1
 ```
 
-Backend and frontend each have their own test scripts under their local `scripts/` folders.
+Backend and frontend also include local scripts in their own `scripts/` folders.
 
 ## Deployment
 
-Deployment target for this repository:
-
-- Frontend: Vercel
-- Backend: Render
-
-Live deployments:
-
-- Frontend: https://ai-job-automation-platform-ebon.vercel.app
-- Backend: https://ai-job-automation-platform.onrender.com
-
-Quick links:
-
-- Backend health: https://ai-job-automation-platform.onrender.com/health
-- Backend docs: https://ai-job-automation-platform.onrender.com/docs (available when DEBUG=true)
-
-Deployment guide:
-
-- `DEPLOYMENT.md`
-
-Deployment manifests included:
-
-- `frontend/vercel.json`
-- `render.yaml`
+- Frontend: Vercel (`frontend/vercel.json`)
+- Backend: Render (`render.yaml`)
+- Deployment guide: `DEPLOYMENT.md`
 
 ## API and Runtime Notes
 
 - API base path: `/api/v1`
 - Health endpoint: `/health`
 - WebSocket endpoint: `/ws`
-- Production API docs are disabled when `DEBUG=false`
+- Production API docs disabled when `DEBUG=false`
 
 ## Security and Operations
 
-- Configure `SECRET_KEY` and `CSRF_SECRET_KEY` with strong random values in production
-- Restrict `BACKEND_CORS_ORIGINS` and `ALLOWED_HOSTS` for production domains
-- Configure external services (MongoDB/Redis/SMTP/AI keys) through environment variables
+- Configure strong production values for `SECRET_KEY` and `CSRF_SECRET_KEY`
+- Restrict `BACKEND_CORS_ORIGINS` and `ALLOWED_HOSTS` to trusted domains
+- Configure MongoDB/Redis/SMTP/AI credentials via environment variables
 
 ## Contributing
 
-1. Create a feature branch
-2. Make focused changes
-3. Run tests/lint
-4. Open a pull request
+1. Create a feature branch.
+2. Make focused, scoped changes.
+3. Run tests/lint.
+4. Open a pull request.
+
+### Contribution Labels
+
+Use a consistent label format on issues and pull requests to improve triage:
+
+| Label              | Purpose                                            |
+| ------------------ | -------------------------------------------------- |
+| `area:frontend`    | UI, routing, React hooks, component behavior       |
+| `area:backend`     | FastAPI endpoints, services, auth, data flow       |
+| `area:automation`  | Scrapers, bot engine, orchestrator/agent workflows |
+| `area:docs`        | README, project_context docs, architecture notes   |
+| `type:bug`         | Regressions, incorrect behavior, runtime failures  |
+| `type:feature`     | New user-facing or platform capability             |
+| `type:refactor`    | Internal improvements without behavior changes     |
+| `type:test`        | Test coverage additions or test framework changes  |
+| `priority:high`    | Urgent fix or high-impact user issue               |
+| `good-first-issue` | Beginner-friendly tasks with clear scope           |
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
-You are free to use, modify, and distribute this software under the terms of the MIT License. For more information, visit https://opensource.org/licenses/MIT.
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
+For full license text and terms, see https://opensource.org/licenses/MIT.
