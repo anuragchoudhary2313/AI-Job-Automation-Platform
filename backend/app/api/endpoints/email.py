@@ -110,6 +110,7 @@ async def send_hr_email(
             )
 
         message_id = send_result.get("message_id")
+        provider_response = send_result.get("provider_response")
 
         alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {recipient_email}"
         try:
@@ -117,12 +118,23 @@ async def send_hr_email(
         except Exception as alert_exc:
             logger.warning("Telegram alert failed after successful HR email send: %s", alert_exc)
 
+        if not message_id:
+            return {
+                "message": (
+                    "Email request accepted by provider, but tracking id was not returned. "
+                    "Check Resend dashboard activity/logs for final delivery status."
+                ),
+                "message_id": None,
+                "provider_response": provider_response,
+            }
+
         return {
             "message": (
                 f"Email accepted by provider for {recipient_email}. "
-                f"message_id={message_id or 'unknown'}"
+                f"message_id={message_id}"
             ),
             "message_id": message_id,
+            "provider_response": provider_response,
         }
 
     except HTTPException:
@@ -198,7 +210,15 @@ async def test_email_sending():
         )
 
     message_id = send_result.get("message_id")
+    provider_response = send_result.get("provider_response")
+    if not message_id:
+        return {
+            "message": "Test email accepted by provider, but tracking id is unavailable. Check Resend dashboard logs.",
+            "message_id": None,
+            "provider_response": provider_response,
+        }
     return {
-        "message": f"Test email accepted by provider. message_id={message_id or 'unknown'}",
+        "message": f"Test email accepted by provider. message_id={message_id}",
         "message_id": message_id,
+        "provider_response": provider_response,
     }

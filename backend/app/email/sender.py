@@ -109,12 +109,18 @@ class EmailSender:
 
             if 200 <= response.status_code < 300:
                 response_json = response.json() if response.text else {}
-                message_id = response_json.get("id")
+                message_id = (
+                    response_json.get("id")
+                    or (response_json.get("data") or {}).get("id")
+                    or response.headers.get("x-message-id")
+                    or response.headers.get("x-resend-id")
+                )
                 logger.info("Email sent successfully to %s", to_email)
                 return {
                     "success": True,
                     "provider": "resend",
                     "message_id": message_id,
+                    "provider_response": response_json,
                 }
 
             logger.error(
