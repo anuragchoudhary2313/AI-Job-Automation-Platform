@@ -10,9 +10,7 @@
       "DOM.Iterable"
     ],
     "module": "ESNext",
-    "types": [
-      "vite/client"
-    ],
+    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -59,6 +57,7 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "src/vite-env.d.ts"
   ]
 }
