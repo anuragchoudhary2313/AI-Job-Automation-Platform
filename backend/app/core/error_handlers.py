@@ -116,9 +116,14 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     # Log 4xx and 5xx errors
     if exc.status_code >= 400:
         log_level = logging.ERROR if exc.status_code >= 500 else logging.WARNING
+        allow_header = ""
+        if getattr(exc, "headers", None):
+            allowed = exc.headers.get("allow") or exc.headers.get("Allow")
+            if allowed:
+                allow_header = f" | allow={allowed}"
         logger.log(
             log_level,
-            f"HTTP {exc.status_code}: {exc.detail}",
+            f"HTTP {exc.status_code}: {exc.detail} | method={request.method} path={request.url.path}{allow_header}",
             extra={"request_id": request_id}
         )
     
