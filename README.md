@@ -9,6 +9,22 @@ AI Job Automation Platform is a full-stack SaaS project for managing resumes, jo
 - `bot_engine/` - automation engine modules
 - `scripts/` - repository-level test and utility scripts
 
+## Project Context Docs
+
+These deep technical docs are intended for contributors and AI agents working on this repository:
+
+- `project_context/01-system-overview.md`
+- `project_context/02-architecture_overview.md`
+- `project_context/03-backend-internals.md`
+- `project_context/04-database_schema.md`
+- `project_context/05-automation-engine.md`
+- `project_context/06-frontend_architecture.md`
+- `project_context/07-backend_api_routes.md`
+- `project_context/08-frontend-internals.md`
+- `project_context/09-bot_engine_and_scrapers.md`
+- `project_context/10-workflows.md`
+- `project_context/11-devops_and_deployment.md`
+
 ## Core Stack
 
 ### Backend
