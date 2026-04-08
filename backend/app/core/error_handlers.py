@@ -127,9 +127,9 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
             extra={"request_id": request_id}
         )
     
-    # Sanitize error message in production for 5xx errors
+    # Keep 500 sanitized, but preserve actionable operational details for 502/503.
     detail = exc.detail
-    if settings.is_production and exc.status_code >= 500:
+    if settings.is_production and exc.status_code == 500:
         detail = "Internal server error"
     
     return JSONResponse(
