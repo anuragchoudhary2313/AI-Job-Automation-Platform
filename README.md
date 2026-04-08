@@ -147,4 +147,6 @@ Deployment manifests included:
 
 ## License
 
-Add your license information here (for example: MIT, Apache-2.0, or proprietary).
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+You are free to use, modify, and distribute this software under the terms of the MIT License. For more information, visit https://opensource.org/licenses/MIT.
