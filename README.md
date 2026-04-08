@@ -8,6 +8,26 @@ A production-style full-stack SaaS platform for job discovery, resume intelligen
 ![Database](https://img.shields.io/badge/Database-MongoDB-47A248)
 ![Automation](https://img.shields.io/badge/Automation-Playwright%20%2B%20Selenium-6E40C9)
 
+## Table of Contents
+
+- [Product Snapshot](#product-snapshot)
+- [Live URLs](#live-urls)
+- [Highlights](#highlights)
+- [Architecture Overview](#architecture-overview)
+- [Monorepo Layout](#monorepo-layout)
+- [Core Stack](#core-stack)
+- [Features](#features-current-scope)
+- [Local Setup](#local-setup)
+- [Documentation Hub](#documentation-hub)
+- [Roadmap](#roadmap)
+- [Environment Configuration](#environment-configuration)
+- [Testing](#testing)
+- [Deployment & Ops](#deployment--ops)
+- [Runtime Notes](#runtime-notes)
+- [Security and Operations](#security-and-operations)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Product Snapshot
 
 AI Job Automation Platform combines a modern job-search workspace with asynchronous automation pipelines.
@@ -35,7 +55,7 @@ It helps users discover jobs, optimize resumes, and orchestrate application-rela
 - Backend health: https://ai-job-automation-platform.onrender.com/health
 - Backend docs (when `DEBUG=true`): https://ai-job-automation-platform.onrender.com/docs
 
-## Why This Project
+## Highlights
 
 - Combines traditional CRUD SaaS patterns with asynchronous automation pipelines.
 - Uses AI-assisted resume and matching flows while keeping deterministic service boundaries.
@@ -146,7 +166,7 @@ flowchart LR
 - WebSocket-based activity updates
 - Admin and dead-letter monitoring flows
 
-## Quick Start
+## Local Setup
 
 ## Prerequisites
 
@@ -180,7 +200,7 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`.
 
-## Project Context Docs
+## Documentation Hub
 
 The `project_context/` folder is the repository playbook for contributors and AI agents.
 
@@ -248,13 +268,13 @@ Run full repository tests with coverage:
 
 Backend and frontend also include local scripts in their own `scripts/` folders.
 
-## Deployment
+## Deployment & Ops
 
 - Frontend: Vercel (`frontend/vercel.json`)
 - Backend: Render (`render.yaml`)
 - Deployment guide: `DEPLOYMENT.md`
 
-## API and Runtime Notes
+## Runtime Notes
 
 - API base path: `/api/v1`
 - Health endpoint: `/health`
