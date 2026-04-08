@@ -34,7 +34,7 @@ services:
       - key: EMAIL_ENABLED
         value: "true"
       - key: EMAIL_DEV_MODE
-        value: "false"
+        value: "true"
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT

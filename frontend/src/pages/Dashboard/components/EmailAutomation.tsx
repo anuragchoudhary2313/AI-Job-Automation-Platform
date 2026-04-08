@@ -10,6 +10,7 @@ import { clearColdMailContext, getColdMailContext } from '../../../utils/coldMai
 export function EmailAutomation() {
   const [sending, setSending] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [devModeActive, setDevModeActive] = useState(false);
   const [formData, setFormData] = useState({
     recipient_email: '',
     company_name: '',
@@ -80,7 +81,11 @@ export function EmailAutomation() {
         }
       );
 
-      toast.success(response.data?.message || 'Email sent successfully!');
+      const responseMessage = response.data?.message || 'Email sent successfully!';
+      if (responseMessage.includes('[DEV MODE]')) {
+        setDevModeActive(true);
+      }
+      toast.success(responseMessage);
 
       // Reset form
       setFormData({
@@ -111,7 +116,11 @@ export function EmailAutomation() {
         timeout: 120000,
         _suppressGlobalErrorToast: true,
       });
-      toast.success(response.data?.message || 'Test email sent!');
+      const responseMessage = response.data?.message || 'Test email sent!';
+      if (responseMessage.includes('[DEV MODE]')) {
+        setDevModeActive(true);
+      }
+      toast.success(responseMessage);
     } catch (error) {
       const maybeTimeout = error as { code?: string };
       if (maybeTimeout?.code === 'ECONNABORTED') {
@@ -144,6 +153,11 @@ export function EmailAutomation() {
         </div>
       </CardHeader>
       <CardContent>
+        {devModeActive && (
+          <div className="mb-4 rounded-lg border border-amber-400/40 bg-amber-100/10 px-3 py-2 text-xs font-medium text-amber-300">
+            DEV MODE ACTIVE: Email sends are simulated and not delivered to real inboxes.
+          </div>
+        )}
         <form onSubmit={handleSendEmail} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
