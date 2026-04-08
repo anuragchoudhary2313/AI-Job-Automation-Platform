@@ -126,7 +126,7 @@ class EmailService:
         resume_filename: Optional[str] = None,
     ) -> bool:
         """Send campaign HR email using template rendering and optional resume attachment."""
-        if settings.EMAIL_DEV_MODE:
+        if settings.EMAIL_DEV_MODE and not settings.is_production:
             logger.info(
                 "[EMAIL_DEV_MODE] Simulated campaign HR email to %s for %s at %s",
                 recipient_email,

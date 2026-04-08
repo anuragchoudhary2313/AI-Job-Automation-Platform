@@ -13,9 +13,10 @@ router = APIRouter()
 
 
 def _validate_email_config() -> Optional[str]:
+    dev_mode_enabled = settings.EMAIL_DEV_MODE and not settings.is_production
     if not settings.EMAIL_ENABLED:
         return "Email automation is disabled on the server."
-    if settings.EMAIL_DEV_MODE:
+    if dev_mode_enabled:
         return None
     if not settings.RESEND_API_KEY:
         return "Resend API key is not configured. Set RESEND_API_KEY in deployment environment variables."
