@@ -91,19 +91,25 @@ async def send_hr_email(
         }
         html_content = email_sender.render_template("hr_initial_email.html", context)
         
-        # 3. Send email immediately so API reflects actual delivery success/failure.
-        success = await email_sender.send_email(
+        # 3. Send email immediately so API reflects provider acceptance/failure.
+        send_result = await email_sender.send_email_detailed(
             to_email=recipient_email,
             subject=f"Application for {job_role} - {candidate_name}",
             html_body=html_content,
             attachments=[file_location],
         )
 
-        if not success:
+        if not send_result.get("success"):
+            provider_error = str(send_result.get("error", "provider_rejected"))[:600]
             raise HTTPException(
                 status_code=502,
-                detail="Email delivery failed. Please verify Resend API key and sender email configuration.",
+                detail=(
+                    "Email provider rejected the request. "
+                    f"Details: {provider_error}"
+                ),
             )
+
+        message_id = send_result.get("message_id")
 
         alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {recipient_email}"
         try:
@@ -111,7 +117,13 @@ async def send_hr_email(
         except Exception as alert_exc:
             logger.warning("Telegram alert failed after successful HR email send: %s", alert_exc)
 
-        return {"message": f"Email sent successfully to {recipient_email}."}
+        return {
+            "message": (
+                f"Email accepted by provider for {recipient_email}. "
+                f"message_id={message_id or 'unknown'}"
+            ),
+            "message_id": message_id,
+        }
 
     except HTTPException:
         raise
@@ -172,16 +184,21 @@ async def test_email_sending():
         
     html_content = "<p>Email setup successful.</p>"
 
-    success = await email_sender.send_email(
+    send_result = await email_sender.send_email_detailed(
         to_email=email_sender.user,
         subject="Email Automation Test – AI Job Automation Platform",
         html_body=html_content
     )
 
-    if not success:
+    if not send_result.get("success"):
+        provider_error = str(send_result.get("error", "provider_rejected"))[:600]
         raise HTTPException(
             status_code=502,
-            detail="Test email failed to send. Check Resend API key and sender email configuration.",
+            detail=f"Test email failed at provider. Details: {provider_error}",
         )
 
-    return {"message": f"Test email sent to {email_sender.user}"}
+    message_id = send_result.get("message_id")
+    return {
+        "message": f"Test email accepted by provider. message_id={message_id or 'unknown'}",
+        "message_id": message_id,
+    }

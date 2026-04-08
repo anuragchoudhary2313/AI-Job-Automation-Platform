@@ -34,9 +34,25 @@ class EmailSender:
         attachments: Optional[List[str]] = None,
     ) -> bool:
         """Send an email using the Resend HTTP API."""
+        result = await self.send_email_detailed(
+            to_email=to_email,
+            subject=subject,
+            html_body=html_body,
+            attachments=attachments,
+        )
+        return bool(result.get("success"))
+
+    async def send_email_detailed(
+        self,
+        to_email: str,
+        subject: str,
+        html_body: str,
+        attachments: Optional[List[str]] = None,
+    ) -> dict:
+        """Send email and return detailed provider response metadata."""
         if not self.enabled:
             logger.warning("Email sending is disabled in configuration.")
-            return False
+            return {"success": False, "error": "email_disabled"}
 
         if settings.EMAIL_DEV_MODE:
             logger.info(
@@ -44,15 +60,15 @@ class EmailSender:
                 to_email,
                 subject,
             )
-            return True
+            return {"success": True, "provider": "dev", "message_id": None}
 
         if not self.api_key:
             logger.error("Resend API key is not configured.")
-            return False
+            return {"success": False, "error": "missing_resend_api_key"}
 
         if not self.from_email:
             logger.error("Resend from email is not configured.")
-            return False
+            return {"success": False, "error": "missing_resend_from_email"}
 
         payload = {
             "from": self.from_email,
@@ -92,8 +108,14 @@ class EmailSender:
                 response = await client.post(f"{self.base_url}/emails", json=payload, headers=headers)
 
             if 200 <= response.status_code < 300:
+                response_json = response.json() if response.text else {}
+                message_id = response_json.get("id")
                 logger.info("Email sent successfully to %s", to_email)
-                return True
+                return {
+                    "success": True,
+                    "provider": "resend",
+                    "message_id": message_id,
+                }
 
             logger.error(
                 "Resend email failed to %s: status=%s body=%s",
@@ -101,10 +123,15 @@ class EmailSender:
                 response.status_code,
                 response.text,
             )
-            return False
+            return {
+                "success": False,
+                "provider": "resend",
+                "status_code": response.status_code,
+                "error": response.text,
+            }
         except Exception as exc:
             logger.error("Failed to send email to %s: %s", to_email, exc, exc_info=True)
-            return False
+            return {"success": False, "provider": "resend", "error": str(exc)}
 
     def render_template(self, template_name: str, context: dict) -> str:
         """Render a Jinja2 template with the provided context."""
