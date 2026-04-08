@@ -12,6 +12,7 @@ import uuid
 import hashlib
 import json
 import shutil
+import platform
 
 from app.api import deps
 from app.core.exceptions import NotFoundError, AuthorizationError, handle_exception
@@ -116,14 +117,39 @@ async def compile_latex(
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(latex)
 
-        tectonic_exe = shutil.which("tectonic.exe") or shutil.which("tectonic")
+        is_windows = platform.system().lower() == "windows"
+
+        def _is_runnable_binary(path: str) -> bool:
+            if not os.path.isfile(path):
+                return False
+            if is_windows:
+                return True
+            if os.access(path, os.X_OK):
+                return True
+            try:
+                os.chmod(path, 0o755)
+                return os.access(path, os.X_OK)
+            except OSError:
+                return False
+
+        binary_names = ["tectonic.exe", "tectonic"] if is_windows else ["tectonic"]
+        tectonic_exe = None
+
+        for binary_name in binary_names:
+            candidate = shutil.which(binary_name)
+            if candidate and _is_runnable_binary(candidate):
+                tectonic_exe = candidate
+                break
+
         if not tectonic_exe:
-            local_windows_binary = os.path.join(os.getcwd(), "tectonic.exe")
-            local_unix_binary = os.path.join(os.getcwd(), "tectonic")
-            if os.path.exists(local_windows_binary):
-                tectonic_exe = local_windows_binary
-            elif os.path.exists(local_unix_binary):
-                tectonic_exe = local_unix_binary
+            backend_root = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
+            )
+            for binary_name in binary_names:
+                candidate = os.path.join(backend_root, binary_name)
+                if _is_runnable_binary(candidate):
+                    tectonic_exe = candidate
+                    break
 
         if not tectonic_exe:
             raise HTTPException(
