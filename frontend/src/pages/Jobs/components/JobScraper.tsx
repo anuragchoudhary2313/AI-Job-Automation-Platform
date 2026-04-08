@@ -38,6 +38,7 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState('');
   const [isScrapingInProgress, setIsScrapingInProgress] = useState(false);
+  const [lastScrapeStatus, setLastScrapeStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [autoFilledFromProfile, setAutoFilledFromProfile] = useState(false);
   const [profileHintDismissed, setProfileHintDismissed] = useState(() => {
     return isUiHintDismissed(UI_HINT_KEYS.JOB_SCRAPER_PROFILE_AUTOFILL_DISMISSED);
@@ -87,6 +88,10 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
   // Listen to live scraping updates via WebSocket
   useWebSocket({
     onActivity: (activity) => {
+      if (activity.title !== 'Job Scraper') {
+        return;
+      }
+
       // Check if it's a scraping activity to update progress
       if (activity.type === 'scraping' || activity.type === 'error' || (activity.type === 'success' && activity.title.includes('Scrap'))) {
         setProgress(activity.description || activity.title);
@@ -101,8 +106,16 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
             const newJobs = Number(activity.metadata?.new ?? 0);
             if (Number.isFinite(total) && total >= 0 && Number.isFinite(newJobs) && newJobs >= 0) {
               toast.success(`Scraping complete: ${total} total jobs found (${newJobs} new).`);
+              setLastScrapeStatus({
+                type: 'success',
+                message: `Scraping complete: ${total} total jobs found (${newJobs} new).`,
+              });
             }
             onScrapeSuccess?.();
+          } else {
+            const errorMessage = activity.description || 'Scraping failed. Please try again.';
+            toast.error(errorMessage);
+            setLastScrapeStatus({ type: 'error', message: errorMessage });
           }
         }
       } else if (activity.title.toLowerCase().includes('scrap')) {
@@ -158,6 +171,7 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
 
     setProgress('Initiating scraping agent...');
     setIsScrapingInProgress(true);
+    setLastScrapeStatus(null);
     onScrapeTriggered?.();
 
     // Simulate progress steps if we want purely UI feedback, otherwise better to rely on real status
@@ -337,6 +351,18 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
         {isScrapingInProgress && (
           <div className="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4 text-cyan-700 dark:border-cyan-900/60 dark:bg-cyan-900/20 dark:text-cyan-300">
             {progress || 'Scraping in progress. Live updates will appear here.'}
+          </div>
+        )}
+
+        {!isScrapingInProgress && lastScrapeStatus && (
+          <div
+            className={`mt-4 rounded-xl border p-4 ${
+              lastScrapeStatus.type === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/20 dark:text-emerald-300'
+                : 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-900/20 dark:text-rose-300'
+            }`}
+          >
+            {lastScrapeStatus.message}
           </div>
         )}
       </CardContent>
