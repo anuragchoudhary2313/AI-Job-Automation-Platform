@@ -93,15 +93,25 @@ async def send_hr_email(
             )
 
         alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {recipient_email}"
-        await telegram_service.send_alert(alert_msg)
+        try:
+            await telegram_service.send_alert(alert_msg)
+        except Exception as alert_exc:
+            logger.warning("Telegram alert failed after successful HR email send: %s", alert_exc)
 
         return {"message": f"Email sent successfully to {recipient_email}."}
-        
+
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error in send_hr_email: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="Unexpected error while sending email. Please check server logs for details.",
+        )
+    finally:
         if os.path.exists(file_location):
             os.remove(file_location)
-        logger.error(f"Error in send_hr_email: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+            logger.info(f"Cleaned up temporary file: {file_location}")
 
 @router.post("/send/follow-up")
 async def send_follow_up_email(
