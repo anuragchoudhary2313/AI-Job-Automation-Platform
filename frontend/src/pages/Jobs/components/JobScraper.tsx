@@ -334,11 +334,9 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
           </div>
         </form>
 
-        {/* Note: The new scraper service might run in background, so showing immediate results might require polling or a separate 'Recent Scrapes' query.
-            For now, we simply confirm the start. */}
-        {scrapeMutation.isSuccess && (
-          <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/20 dark:text-emerald-300">
-            Scraping task initiated successfully. Check the jobs table for updates.
+        {isScrapingInProgress && (
+          <div className="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4 text-cyan-700 dark:border-cyan-900/60 dark:bg-cyan-900/20 dark:text-cyan-300">
+            {progress || 'Scraping in progress. Live updates will appear here.'}
           </div>
         )}
       </CardContent>
