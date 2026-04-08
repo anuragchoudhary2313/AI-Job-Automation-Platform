@@ -31,6 +31,152 @@ interface UseWebSocketOptions {
   reconnectInterval?: number;
 }
 
+interface WebSocketSubscriber {
+  onMessage?: (message: WebSocketMessage) => void;
+  onActivity?: (activity: Activity) => void;
+  onConnect?: () => void;
+  onDisconnect?: () => void;
+  setIsConnected: (value: boolean) => void;
+  setLastMessage: (message: WebSocketMessage | null) => void;
+}
+
+let sharedWs: WebSocket | null = null;
+let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+let subscriberCount = 0;
+let shouldReconnect = true;
+const subscribers = new Set<WebSocketSubscriber>();
+
+function notifyConnected() {
+  subscribers.forEach((s) => {
+    s.setIsConnected(true);
+    s.onConnect?.();
+  });
+}
+
+function notifyDisconnected() {
+  subscribers.forEach((s) => {
+    s.setIsConnected(false);
+    s.onDisconnect?.();
+  });
+}
+
+function notifyMessage(message: WebSocketMessage) {
+  subscribers.forEach((s) => {
+    s.setLastMessage(message);
+    s.onMessage?.(message);
+
+    if (message.type === 'activity' && s.onActivity) {
+      const payload = (message.data as Record<string, unknown>) || {};
+      const activity: Activity = {
+        id: Date.now().toString(),
+        type: (payload.activityType as Activity['type']) || 'success',
+        title: (payload.title as string) || 'Activity',
+        description: (payload.description as string) || '',
+        metadata: (payload.metadata as Record<string, unknown>) || {},
+        time: formatTimeAgo(new Date(message.timestamp)),
+        timestamp: new Date(message.timestamp).getTime(),
+      };
+      s.onActivity(activity);
+    }
+  });
+}
+
+function clearSharedTimers() {
+  if (reconnectTimeout) {
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
+  }
+
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+  }
+}
+
+function disconnectShared() {
+  clearSharedTimers();
+  shouldReconnect = false;
+  if (sharedWs) {
+    sharedWs.close();
+    sharedWs = null;
+  }
+}
+
+function connectShared(autoReconnect: boolean, reconnectIntervalMs: number) {
+  const token = localStorage.getItem('access_token');
+  if (!token && import.meta.env.MODE !== 'test') {
+    console.warn('No auth token found, skipping WebSocket connection');
+    return;
+  }
+
+  if (sharedWs?.readyState === WebSocket.OPEN || sharedWs?.readyState === WebSocket.CONNECTING) {
+    return;
+  }
+
+  shouldReconnect = true;
+
+  const wsUrl = WS_URL.endsWith('/ws') ? WS_URL : `${WS_URL}/ws`;
+  const ws = new WebSocket(`${wsUrl}?token=${token || 'test-token'}`);
+
+  ws.onopen = () => {
+    console.log('WebSocket connected');
+    notifyConnected();
+
+    heartbeatInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'ping', timestamp: new Date().toISOString() }));
+      }
+    }, 30000);
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const message: WebSocketMessage = JSON.parse(event.data);
+      if (message.type === 'pong') {
+        return;
+      }
+      notifyMessage(message);
+    } catch (error) {
+      console.error('Failed to parse WebSocket message:', error);
+    }
+  };
+
+  ws.onerror = (error) => {
+    if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) {
+      return;
+    }
+    console.error('WebSocket error:', error);
+  };
+
+  ws.onclose = (event: CloseEvent) => {
+    clearSharedTimers();
+    notifyDisconnected();
+
+    if (event.code === 1008) {
+      console.error('WebSocket auth failed (Policy Violation). Stopping reconnect.');
+      shouldReconnect = false;
+      return;
+    }
+
+    if (event.code === 1005) {
+      // Normal closure often happens on component unmount/navigation.
+      // Reconnect only if there are still active subscribers.
+      if (!autoReconnect || !shouldReconnect || subscriberCount === 0) {
+        return;
+      }
+    }
+
+    if (autoReconnect && shouldReconnect && subscriberCount > 0) {
+      reconnectTimeout = setTimeout(() => {
+        connectShared(autoReconnect, reconnectIntervalMs);
+      }, reconnectIntervalMs);
+    }
+  };
+
+  sharedWs = ws;
+}
+
 export function useWebSocket(options: UseWebSocketOptions = {}) {
   const {
     onMessage,
@@ -43,12 +189,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const shouldReconnectRef = useRef(true);
-
-  // Keep refs for callbacks to avoid reconnecting when they change
+  // Keep refs for callbacks to avoid resubscribing when they change
   const onMessageRef = useRef(onMessage);
   const onActivityRef = useRef(onActivity);
   const onConnectRef = useRef(onConnect);
@@ -63,143 +204,45 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   }, [onMessage, onActivity, onConnect, onDisconnect]);
 
   const connect = useCallback(() => {
-    try {
-      // Get auth token
-      const token = localStorage.getItem('access_token');
-      if (!token && import.meta.env.MODE !== 'test') {
-        console.warn('No auth token found, skipping WebSocket connection');
-        return;
-      }
-
-      // Prevent duplicate connections
-      if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) {
-        console.log("WebSocket already connected or connecting, skipping.");
-        return;
-      }
-
-      // Create WebSocket connection
-      // VITE_WS_URL already includes /ws, so we don't need to append it again
-      // ensuring we don't end up with /ws/ws
-      const wsUrl = WS_URL.endsWith('/ws') ? WS_URL : `${WS_URL}/ws`;
-      const ws = new WebSocket(`${wsUrl}?token=${token || 'test-token'}`);
-
-      ws.onopen = () => {
-        console.log('WebSocket connected');
-        setIsConnected(true);
-        onConnectRef.current?.();
-
-        // Start heartbeat ping
-        heartbeatIntervalRef.current = setInterval(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'ping', timestamp: new Date().toISOString() }));
-          }
-        }, 30000);
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const message: WebSocketMessage = JSON.parse(event.data);
-
-          if (message.type === 'pong') {
-            // Can track latency here if needed
-            return;
-          }
-
-          setLastMessage(message);
-          onMessageRef.current?.(message);
-
-          // Handle activity messages
-          if (message.type === 'activity' && onActivityRef.current) {
-            const payload = (message.data as Record<string, unknown>) || {};
-            const activity: Activity = {
-              id: Date.now().toString(),
-              type: (payload.activityType as Activity['type']) || 'success',
-              title: (payload.title as string) || 'Activity',
-              description: (payload.description as string) || '',
-              metadata: (payload.metadata as Record<string, unknown>) || {},
-              time: formatTimeAgo(new Date(message.timestamp)),
-              timestamp: new Date(message.timestamp).getTime(),
-            };
-            onActivityRef.current(activity);
-          }
-        } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
-        }
-      };
-
-      ws.onerror = (error) => {
-        // Ignore errors if we are closing (common in React StrictMode dev)
-        if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) return;
-        console.error('WebSocket error:', error);
-      };
-
-      ws.onclose = (event: CloseEvent) => {
-        if (heartbeatIntervalRef.current) {
-          clearInterval(heartbeatIntervalRef.current);
-          heartbeatIntervalRef.current = null;
-        }
-
-        // Ignore 1005 (No Status) if we initiated the close or it's a dev-mode flicker
-        if (event.code === 1005) {
-          console.log("WebSocket closed normally (1005).");
-          setIsConnected(false);
-          onDisconnectRef.current?.();
-          return;
-        }
-
-        console.log('WebSocket disconnected', event.code, event.reason);
-        setIsConnected(false);
-        onDisconnectRef.current?.();
-
-        // Stop reconnecting if policy violation (auth failed)
-        if (event.code === 1008) {
-          console.error("WebSocket auth failed (Policy Violation). Stopping reconnect.");
-          shouldReconnectRef.current = false;
-          return;
-        }
-
-        // Auto-reconnect
-        if (autoReconnect && shouldReconnectRef.current) {
-          reconnectTimeoutRef.current = setTimeout(() => {
-            console.log('Attempting to reconnect...');
-            connect();
-          }, reconnectInterval);
-        }
-      };
-
-      wsRef.current = ws;
-    } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
-    }
+    connectShared(autoReconnect, reconnectInterval);
   }, [autoReconnect, reconnectInterval]);
 
   const disconnect = useCallback(() => {
-    shouldReconnectRef.current = false;
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-    }
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-      heartbeatIntervalRef.current = null;
-    }
-    if (wsRef.current) {
-      wsRef.current.close();
-      wsRef.current = null;
+    subscriberCount = Math.max(0, subscriberCount - 1);
+    if (subscriberCount === 0) {
+      disconnectShared();
     }
   }, []);
 
   const sendMessage = useCallback((message: unknown) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message));
+    if (sharedWs && sharedWs.readyState === WebSocket.OPEN) {
+      sharedWs.send(JSON.stringify(message));
     } else {
       console.warn('WebSocket is not connected');
     }
   }, []);
 
   useEffect(() => {
+    const subscriber: WebSocketSubscriber = {
+      onMessage: (msg) => onMessageRef.current?.(msg),
+      onActivity: (activity) => onActivityRef.current?.(activity),
+      onConnect: () => onConnectRef.current?.(),
+      onDisconnect: () => onDisconnectRef.current?.(),
+      setIsConnected,
+      setLastMessage,
+    };
+
+    subscribers.add(subscriber);
+    subscriberCount += 1;
+
+    if (sharedWs?.readyState === WebSocket.OPEN) {
+      setIsConnected(true);
+    }
+
     connect();
 
     return () => {
+      subscribers.delete(subscriber);
       disconnect();
     };
   }, [connect, disconnect]);
