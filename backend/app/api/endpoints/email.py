@@ -42,7 +42,6 @@ class FollowUpEmailRequest(BaseModel):
 
 @router.post("/send/hr")
 async def send_hr_email(
-    background_tasks: BackgroundTasks,
     recipient_email: EmailStr = Form(...),
     company_name: str = Form(...),
     job_role: str = Form(...),
@@ -79,29 +78,24 @@ async def send_hr_email(
         }
         html_content = email_sender.render_template("hr_initial_email.html", context)
         
-        # 3. Send Email (Background Task)
-        # We define a wrapper to clean up the file after sending
-        async def send_and_cleanup(to, subj, body, attachments, file_path):
-            success = await email_sender.send_email(to, subj, body, attachments)
-            if success:
-                # Send Telegram Alert
-                alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {to}"
-                await telegram_service.send_alert(alert_msg)
-            
-            if os.path.exists(file_path):
-                os.remove(file_path)
-                logger.info(f"Cleaned up temporary file: {file_path}")
-
-        background_tasks.add_task(
-            send_and_cleanup,
-            to=recipient_email,
-            subj=f"Application for {job_role} - {candidate_name}",
-            body=html_content,
+        # 3. Send email immediately so API reflects actual delivery success/failure.
+        success = await email_sender.send_email(
+            to_email=recipient_email,
+            subject=f"Application for {job_role} - {candidate_name}",
+            html_body=html_content,
             attachments=[file_location],
-            file_path=file_location
         )
-        
-        return {"message": "Email queued for sending."}
+
+        if not success:
+            raise HTTPException(
+                status_code=502,
+                detail="Email delivery failed. Please verify SMTP host, credentials, and provider security settings.",
+            )
+
+        alert_msg = f"📧 <b>Email Sent to HR</b>\n\n<b>Role:</b> {job_role}\n<b>Company:</b> {company_name}\n<b>To:</b> {recipient_email}"
+        await telegram_service.send_alert(alert_msg)
+
+        return {"message": f"Email sent successfully to {recipient_email}."}
         
     except Exception as e:
         if os.path.exists(file_location):
@@ -139,7 +133,7 @@ async def send_follow_up_email(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/test")
-async def test_email_sending(background_tasks: BackgroundTasks):
+async def test_email_sending():
     """
     Sends a test email to the configured user.
     """
@@ -148,11 +142,17 @@ async def test_email_sending(background_tasks: BackgroundTasks):
         raise HTTPException(status_code=503, detail=config_error)
         
     html_content = "<p>Email setup successful.</p>"
-    
-    background_tasks.add_task(
-        email_sender.send_email,
+
+    success = await email_sender.send_email(
         to_email=email_sender.user,
         subject="Email Automation Test – AI Job Automation Platform",
         html_body=html_content
     )
-    return {"message": f"Test email queued for {email_sender.user}"}
+
+    if not success:
+        raise HTTPException(
+            status_code=502,
+            detail="Test email failed to send. Check SMTP settings and provider security requirements.",
+        )
+
+    return {"message": f"Test email sent to {email_sender.user}"}
