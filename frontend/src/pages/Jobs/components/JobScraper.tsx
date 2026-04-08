@@ -95,6 +95,13 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
           setIsScrapingInProgress(false);
           if (activity.type === 'success') {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
+            queryClient.invalidateQueries({ queryKey: ['scraped-jobs'] });
+
+            const total = Number(activity.metadata?.total ?? 0);
+            const newJobs = Number(activity.metadata?.new ?? 0);
+            if (Number.isFinite(total) && total >= 0 && Number.isFinite(newJobs) && newJobs >= 0) {
+              toast.success(`Scraping complete: ${total} total jobs found (${newJobs} new).`);
+            }
           }
         }
       } else if (activity.title.toLowerCase().includes('scrap')) {
@@ -113,15 +120,17 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
         data.experience,
         data.jobType
       ),
-    onSuccess: (data: { message: string; jobs_found: number }) => {
-      // Ideally the backend returns the jobs, but if it returns a task ID or generic message, we might need to change this.
-      // The mock above expected { jobs: [], count: 0 }
-      // But jobService.scrapeJobs returns { message, jobs_found }
-      // So we might need to adjust or invalidate queries to fetch new jobs.
+    onSuccess: (data: { message: string; jobs_found?: number | null }) => {
+      const jobsFound = typeof data.jobs_found === 'number' && data.jobs_found > 0 ? data.jobs_found : null;
 
-      toast.success(`Scraping started! Found ${data.jobs_found ?? 0} potential jobs.`);
+      toast.success(
+        jobsFound
+          ? `Scraping started. Found ${jobsFound} potential jobs.`
+          : 'Scraping started. Results will appear in Scraped Jobs when ready.'
+      );
       // Invalidate jobs to show new ones if they are added to DB
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['scraped-jobs'] });
       onScrapeSuccess?.();
     },
     onError: (error) => {

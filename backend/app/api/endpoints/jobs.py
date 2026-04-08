@@ -57,7 +57,7 @@ async def trigger_scrape(
         return {
             "message": "Job scraping initialized in the background",
             "status": "started",
-            "jobs_found": 0
+            "jobs_found": None
         }
     else:
         # Fallback for synchronous if needed (though BackgroundTasks is usually present in FastAPI)

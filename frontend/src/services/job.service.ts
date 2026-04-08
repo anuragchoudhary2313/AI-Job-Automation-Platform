@@ -60,7 +60,7 @@ export const jobService = {
     limit: number = 5,
     experience?: string,
     jobType?: string
-  ): Promise<{ message: string; jobs_found: number }> {
+  ): Promise<{ message: string; status?: string; jobs_found?: number | null }> {
     // Use long timeout for scraping operations
     const response = await apiClientLongTimeout.post('/jobs/scrape', null, {
       params: { keyword, location, limit, experience, job_type: jobType },

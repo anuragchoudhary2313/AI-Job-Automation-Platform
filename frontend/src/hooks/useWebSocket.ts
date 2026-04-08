@@ -17,6 +17,7 @@ export interface Activity {
   type: 'apply' | 'email' | 'error' | 'resume' | 'scraping' | 'success';
   title: string;
   description: string;
+  metadata?: Record<string, unknown>;
   time: string;
   timestamp: number;
 }
@@ -115,6 +116,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
               type: (payload.activityType as Activity['type']) || 'success',
               title: (payload.title as string) || 'Activity',
               description: (payload.description as string) || '',
+              metadata: (payload.metadata as Record<string, unknown>) || {},
               time: formatTimeAgo(new Date(message.timestamp)),
               timestamp: new Date(message.timestamp).getTime(),
             };

@@ -1,5 +1,6 @@
 from typing import List, Dict
 import asyncio
+from urllib.parse import quote_plus
 from app.automation.scrapers.base import BaseScraper
 import logging
 
@@ -21,14 +22,20 @@ class LinkedInScraper(BaseScraper):
         logger.warning("No valid session found for LinkedIn. Proceeding in guest mode (limited).")
 
     async def scrape_jobs(self, keyword: str, location: str, limit: int = 10) -> List[Dict]:
-        url = f"https://www.linkedin.com/jobs/search?keywords={keyword}&location={location}"
+        url = (
+            "https://www.linkedin.com/jobs/search"
+            f"?keywords={quote_plus(keyword)}&location={quote_plus(location)}"
+        )
         try:
             logger.info(f"Navigating to {url}")
             await self.page.goto(url, wait_until="domcontentloaded", timeout=60000)
             
             # Wait for results or empty state
             try:
-                await self.page.wait_for_selector(".jobs-search__results-list, .results-context-header", timeout=15000)
+                await self.page.wait_for_selector(
+                    "li:has(a[href*='/jobs/view/']), .jobs-search__results-list, .jobs-search-no-results-banner__text, .results-context-header",
+                    timeout=15000,
+                )
             except:
                 logger.warning("Timeout waiting for job selectors, attempting to parse whatever is on page")
             
@@ -37,7 +44,23 @@ class LinkedInScraper(BaseScraper):
             await asyncio.sleep(2)
             
             jobs = []
-            cards = await self.page.query_selector_all("li")
+            card_selectors = [
+                "li:has(a[href*='/jobs/view/'])",
+                "li.jobs-search-results__list-item",
+                "div.job-card-container",
+                "div.base-card",
+            ]
+            cards = []
+            for selector in card_selectors:
+                matched_cards = await self.page.query_selector_all(selector)
+                if matched_cards:
+                    cards = matched_cards
+                    logger.info(f"Matched {len(cards)} cards using selector: {selector}")
+                    break
+
+            if not cards:
+                logger.warning("No LinkedIn job cards matched the current selectors")
+                return []
             
             count = 0
             for card in cards:
@@ -45,10 +68,16 @@ class LinkedInScraper(BaseScraper):
                     break
                     
                 try:
-                    title_elem = await card.query_selector("h3, .base-search-card__title")
-                    company_elem = await card.query_selector("h4, .base-search-card__subtitle")
-                    loc_elem = await card.query_selector(".job-search-card__location, .base-search-card__metadata")
-                    link_elem = await card.query_selector("a")
+                    title_elem = await card.query_selector(
+                        "h3, .base-search-card__title, .job-card-list__title, .sr-only"
+                    )
+                    company_elem = await card.query_selector(
+                        "h4, .base-search-card__subtitle, .job-card-container__company-name"
+                    )
+                    loc_elem = await card.query_selector(
+                        ".job-search-card__location, .base-search-card__metadata, .job-card-container__metadata-item"
+                    )
+                    link_elem = await card.query_selector("a[href*='/jobs/view/'], a")
     
                     if title_elem and link_elem:
                         title = await title_elem.inner_text()
@@ -59,6 +88,8 @@ class LinkedInScraper(BaseScraper):
                         if link:
                             # Cleanup link
                             link = link.split("?")[0].strip()
+                            if link.startswith("/"):
+                                link = f"https://www.linkedin.com{link}"
                             
                             jobs.append({
                                 "title": title.strip(),

@@ -24,14 +24,15 @@ class JobScraperService:
         from app.services.socket_manager import manager
         from datetime import datetime
         
-        async def send_progress(msg: str, type: str = "scraping"):
+        async def send_progress(msg: str, type: str = "scraping", metadata: dict | None = None):
             if user_id:
                 await manager.send_to_user(user_id, {
                     "type": "activity",
                     "data": {
                         "activityType": type,
                         "title": "Job Scraper",
-                        "description": msg
+                        "description": msg,
+                        "metadata": metadata or {},
                     },
                     "timestamp": datetime.utcnow().isoformat() + "Z"
                 })
@@ -76,7 +77,11 @@ class JobScraperService:
             
             logger.info(f"Scraping completed. Found {len(jobs_data)} jobs, {new_jobs_count} new.")
             await cache.clear_pattern("jobs:scraped:*")
-            await send_progress(f"Scraping complete! Found {len(jobs_data)} jobs.", type="success")
+            await send_progress(
+                f"Scraping complete! Found {len(jobs_data)} jobs ({new_jobs_count} new).",
+                type="success",
+                metadata={"total": len(jobs_data), "new": new_jobs_count},
+            )
             return {"total": len(jobs_data), "new": new_jobs_count}
 
         except Exception as e:
@@ -98,6 +103,11 @@ class JobScraperService:
                         await new_job.insert()
                         new_jobs_count += 1
                 await cache.clear_pattern("jobs:scraped:*")
+                await send_progress(
+                    f"Scraping complete! Found {len(jobs_data)} jobs ({new_jobs_count} new).",
+                    type="success",
+                    metadata={"total": len(jobs_data), "new": new_jobs_count},
+                )
                 return {"total": len(jobs_data), "new": new_jobs_count}
 
             logger.error(f"Scraping failed: {error_details}", exc_info=True)
