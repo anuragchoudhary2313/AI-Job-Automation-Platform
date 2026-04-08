@@ -57,6 +57,7 @@ async def send_hr_email(
     Sends an initial application email to HR with resume attachment.
     """
     features.require("email_automation")
+    dev_mode_enabled = settings.EMAIL_DEV_MODE and not settings.is_production
 
     config_error = _validate_email_config()
     if config_error:
@@ -162,6 +163,8 @@ async def test_email_sending():
     config_error = _validate_email_config()
     if config_error:
         raise HTTPException(status_code=503, detail=config_error)
+
+    dev_mode_enabled = settings.EMAIL_DEV_MODE and not settings.is_production
 
     if dev_mode_enabled:
         logger.info("[EMAIL_DEV_MODE] Simulated test email send")
