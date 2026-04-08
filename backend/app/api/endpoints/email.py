@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 def _validate_email_config() -> Optional[str]:
     if not settings.EMAIL_ENABLED:
         return "Email automation is disabled on the server."
+    if settings.EMAIL_DEV_MODE:
+        return None
     if not settings.SMTP_HOST:
         return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
@@ -58,6 +60,15 @@ async def send_hr_email(
     config_error = _validate_email_config()
     if config_error:
         raise HTTPException(status_code=503, detail=config_error)
+
+    if settings.EMAIL_DEV_MODE:
+        logger.info(
+            "[EMAIL_DEV_MODE] Simulated HR email send to %s for %s at %s",
+            recipient_email,
+            job_role,
+            company_name,
+        )
+        return {"message": f"[DEV MODE] Simulated email sent to {recipient_email}."}
     
     # 1. Save uploaded resume temporarily
     temp_filename = f"temp_resume_{uuid.uuid4()}.pdf"
@@ -150,6 +161,10 @@ async def test_email_sending():
     config_error = _validate_email_config()
     if config_error:
         raise HTTPException(status_code=503, detail=config_error)
+
+    if settings.EMAIL_DEV_MODE:
+        logger.info("[EMAIL_DEV_MODE] Simulated test email send")
+        return {"message": "[DEV MODE] Test email simulated successfully."}
         
     html_content = "<p>Email setup successful.</p>"
 

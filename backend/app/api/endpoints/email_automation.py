@@ -15,6 +15,8 @@ router = APIRouter()
 def _validate_email_config() -> Optional[str]:
     if not settings.EMAIL_ENABLED:
         return "Email automation is disabled on the server."
+    if settings.EMAIL_DEV_MODE:
+        return None
     if not settings.SMTP_HOST:
         return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
@@ -96,6 +98,8 @@ async def auto_send_emails(
             "results": []
         }
     
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error in auto_send_emails endpoint: {e}")
         raise HTTPException(

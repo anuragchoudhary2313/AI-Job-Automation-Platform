@@ -72,6 +72,7 @@ class Settings(BaseSettings):
     TELEGRAM_CHAT_ID: Optional[str] = None
 
     EMAIL_ENABLED: bool = True
+    EMAIL_DEV_MODE: bool = False
     
     # Email Settings
     SMTP_HOST: Optional[str] = None

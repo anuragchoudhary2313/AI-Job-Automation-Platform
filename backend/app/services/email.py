@@ -9,9 +9,11 @@ from email.mime.base import MIMEBase
 from email import encoders
 from typing import List, Optional
 import asyncio
+import os
 
 from app.core.config import settings
 from app.core.retry import retry_with_backoff, CircuitBreaker
+from app.email.sender import email_sender
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +152,48 @@ class EmailService:
             body,
             attachments,
             html
+        )
+
+    async def send_hr_email(
+        self,
+        recipient_email: str,
+        company_name: str,
+        job_role: str,
+        candidate_name: str,
+        skills: str,
+        portfolio_link: str,
+        resume_filename: Optional[str] = None,
+    ) -> bool:
+        """Send campaign HR email using template rendering and optional resume attachment."""
+        if settings.EMAIL_DEV_MODE:
+            logger.info(
+                "[EMAIL_DEV_MODE] Simulated campaign HR email to %s for %s at %s",
+                recipient_email,
+                job_role,
+                company_name,
+            )
+            return True
+
+        context = {
+            "company_name": company_name,
+            "job_role": job_role,
+            "candidate_name": candidate_name,
+            "skills": skills,
+            "portfolio_link": portfolio_link,
+        }
+        html_content = email_sender.render_template("hr_initial_email.html", context)
+
+        attachments: List[str] = []
+        if resume_filename:
+            resume_path = os.path.join("uploads", resume_filename)
+            if os.path.exists(resume_path):
+                attachments.append(resume_path)
+
+        return await email_sender.send_email(
+            to_email=recipient_email,
+            subject=f"Application for {job_role} - {candidate_name}",
+            html_body=html_content,
+            attachments=attachments,
         )
 
 
