@@ -102,6 +102,7 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
             if (Number.isFinite(total) && total >= 0 && Number.isFinite(newJobs) && newJobs >= 0) {
               toast.success(`Scraping complete: ${total} total jobs found (${newJobs} new).`);
             }
+            onScrapeSuccess?.();
           }
         }
       } else if (activity.title.toLowerCase().includes('scrap')) {
@@ -131,7 +132,6 @@ export function JobScraper({ onScrapeTriggered, onScrapeSuccess }: JobScraperPro
       // Invalidate jobs to show new ones if they are added to DB
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['scraped-jobs'] });
-      onScrapeSuccess?.();
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));
