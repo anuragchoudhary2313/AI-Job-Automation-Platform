@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from app.core import security
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -25,6 +25,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
             )
             logger.debug(f"WS: Token decoded for sub: {payload.get('sub')}")
+        except ExpiredSignatureError:
+            logger.info("WS: Token expired, rejecting websocket connection")
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
         except JWTError as e:
             logger.warning(f"WS: Token validation failed: {e}")
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)

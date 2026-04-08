@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi import Response
 from contextlib import asynccontextmanager
 import logging
 
@@ -177,6 +178,12 @@ app.include_router(websockets.router, tags=["websockets"])
 async def root():
     """Root endpoint."""
     return {"message": "Welcome to AI Job Automation Platform API"}
+
+
+@app.head("/")
+async def root_head() -> Response:
+    """Respond to load balancer and uptime HEAD probes."""
+    return Response(status_code=200)
 
 
 @app.get("/health")
