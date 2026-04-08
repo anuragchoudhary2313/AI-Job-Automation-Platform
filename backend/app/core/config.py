@@ -91,7 +91,9 @@ class Settings(BaseSettings):
     def EMAIL_PASSWORD(self): return self.SMTP_PASSWORD
     @property
     def EMAIL_FROM_NAME(self): return self.PROJECT_NAME
-    EMAIL_USE_SSL: bool = True
+    # STARTTLS (port 587) is the most common provider default.
+    # Set EMAIL_USE_SSL=true only for implicit TLS providers (typically port 465).
+    EMAIL_USE_SSL: bool = False
     
     # Scheduler
     SCHEDULER_TIMEZONE: str = "UTC"

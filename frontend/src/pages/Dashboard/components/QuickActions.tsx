@@ -1,5 +1,5 @@
 import { Play, Settings, Mail, FileText, ArrowRight, Zap } from 'lucide-react';
-import apiClient from '@/lib/api';
+import apiClient, { getErrorMessage } from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -55,7 +55,7 @@ export function QuickActions({ loading }: { loading?: boolean }) {
       toast.success('Email campaign started! Sending up to 5 emails...', { id: toastId });
       navigate('/email-campaigns');
     } catch (e) {
-      toast.error('Failed to start auto-email campaign.', { id: toastId });
+      toast.error(getErrorMessage(e), { id: toastId });
     }
   };
 

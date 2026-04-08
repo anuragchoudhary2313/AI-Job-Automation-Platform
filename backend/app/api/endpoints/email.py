@@ -9,9 +9,20 @@ import uuid
 from app.email.sender import email_sender
 from app.notifications.telegram import telegram_service
 from app.core.features import features
+from app.core.config import settings
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+def _validate_email_config() -> Optional[str]:
+    if not settings.EMAIL_ENABLED:
+        return "Email automation is disabled on the server."
+    if not settings.SMTP_HOST:
+        return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
+    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
+        return "SMTP credentials are not configured. Set SMTP_USER and SMTP_PASSWORD in deployment environment variables."
+    return None
 
 # Pydantic Schemas
 class HREmailRequest(BaseModel):
@@ -44,6 +55,10 @@ async def send_hr_email(
     Sends an initial application email to HR with resume attachment.
     """
     features.require("email_automation")
+
+    config_error = _validate_email_config()
+    if config_error:
+        raise HTTPException(status_code=503, detail=config_error)
     
     # 1. Save uploaded resume temporarily
     temp_filename = f"temp_resume_{uuid.uuid4()}.pdf"
@@ -128,8 +143,9 @@ async def test_email_sending(background_tasks: BackgroundTasks):
     """
     Sends a test email to the configured user.
     """
-    if not email_sender.user:
-        raise HTTPException(status_code=400, detail="Email user not configured.")
+    config_error = _validate_email_config()
+    if config_error:
+        raise HTTPException(status_code=503, detail=config_error)
         
     html_content = "<p>Email setup successful.</p>"
     

@@ -4,11 +4,22 @@ from pydantic import BaseModel
 from app.api import deps
 from app.services.email_automation import email_automation_service
 from app.models.user import User as UserModel
+from app.core.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def _validate_email_config() -> Optional[str]:
+    if not settings.EMAIL_ENABLED:
+        return "Email automation is disabled on the server."
+    if not settings.SMTP_HOST:
+        return "SMTP host is not configured. Set SMTP_HOST in deployment environment variables."
+    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
+        return "SMTP credentials are not configured. Set SMTP_USER and SMTP_PASSWORD in deployment environment variables."
+    return None
 
 
 class AutoSendEmailRequest(BaseModel):
@@ -56,6 +67,10 @@ async def auto_send_emails(
     """
     
     try:
+        config_error = _validate_email_config()
+        if config_error:
+            raise HTTPException(status_code=503, detail=config_error)
+
         # Limit to reasonable number
         if request.limit > 20:
             request.limit = 20
