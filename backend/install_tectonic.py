@@ -12,7 +12,7 @@ def _find_binary(root: str, binary_name: str) -> str | None:
             return os.path.join(current_root, binary_name)
     return None
 
-def install_tectonic():
+def install_tectonic() -> str:
     system = platform.system().lower()
     
     version = "0.15.0"
@@ -50,8 +50,7 @@ def install_tectonic():
 
         binary_path = _find_binary(temp_extract_dir, binary_name)
         if not binary_path:
-            print("Extraction failed or binary not found.")
-            return
+            raise RuntimeError("Extraction failed or binary not found")
 
         target_path = os.path.join(os.getcwd(), binary_name)
         shutil.copy2(binary_path, target_path)
@@ -59,8 +58,15 @@ def install_tectonic():
             
         if system != "windows":
             os.chmod(target_path, 0o755)
+            if not os.access(target_path, os.X_OK):
+                raise RuntimeError(f"Installed binary is not executable: {target_path}")
+
+        if not os.path.exists(target_path):
+            raise RuntimeError(f"Installed binary not found at target path: {target_path}")
+
+        return target_path
     except Exception as e:
-        print(f"Error downloading or extracting Tectonic: {e}")
+        raise RuntimeError(f"Error downloading or extracting Tectonic: {e}") from e
     finally:
         if os.path.exists(archive_name):
             os.remove(archive_name)
@@ -68,4 +74,5 @@ def install_tectonic():
             shutil.rmtree(temp_extract_dir)
 
 if __name__ == "__main__":
-    install_tectonic()
+    binary_path = install_tectonic()
+    print(f"Tectonic ready at: {binary_path}")

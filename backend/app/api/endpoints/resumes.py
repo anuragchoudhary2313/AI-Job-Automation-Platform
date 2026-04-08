@@ -13,6 +13,7 @@ import hashlib
 import json
 import shutil
 import platform
+import threading
 
 from app.api import deps
 from app.core.exceptions import NotFoundError, AuthorizationError, handle_exception
@@ -27,6 +28,8 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 UPLOAD_DIR = "uploads"
+_TECTONIC_BOOTSTRAP_LOCK = threading.Lock()
+_TECTONIC_BOOTSTRAP_ATTEMPTED = False
 
 
 def get_resume_service(
@@ -133,28 +136,43 @@ async def compile_latex(
                 return False
 
         binary_names = ["tectonic.exe", "tectonic"] if is_windows else ["tectonic"]
-        tectonic_exe = None
 
-        for binary_name in binary_names:
-            candidate = shutil.which(binary_name)
-            if candidate and _is_runnable_binary(candidate):
-                tectonic_exe = candidate
-                break
+        def _resolve_tectonic() -> str | None:
+            for binary_name in binary_names:
+                candidate = shutil.which(binary_name)
+                if candidate and _is_runnable_binary(candidate):
+                    return candidate
 
-        if not tectonic_exe:
             backend_root = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
             )
             for binary_name in binary_names:
                 candidate = os.path.join(backend_root, binary_name)
                 if _is_runnable_binary(candidate):
-                    tectonic_exe = candidate
-                    break
+                    return candidate
+            return None
+
+        tectonic_exe = _resolve_tectonic()
+
+        if not tectonic_exe and not is_windows:
+            global _TECTONIC_BOOTSTRAP_ATTEMPTED
+            with _TECTONIC_BOOTSTRAP_LOCK:
+                if not _TECTONIC_BOOTSTRAP_ATTEMPTED:
+                    _TECTONIC_BOOTSTRAP_ATTEMPTED = True
+                    try:
+                        from install_tectonic import install_tectonic
+
+                        install_tectonic()
+                        logger.info("Tectonic bootstrap completed")
+                    except Exception as exc:
+                        logger.warning("Tectonic bootstrap failed: %s", exc)
+
+            tectonic_exe = _resolve_tectonic()
 
         if not tectonic_exe:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="LaTeX compiler is not installed on the server. Please try again later.",
+                detail="LaTeX compiler is unavailable on the server. Please retry in a few moments.",
             )
 
         process = subprocess.run(
