@@ -3,7 +3,7 @@ import { Mail, Send, TestTube } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { toast } from '../../../components/ui/Toast';
-import apiClient, { getErrorMessage } from '../../../lib/api';
+import { apiClientLongTimeout, getErrorMessage } from '../../../lib/api';
 import { getProfileFullName, getStoredProfile } from '../../../utils/profile';
 import { clearColdMailContext, getColdMailContext } from '../../../utils/coldMailContext';
 
@@ -71,9 +71,16 @@ export function EmailAutomation() {
       formDataToSend.append('portfolio_link', formData.portfolio_link);
       formDataToSend.append('resume', resumeFile);
 
-      await apiClient.post('/email/send/hr', formDataToSend);
+      const response = await apiClientLongTimeout.post<{ message?: string }>(
+        '/email/send/hr',
+        formDataToSend,
+        {
+          timeout: 180000,
+          _suppressGlobalErrorToast: true,
+        }
+      );
 
-      toast.success('Email queued for sending!');
+      toast.success(response.data?.message || 'Email sent successfully!');
 
       // Reset form
       setFormData({
@@ -86,7 +93,12 @@ export function EmailAutomation() {
       });
       setResumeFile(null);
     } catch (error) {
-      toast.error(getErrorMessage(error));
+      const maybeTimeout = error as { code?: string };
+      if (maybeTimeout?.code === 'ECONNABORTED') {
+        toast.error('Email request timed out. Please try again in a moment.');
+      } else {
+        toast.error(getErrorMessage(error));
+      }
     } finally {
       setSending(false);
     }
@@ -95,10 +107,18 @@ export function EmailAutomation() {
   const handleTestEmail = async () => {
     setTesting(true);
     try {
-      await apiClient.get('/email/test');
-      toast.success('Test email queued!');
+      const response = await apiClientLongTimeout.get<{ message?: string }>('/email/test', {
+        timeout: 120000,
+        _suppressGlobalErrorToast: true,
+      });
+      toast.success(response.data?.message || 'Test email sent!');
     } catch (error) {
-      toast.error(getErrorMessage(error));
+      const maybeTimeout = error as { code?: string };
+      if (maybeTimeout?.code === 'ECONNABORTED') {
+        toast.error('Test email request timed out. Please try again in a moment.');
+      } else {
+        toast.error(getErrorMessage(error));
+      }
     } finally {
       setTesting(false);
     }
