@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '../../../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { toast } from '../../../components/ui/Toast';
-import apiClient, { getErrorMessage } from '../../../lib/api';
+import apiClient, { apiClientLongTimeout, getErrorMessage } from '../../../lib/api';
 import { buildProfileResumeContext, getStoredProfile } from '../../../utils/profile';
 
 const RESUME_GENERATOR_DRAFT_KEY = 'resume-generator-draft-v1';
@@ -178,9 +178,9 @@ export function ResumeGenerator() {
   const compilePdf = useCallback(async (code: string) => {
     setCompiling(true);
     try {
-      const response = await apiClient.post('/resumes/compile-latex',
+      const response = await apiClientLongTimeout.post('/resumes/compile-latex',
         { latex: code },
-        { responseType: 'blob' }
+        { responseType: 'blob', timeout: 240000 }
       );
 
       const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -192,7 +192,12 @@ export function ResumeGenerator() {
       toast.success('PDF compiled successfully!');
     } catch (error: unknown) {
       console.error('Compilation Error:', error);
-      let message = 'Failed to compile LaTeX to PDF. Check syntax.';
+      let message = getErrorMessage(error);
+
+      const maybeTimeout = error as { code?: string };
+      if (maybeTimeout?.code === 'ECONNABORTED') {
+        message = 'PDF compilation is taking longer than expected. Please retry in a few moments.';
+      }
 
       const maybeError = error as {
         response?: { data?: Blob | { detail?: string } | string };
