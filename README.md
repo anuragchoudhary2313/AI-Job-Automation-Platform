@@ -10,135 +10,127 @@ A production-style full-stack SaaS platform for job discovery, resume intelligen
 
 ## Table of Contents
 
-- [Product Snapshot](#product-snapshot)
-- [Live URLs](#live-urls)
-- [Highlights](#highlights)
-- [Architecture Overview](#architecture-overview)
-- [Monorepo Layout](#monorepo-layout)
-- [Core Stack](#core-stack)
-- [Features](#features-current-scope)
-- [Local Setup](#local-setup)
+- [Overview](#overview)
+- [Live Demo](#live-demo)
+- [What It Covers](#what-it-covers)
+- [Visual Architecture](#visual-architecture)
+- [Repository Map](#repository-map)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
 - [Documentation Hub](#documentation-hub)
 - [Roadmap](#roadmap)
-- [Environment Configuration](#environment-configuration)
+- [Configuration](#configuration)
 - [Testing](#testing)
-- [Deployment & Ops](#deployment--ops)
+- [Deployment](#deployment)
 - [Runtime Notes](#runtime-notes)
-- [Security and Operations](#security-and-operations)
+- [Security](#security)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Product Snapshot
+## Overview
 
-AI Job Automation Platform combines a modern job-search workspace with asynchronous automation pipelines.
-It helps users discover jobs, optimize resumes, and orchestrate application-related actions through an API-first architecture.
+AI Job Automation Platform is a monorepo built for people who want a real job-automation stack, not just a demo.
+It combines a React product UI, a FastAPI backend, and bot/automation modules for scraping, orchestration, and workflow telemetry.
 
-### What Makes It Different
+### Differentiators
 
-- Purpose-built for async operations: websockets, background tasks, retries, and dead-letter monitoring.
-- Bridges product UX and automation internals in one monorepo.
-- Uses service-oriented boundaries that are clear enough for both humans and AI agents to extend safely.
+- Async-first design with websockets, background tasks, retries, and dead-letter handling.
+- Clear service boundaries so the frontend, API, and automation runtime can evolve independently.
+- Built for both product users and technical operators who need visibility into automation flows.
 
-### Capability Map
+### What It Covers
 
-| Domain              | What Users Get                                      | How It Is Implemented                                                 |
-| ------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
-| Resume Intelligence | Resume upload, parsing, and generation workflows    | AI-backed services, PDF/text extraction, compile/processing endpoints |
-| Job Discovery       | Search, scrape, and pipeline management             | Scraper services, queue-like background execution, status persistence |
-| Automation Control  | Multi-step orchestration and operational visibility | Agents, scheduler jobs, dead-letter replay, admin telemetry           |
-| Live Feedback       | Real-time progress and activity streams             | Authenticated websocket channel and frontend subscriptions            |
+| Domain              | User Outcome                                       | Implementation                                              |
+| ------------------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| Resume Intelligence | Upload, parse, and generate resumes                | AI-backed services, PDF/text extraction, compile pipelines  |
+| Job Discovery       | Search and scrape roles into a working pipeline    | Scraper services, background execution, persistence         |
+| Automation Control  | Multi-step orchestration and replayable operations | Agents, scheduler jobs, dead-letter replay, admin telemetry |
+| Live Feedback       | See progress while jobs run                        | Authenticated websocket channel and React subscriptions     |
 
-## Live URLs
+## Live Demo
 
 - Frontend: https://ai-job-automation-platform-ebon.vercel.app
 - Backend: https://ai-job-automation-platform.onrender.com
 - Backend health: https://ai-job-automation-platform.onrender.com/health
 - Backend docs (when `DEBUG=true`): https://ai-job-automation-platform.onrender.com/docs
 
-## Highlights
-
-- Combines traditional CRUD SaaS patterns with asynchronous automation pipelines.
-- Uses AI-assisted resume and matching flows while keeping deterministic service boundaries.
-- Includes operational concepts (dead letters, retries, scheduler jobs, websocket telemetry).
-- Organized as a monorepo with frontend, backend, and automation runtime domains.
-
-## Architecture Overview
+## Visual Architecture
 
 ```mermaid
 flowchart LR
-		subgraph UI[Frontend]
-			A[React App]
-			B[React Query + Axios]
-			C[WebSocket Client]
-		end
+    subgraph UI[Frontend]
+        A[React App]
+        B[React Query + Axios]
+        C[WebSocket Client]
+    end
 
-		subgraph API[Backend]
-			D[FastAPI Routes]
-			E[Service Layer]
-			F[Scheduler + Background Tasks]
-			G[Socket Manager]
-		end
+    subgraph API[Backend]
+        D[FastAPI Routes]
+        E[Service Layer]
+        F[Scheduler + Background Tasks]
+        G[Socket Manager]
+    end
 
-		subgraph AUTO[Automation]
-			H[Playwright Scrapers]
-			I[Bot Engine Modules]
-		end
+    subgraph AUTO[Automation]
+        H[Playwright Scrapers]
+        I[Bot Engine Modules]
+    end
 
-		subgraph DATA[Data]
-			J[(MongoDB)]
-			K[(Redis)]
-		end
+    subgraph DATA[Data]
+        J[(MongoDB)]
+        K[(Redis)]
+    end
 
-		A --> B --> D
-		A --> C --> G
-		D --> E
-		E --> H
-		E -. fallback .-> I
-		E --> J
-		E --> K
-		F --> E
+    A --> B --> D
+    A --> C --> G
+    D --> E
+    E --> H
+    E -. fallback .-> I
+    E --> J
+    E --> K
+    F --> E
 ```
 
-## Monorepo Layout
+## Repository Map
 
 <table>
-	<thead>
-		<tr>
-			<th align="left">Folder</th>
-			<th align="left">Purpose</th>
-			<th align="left">Highlights</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><code>backend/</code></td>
-			<td>API and business logic</td>
-			<td>FastAPI, Beanie/MongoDB, Redis, APScheduler, service layer</td>
-		</tr>
-		<tr>
-			<td><code>frontend/</code></td>
-			<td>Product UI</td>
-			<td>React 18, TypeScript, Vite, TanStack Query, Tailwind</td>
-		</tr>
-		<tr>
-			<td><code>bot_engine/</code></td>
-			<td>Automation runtime</td>
-			<td>Selenium helpers, scrapers, queue workers, email tooling</td>
-		</tr>
-		<tr>
-			<td><code>scripts/</code></td>
-			<td>Repo utilities</td>
-			<td>Test, review, and maintenance scripts</td>
-		</tr>
-		<tr>
-			<td><code>project_context/</code></td>
-			<td>Documentation hub</td>
-			<td>Architecture, workflow, deployment, and subsystem internals</td>
-		</tr>
-	</tbody>
+    <thead>
+        <tr>
+            <th align="left">Folder</th>
+            <th align="left">Purpose</th>
+            <th align="left">Highlights</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>backend/</code></td>
+            <td>API and business logic</td>
+            <td>FastAPI, Beanie/MongoDB, Redis, APScheduler, service layer</td>
+        </tr>
+        <tr>
+            <td><code>frontend/</code></td>
+            <td>Product UI</td>
+            <td>React 18, TypeScript, Vite, TanStack Query, Tailwind</td>
+        </tr>
+        <tr>
+            <td><code>bot_engine/</code></td>
+            <td>Automation runtime</td>
+            <td>Selenium helpers, scrapers, queue workers, email tooling</td>
+        </tr>
+        <tr>
+            <td><code>scripts/</code></td>
+            <td>Repo utilities</td>
+            <td>Test, review, and maintenance scripts</td>
+        </tr>
+        <tr>
+            <td><code>project_context/</code></td>
+            <td>Documentation hub</td>
+            <td>Architecture, workflow, deployment, and subsystem internals</td>
+        </tr>
+    </tbody>
 </table>
 
-## Core Stack
+## Technology Stack
 
 ### Backend
 
@@ -157,25 +149,16 @@ flowchart LR
 - Tailwind CSS
 - Vitest + Testing Library
 
-## Features (Current Scope)
+## Getting Started
 
-- Authentication and user profile management
-- Resume upload and resume generation workflows
-- Job scraping and pipeline tracking
-- Email and automation endpoints/services
-- WebSocket-based activity updates
-- Admin and dead-letter monitoring flows
-
-## Local Setup
-
-## Prerequisites
+### Prerequisites
 
 - Python 3.11+
 - Node.js 18+
 - MongoDB
 - Redis
 
-## 1) Backend
+### Backend
 
 ```bash
 cd backend
@@ -189,7 +172,7 @@ python -m uvicorn app.main:app --reload
 
 Backend runs at `http://127.0.0.1:8000`.
 
-## 2) Frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -202,7 +185,7 @@ Frontend runs at `http://localhost:5173`.
 
 ## Documentation Hub
 
-The `project_context/` folder is the repository playbook for contributors and AI agents.
+The `project_context/` folder is the operating guide for contributors and AI agents.
 
 ### Recommended Reading Order
 
@@ -210,10 +193,8 @@ The `project_context/` folder is the repository playbook for contributors and AI
 2. `project_context/02-architecture_overview.md`
 3. `project_context/10-workflows.md`
 
-### Full Index (Expandable)
-
 <details>
-<summary>Open full project_context index</summary>
+<summary>Open the full documentation index</summary>
 
 <br />
 
@@ -250,7 +231,7 @@ This roadmap tracks major product and engineering themes, not strict release dat
 - [ ] Harden production readiness with stronger health diagnostics and failure simulation tests
 - [ ] Add richer contributor/dev onboarding automation (one-command local bootstrap)
 
-## Environment Configuration
+## Configuration
 
 Use these templates as starting points:
 
@@ -268,7 +249,7 @@ Run full repository tests with coverage:
 
 Backend and frontend also include local scripts in their own `scripts/` folders.
 
-## Deployment & Ops
+## Deployment
 
 - Frontend: Vercel (`frontend/vercel.json`)
 - Backend: Render (`render.yaml`)
@@ -281,7 +262,7 @@ Backend and frontend also include local scripts in their own `scripts/` folders.
 - WebSocket endpoint: `/ws`
 - Production API docs disabled when `DEBUG=false`
 
-## Security and Operations
+## Security
 
 - Configure strong production values for `SECRET_KEY` and `CSRF_SECRET_KEY`
 - Restrict `BACKEND_CORS_ORIGINS` and `ALLOWED_HOSTS` to trusted domains
