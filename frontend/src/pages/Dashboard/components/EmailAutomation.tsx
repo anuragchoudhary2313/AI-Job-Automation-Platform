@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mail, Send, TestTube } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
@@ -11,6 +11,7 @@ export function EmailAutomation() {
   const [sending, setSending] = useState(false);
   const [testing, setTesting] = useState(false);
   const [devModeActive, setDevModeActive] = useState(false);
+  const resumeInputRef = useRef<HTMLInputElement | null>(null);
   const [formData, setFormData] = useState({
     recipient_email: '',
     company_name: '',
@@ -56,7 +57,12 @@ export function EmailAutomation() {
   const handleSendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!resumeFile) {
+    const selectedResume = resumeFile || resumeInputRef.current?.files?.[0] || null;
+    if (selectedResume && !resumeFile) {
+      setResumeFile(selectedResume);
+    }
+
+    if (!selectedResume) {
       toast.error('Please select a resume file');
       return;
     }
@@ -70,7 +76,7 @@ export function EmailAutomation() {
       formDataToSend.append('candidate_name', formData.candidate_name);
       formDataToSend.append('skills', formData.skills);
       formDataToSend.append('portfolio_link', formData.portfolio_link);
-      formDataToSend.append('resume', resumeFile);
+      formDataToSend.append('resume', selectedResume);
 
       const response = await apiClientLongTimeout.post<{ message?: string }>(
         '/email/send/hr',
@@ -84,6 +90,8 @@ export function EmailAutomation() {
       const responseMessage = response.data?.message || 'Email sent successfully!';
       if (responseMessage.includes('[DEV MODE]')) {
         setDevModeActive(true);
+      } else {
+        setDevModeActive(false);
       }
       toast.success(responseMessage);
 
@@ -97,6 +105,9 @@ export function EmailAutomation() {
         portfolio_link: '',
       });
       setResumeFile(null);
+      if (resumeInputRef.current) {
+        resumeInputRef.current.value = '';
+      }
     } catch (error) {
       const maybeTimeout = error as { code?: string };
       if (maybeTimeout?.code === 'ECONNABORTED') {
@@ -241,6 +252,7 @@ export function EmailAutomation() {
                 Resume File *
               </label>
               <input
+                ref={resumeInputRef}
                 id="resume-file"
                 type="file"
                 accept=".pdf"
