@@ -54,7 +54,9 @@ class EmailSender:
             logger.warning("Email sending is disabled in configuration.")
             return {"success": False, "error": "email_disabled"}
 
-        if settings.EMAIL_DEV_MODE:
+        dev_mode_enabled = settings.EMAIL_DEV_MODE and not settings.is_production
+
+        if dev_mode_enabled:
             logger.info(
                 "[EMAIL_DEV_MODE] Simulated email to %s with subject %s",
                 to_email,
