@@ -81,14 +81,42 @@ flowchart LR
 
 ## Monorepo Layout
 
-```text
-.
-|- backend/      FastAPI API, services, models, scheduler
-|- frontend/     React + TypeScript + Vite app
-|- bot_engine/   Automation and scraper modules
-|- scripts/      Repo-level test/review utilities
-`- project_context/  Deep architecture and implementation docs
-```
+<table>
+	<thead>
+		<tr>
+			<th align="left">Folder</th>
+			<th align="left">Purpose</th>
+			<th align="left">Highlights</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>backend/</code></td>
+			<td>API and business logic</td>
+			<td>FastAPI, Beanie/MongoDB, Redis, APScheduler, service layer</td>
+		</tr>
+		<tr>
+			<td><code>frontend/</code></td>
+			<td>Product UI</td>
+			<td>React 18, TypeScript, Vite, TanStack Query, Tailwind</td>
+		</tr>
+		<tr>
+			<td><code>bot_engine/</code></td>
+			<td>Automation runtime</td>
+			<td>Selenium helpers, scrapers, queue workers, email tooling</td>
+		</tr>
+		<tr>
+			<td><code>scripts/</code></td>
+			<td>Repo utilities</td>
+			<td>Test, review, and maintenance scripts</td>
+		</tr>
+		<tr>
+			<td><code>project_context/</code></td>
+			<td>Documentation hub</td>
+			<td>Architecture, workflow, deployment, and subsystem internals</td>
+		</tr>
+	</tbody>
+</table>
 
 ## Core Stack
 
